@@ -1,0 +1,21 @@
+{
+  "name": "cheese-core",
+  "version": "0.1.0",
+  "description": "Core personal skills and workflows for cheese-plugins.",
+  "author": {
+    "name": "Jianan Liu"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Cheese Core",
+    "shortDescription": "Personal skills for finding my cheese.",
+    "longDescription": "Cheese Core packages reusable personal skills and workflows from the cheese-plugins workspace.",
+    "developerName": "Jianan Liu",
+    "category": "Productivity",
+    "capabilities": [
+      "Reasoning",
+      "Workflow"
+    ],
+    "defaultPrompt": "Use Cheese Core to help me reason through this task."
+  }
+}
