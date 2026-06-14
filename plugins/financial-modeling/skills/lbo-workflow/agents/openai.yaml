@@ -1,0 +1,6 @@
+interface:
+  display_name: /lbo
+  short_description: 为 PE 收购构建 LBO 模型。
+  default_prompt: Use $lbo-workflow to run the /lbo workflow.
+policy:
+  allow_implicit_invocation: true

@@ -1,21 +1,21 @@
 {
   "name": "cheese-core",
-  "version": "0.1.0",
-  "description": "Core personal skills and workflows for cheese-plugins.",
+  "version": "0.2.1",
+  "description": "Core personal reasoning skills for cheese-plugins.",
   "author": {
     "name": "Jianan Liu"
   },
   "skills": "./skills/",
   "interface": {
     "displayName": "Cheese Core",
-    "shortDescription": "Personal skills for finding my cheese.",
-    "longDescription": "Cheese Core packages reusable personal skills and workflows from the cheese-plugins workspace.",
+    "shortDescription": "Core personal reasoning and decision-making skills.",
+    "longDescription": "Cheese Core packages the small core reasoning skills from the cheese-plugins workspace. Install the specialized plugins for financial modeling, investment research, earnings work, and research publishing.",
     "developerName": "Jianan Liu",
     "category": "Productivity",
     "capabilities": [
       "Reasoning",
-      "Workflow"
+      "Decision support"
     ],
-    "defaultPrompt": "Use Cheese Core to help me reason through this task."
+    "defaultPrompt": "Use Cheese Core for structured reasoning and decision support."
   }
 }

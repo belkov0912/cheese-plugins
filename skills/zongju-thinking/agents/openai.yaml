@@ -1,4 +1,0 @@
-interface:
-  display_name: "总局思维"
-  short_description: "用全局视角拆解复杂判断、证据反证、风险缓解和行动顺序"
-  default_prompt: "用 $zongju-thinking 帮我从总局看这个判断："

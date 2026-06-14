@@ -1,0 +1,6 @@
+interface:
+  display_name: /screen
+  short_description: 运行选股筛选或生成投资想法。
+  default_prompt: Use $screen-workflow to run the /screen workflow.
+policy:
+  allow_implicit_invocation: true

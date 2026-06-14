@@ -22,8 +22,6 @@ if [[ -e "$PLUGIN_DIR" ]]; then
   exit 1
 fi
 
-mkdir -p "$PLUGIN_DIR/.codex-plugin" "$PLUGIN_DIR/skills" "$PLUGIN_DIR/commands" "$PLUGIN_DIR/agents"
-
 python3 - "$ROOT" "$NAME" "$DESCRIPTION" <<'PY'
 import json
 import sys
@@ -33,6 +31,24 @@ root = Path(sys.argv[1])
 name = sys.argv[2]
 description = sys.argv[3]
 plugin_dir = root / "plugins" / name
+marketplace_path = root / ".agents" / "plugins" / "marketplace.json"
+
+if marketplace_path.exists():
+    marketplace = json.loads(marketplace_path.read_text(encoding="utf-8"))
+else:
+    marketplace = {
+        "name": "cheese-plugins",
+        "interface": {"displayName": "Cheese Plugins"},
+        "plugins": [],
+    }
+
+plugins = marketplace.setdefault("plugins", [])
+if any(entry.get("name") == name for entry in plugins):
+    raise SystemExit(f"marketplace entry already exists: {name}")
+
+plugin_dir.mkdir(parents=True)
+for child in [".codex-plugin", "skills", "commands", "agents"]:
+    (plugin_dir / child).mkdir()
 
 manifest = {
     "name": name,
@@ -55,17 +71,14 @@ manifest = {
     encoding="utf-8",
 )
 
-marketplace_path = root / "marketplace.json"
-marketplace = json.loads(marketplace_path.read_text(encoding="utf-8"))
-plugins = marketplace.setdefault("plugins", [])
 plugins.append({
     "name": name,
     "source": {"source": "local", "path": f"./plugins/{name}"},
     "policy": {"installation": "AVAILABLE", "authentication": "ON_INSTALL"},
     "category": "Productivity"
 })
+marketplace_path.parent.mkdir(parents=True, exist_ok=True)
 marketplace_path.write_text(json.dumps(marketplace, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 PY
 
 echo "created plugin: $PLUGIN_DIR"
-

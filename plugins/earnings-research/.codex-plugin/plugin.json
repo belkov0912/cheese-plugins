@@ -1,0 +1,22 @@
+{
+  "name": "earnings-research",
+  "version": "0.1.0",
+  "description": "Earnings research skills for previews, post-earnings analysis, model refresh, and morning notes.",
+  "author": {
+    "name": "Jianan Liu"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Earnings Research",
+    "shortDescription": "Earnings research skills for previews, post-earnings analysis, model refresh, an",
+    "longDescription": "Earnings research skills for previews, post-earnings analysis, model refresh, and morning notes.",
+    "developerName": "Jianan Liu",
+    "category": "Productivity",
+    "capabilities": [
+      "Earnings analysis",
+      "Preview notes",
+      "Morning notes"
+    ],
+    "defaultPrompt": "Use Earnings Research for earnings previews, post-earnings analysis, and morning notes."
+  }
+}

@@ -1,0 +1,6 @@
+interface:
+  display_name: /earnings-preview
+  short_description: 生成财报前预览和情景分析。
+  default_prompt: Use $earnings-preview-workflow to run the /earnings-preview workflow.
+policy:
+  allow_implicit_invocation: true

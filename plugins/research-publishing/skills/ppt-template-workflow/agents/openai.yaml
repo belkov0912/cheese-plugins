@@ -1,0 +1,6 @@
+interface:
+  display_name: /ppt-template
+  short_description: 从 PowerPoint 模板创建可复用模板 skill。
+  default_prompt: Use $ppt-template-workflow to run the /ppt-template workflow.
+policy:
+  allow_implicit_invocation: true

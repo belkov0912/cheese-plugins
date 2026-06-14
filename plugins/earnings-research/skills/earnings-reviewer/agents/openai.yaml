@@ -1,0 +1,6 @@
+interface:
+  display_name: Earnings Reviewer
+  short_description: 财报评审 Agent：读取财报/电话会，更新模型，生成财报点评和关键变化。
+  default_prompt: 用财报评审 Agent 分析给定公司财报，更新模型假设并输出财报点评。
+policy:
+  allow_implicit_invocation: true

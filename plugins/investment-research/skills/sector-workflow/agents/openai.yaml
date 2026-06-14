@@ -1,0 +1,6 @@
+interface:
+  display_name: /sector
+  short_description: 生成行业或主题研究报告。
+  default_prompt: Use $sector-workflow to run the /sector workflow.
+policy:
+  allow_implicit_invocation: true

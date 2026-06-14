@@ -1,0 +1,6 @@
+interface:
+  display_name: /thesis
+  short_description: 创建或更新个股投资 thesis。
+  default_prompt: Use $thesis-workflow to run the /thesis workflow.
+policy:
+  allow_implicit_invocation: true

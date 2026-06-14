@@ -1,0 +1,6 @@
+interface:
+  display_name: /3-statement-model
+  short_description: 填充三表财务模型模板。
+  default_prompt: Use $3-statement-model-workflow to run the /3-statement-model workflow.
+policy:
+  allow_implicit_invocation: true

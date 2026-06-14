@@ -42,18 +42,19 @@ def has_bad_placeholder(path: Path) -> bool:
     text = path.read_text(encoding="utf-8", errors="ignore")
     return bool(re.search(r"TODO|TBD|FIXME|placeholder|example\.com|\[TODO:", text, re.I))
 
-marketplace_path = root / "marketplace.json"
+marketplace_path = root / ".agents" / "plugins" / "marketplace.json"
 if not marketplace_path.exists():
-    fail("marketplace.json is missing")
+    fail(".agents/plugins/marketplace.json is missing")
     marketplace = None
 else:
     marketplace = load_json(marketplace_path)
 
+registered_plugin_dirs = set()
 if marketplace:
     if not marketplace.get("name"):
-        fail("marketplace.json missing name")
+        fail(".agents/plugins/marketplace.json missing name")
     if not isinstance(marketplace.get("plugins"), list):
-        fail("marketplace.json plugins must be a list")
+        fail(".agents/plugins/marketplace.json plugins must be a list")
     for entry in marketplace.get("plugins", []):
         name = entry.get("name")
         source = entry.get("source") or {}
@@ -68,6 +69,7 @@ if marketplace:
             fail(f"marketplace entry {name} missing source.path")
             continue
         plugin_dir = (root / rel_path).resolve()
+        registered_plugin_dirs.add(plugin_dir)
         try:
             plugin_dir.relative_to(root.resolve())
         except ValueError:
@@ -81,6 +83,22 @@ if marketplace:
             fail(f"marketplace entry {name} has invalid policy.authentication")
         if not entry.get("category"):
             fail(f"marketplace entry {name} missing category")
+        plugin_json = plugin_dir / ".codex-plugin" / "plugin.json"
+        if not plugin_json.exists():
+            fail(f"marketplace entry {name} missing plugin manifest: {plugin_json.relative_to(root)}")
+        else:
+            manifest = load_json(plugin_json)
+            if manifest and manifest.get("name") != name:
+                fail(f"marketplace entry {name} does not match {plugin_json.relative_to(root)} name")
+
+for plugin_dir in sorted((root / "plugins").iterdir() if (root / "plugins").exists() else []):
+    if not plugin_dir.is_dir() or plugin_dir.name.startswith("_"):
+        continue
+    if plugin_dir.resolve() not in registered_plugin_dirs:
+        fail(f"plugins/{plugin_dir.name} is not registered in .agents/plugins/marketplace.json")
+
+if (root / "skills").exists():
+    fail("top-level skills/ is not used; put skills under plugins/<plugin>/skills/")
 
 for plugin_json in sorted((root / "plugins").glob("*/.codex-plugin/plugin.json")):
     plugin_dir = plugin_json.parents[1]
@@ -107,8 +125,7 @@ for plugin_json in sorted((root / "plugins").glob("*/.codex-plugin/plugin.json")
         if not skill_root.exists():
             fail(f"{plugin_json.relative_to(root)} skills path does not exist")
 
-skill_files = sorted((root / "skills").glob("*/SKILL.md"))
-skill_files += sorted((root / "plugins").glob("*/skills/*/SKILL.md"))
+skill_files = sorted((root / "plugins").glob("*/skills/*/SKILL.md"))
 for skill_file in skill_files:
     data = frontmatter(skill_file)
     if not data.get("name"):
@@ -131,4 +148,3 @@ if errors:
 
 print("cheese-plugins validation passed")
 PY
-

@@ -1,0 +1,6 @@
+interface:
+  display_name: /comps
+  short_description: 构建可比公司估值表。
+  default_prompt: Use $comps-workflow to run the /comps workflow.
+policy:
+  allow_implicit_invocation: true

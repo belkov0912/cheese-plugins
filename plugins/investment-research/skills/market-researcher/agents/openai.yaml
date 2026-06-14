@@ -1,0 +1,6 @@
+interface:
+  display_name: Market Researcher
+  short_description: 行业/主题研究 Agent：自动串联行业概览、竞争格局、可比公司和投资机会短名单。
+  default_prompt: 用市场研究 Agent 分析给定行业或主题，输出行业概览、竞争格局、同业对标和投资机会。
+policy:
+  allow_implicit_invocation: true
