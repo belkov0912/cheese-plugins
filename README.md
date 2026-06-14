@@ -23,6 +23,7 @@ codex plugin add financial-modeling@cheese-plugins
 codex plugin add investment-research@cheese-plugins
 codex plugin add earnings-research@cheese-plugins
 codex plugin add research-publishing@cheese-plugins
+codex plugin add serenity-skill@cheese-plugins
 ```
 
 After repo changes, pull the latest marketplace snapshot and reinstall the
@@ -81,6 +82,7 @@ cheese-plugins/
 | `investment-research` | Idea generation, sector work, catalysts, thesis tracking | `idea-generation`, `screen-workflow`, `sector-overview`, `competitive-analysis`, `catalyst-calendar`, `thesis-tracker` and related workflows |
 | `earnings-research` | Earnings previews, post-earnings notes, morning notes | `earnings-preview`, `earnings-analysis`, `earnings-reviewer`, `morning-note` and related workflows |
 | `research-publishing` | Coverage reports, deck checks, PowerPoint output | `initiating-coverage`, `initiate-workflow`, `ib-check-deck`, `deck-refresh`, PPT template and PPTX skills |
+| `serenity-skill` | Serenity-inspired supply-chain bottleneck research | `serenity-skill` from [muxuuu/serenity-skill](https://github.com/muxuuu/serenity-skill), MIT |
 
 ## Add A Skill
 
