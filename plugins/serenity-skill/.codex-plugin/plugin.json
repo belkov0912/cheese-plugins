@@ -1,0 +1,31 @@
+{
+  "name": "serenity-skill",
+  "version": "1.0.0",
+  "description": "Serenity-inspired supply-chain bottleneck research workflow for investment themes, stock screening, and thesis challenges.",
+  "author": {
+    "name": "muxu, Codex marketplace adaptation"
+  },
+  "repository": "https://github.com/muxuuu/serenity-skill",
+  "license": "MIT",
+  "keywords": [
+    "investment-research",
+    "supply-chain",
+    "stock-research",
+    "agent-skills",
+    "serenity"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Serenity Skill",
+    "shortDescription": "Supply-chain bottleneck research for investment themes.",
+    "longDescription": "Serenity Skill packages the MIT-licensed serenity-skill workflow for source-backed investment research, value-chain mapping, scarce-layer analysis, stock screening, and thesis challenges.",
+    "developerName": "muxu / cheese-plugins adaptation",
+    "category": "Productivity",
+    "capabilities": [
+      "Investment research",
+      "Supply-chain analysis",
+      "Thesis challenge"
+    ],
+    "defaultPrompt": "Use Serenity Skill to map the value chain, find scarce layers, rank research priorities, and explain evidence and risks."
+  }
+}
