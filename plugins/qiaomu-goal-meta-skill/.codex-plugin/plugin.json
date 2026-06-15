@@ -1,0 +1,31 @@
+{
+  "name": "qiaomu-goal-meta-skill",
+  "version": "0.2.0",
+  "description": "Turn vague or complex Codex tasks into strong, copy-ready /goal commands with verification, constraints, boundaries, iteration policy, and pause conditions.",
+  "author": {
+    "name": "向阳乔木, cheese-plugins adaptation"
+  },
+  "repository": "https://github.com/joeseesun/qiaomu-goal-meta-skill",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "goal-command",
+    "prompt-engineering",
+    "agent-skills",
+    "bilingual"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Qiaomu Goal Meta Skill",
+    "shortDescription": "Turn vague Codex work into a best-default /goal command.",
+    "longDescription": "Qiaomu Goal Meta Skill converts a vague or complex request into a paste-ready Codex /goal command with an outcome, verification evidence, constraints, write boundaries, iteration policy, completion evidence, and pause/block conditions. It favors conservative defaults, offers numbered choices when a decision matters, and mirrors the goal in both Chinese and English-compatible field labels.",
+    "developerName": "向阳乔木 / cheese-plugins adaptation",
+    "category": "Productivity",
+    "capabilities": [
+      "Goal command authoring",
+      "Task scoping",
+      "Verification and boundary design"
+    ],
+    "defaultPrompt": "Use qiaomu-goal-meta-skill to turn this vague task into a strong Codex /goal command with verification, boundaries, and pause conditions."
+  }
+}
