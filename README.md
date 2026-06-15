@@ -19,11 +19,10 @@ Then install the plugin you want:
 
 ```bash
 codex plugin add cheese-core@cheese-plugins
-codex plugin add financial-modeling@cheese-plugins
-codex plugin add investment-research@cheese-plugins
-codex plugin add earnings-research@cheese-plugins
-codex plugin add research-publishing@cheese-plugins
+codex plugin add financial-analysis@cheese-plugins
+codex plugin add equity-research@cheese-plugins
 codex plugin add serenity-skill@cheese-plugins
+codex plugin add qiaomu-goal-meta-skill@cheese-plugins
 ```
 
 After repo changes, pull the latest marketplace snapshot and reinstall the
@@ -78,23 +77,22 @@ cheese-plugins/
 | Plugin | Scope | Included skills |
 | --- | --- | --- |
 | `cheese-core` | Core reasoning | `zongju-thinking` |
-| `financial-modeling` | Models, valuation, spreadsheet checks | `3-statement-model`, `dcf-model`, `lbo-model`, `comps-analysis`, model update/build workflows, `audit-xls`, `clean-data-xls`, `xlsx-author` |
-| `investment-research` | Idea generation, sector work, catalysts, thesis tracking | `idea-generation`, `screen-workflow`, `sector-overview`, `competitive-analysis`, `catalyst-calendar`, `thesis-tracker` and related workflows |
-| `earnings-research` | Earnings previews, post-earnings notes, morning notes | `earnings-preview`, `earnings-analysis`, `earnings-reviewer`, `morning-note` and related workflows |
-| `research-publishing` | Coverage reports, deck checks, PowerPoint output | `initiating-coverage`, `initiate-workflow`, `ib-check-deck`, `deck-refresh`, PPT template and PPTX skills |
+| `financial-analysis` | Models, valuation, spreadsheet checks, deck QC | `dcf-model`, `comps-analysis`, `lbo-model`, `3-statement-model`, `competitive-analysis`, `audit-xls`, `clean-data-xls`, `xlsx-author`, `ib-check-deck`, `deck-refresh`, `ppt-template-creator`, `pptx-author`, `model-builder` and related workflows. Adapted from Anthropic FSI `financial-analysis` |
+| `equity-research` | Earnings, coverage, ideas, catalysts, thesis tracking | `earnings-preview`, `earnings-analysis`, `earnings-reviewer`, `morning-note`, `initiating-coverage`, `idea-generation`, `sector-overview`, `catalyst-calendar`, `thesis-tracker`, `model-update`, `market-researcher` and related workflows. Adapted from Anthropic FSI `equity-research` |
 | `serenity-skill` | Serenity-inspired supply-chain bottleneck research | `serenity-skill` from [muxuuu/serenity-skill](https://github.com/muxuuu/serenity-skill), MIT |
+| `qiaomu-goal-meta-skill` | Turn vague tasks into strong Codex `/goal` commands | `qiaomu-goal-meta-skill` from [joeseesun/qiaomu-goal-meta-skill](https://github.com/joeseesun/qiaomu-goal-meta-skill), MIT |
 
 ## Add A Skill
 
 ```bash
-scripts/new-skill.sh financial-modeling my-skill "Short description of when to use it"
+scripts/new-skill.sh financial-analysis my-skill "Short description of when to use it"
 ```
 
 Then edit:
 
 ```text
-plugins/financial-modeling/skills/my-skill/SKILL.md
-plugins/financial-modeling/skills/my-skill/agents/openai.yaml
+plugins/financial-analysis/skills/my-skill/SKILL.md
+plugins/financial-analysis/skills/my-skill/agents/openai.yaml
 ```
 
 Use the package table above to choose the plugin. If the skill starts a new

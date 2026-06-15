@@ -17,10 +17,10 @@
       "category": "Productivity"
     },
     {
-      "name": "financial-modeling",
+      "name": "financial-analysis",
       "source": {
         "source": "local",
-        "path": "./plugins/financial-modeling"
+        "path": "./plugins/financial-analysis"
       },
       "policy": {
         "installation": "AVAILABLE",
@@ -29,34 +29,10 @@
       "category": "Productivity"
     },
     {
-      "name": "investment-research",
+      "name": "equity-research",
       "source": {
         "source": "local",
-        "path": "./plugins/investment-research"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_INSTALL"
-      },
-      "category": "Productivity"
-    },
-    {
-      "name": "earnings-research",
-      "source": {
-        "source": "local",
-        "path": "./plugins/earnings-research"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_INSTALL"
-      },
-      "category": "Productivity"
-    },
-    {
-      "name": "research-publishing",
-      "source": {
-        "source": "local",
-        "path": "./plugins/research-publishing"
+        "path": "./plugins/equity-research"
       },
       "policy": {
         "installation": "AVAILABLE",
@@ -69,6 +45,18 @@
       "source": {
         "source": "local",
         "path": "./plugins/serenity-skill"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "qiaomu-goal-meta-skill",
+      "source": {
+        "source": "local",
+        "path": "./plugins/qiaomu-goal-meta-skill"
       },
       "policy": {
         "installation": "AVAILABLE",
