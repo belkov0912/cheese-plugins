@@ -9,63 +9,51 @@ the tool bench for finding, testing, and packaging my own cheese.
 
 ## Install
 
-Register this Git repo as a Codex plugin marketplace once:
+This repo uses the official `.claude-plugin/` marketplace format, which is read
+by **both Claude Code and codex** — one set of manifests, two runtimes.
+
+Register the marketplace once:
 
 ```bash
+# Claude Code: in-session
+/plugin marketplace add git@github.com:belkov0912/cheese-plugins.git
+
+# codex: in the terminal
 codex plugin marketplace add git@github.com:belkov0912/cheese-plugins.git
 ```
 
-Then install the plugin you want:
+For local development before pushing, register the working tree directly with
+its absolute path instead of the Git URL.
 
-```bash
-codex plugin add cheese-core@cheese-plugins
-codex plugin add financial-analysis@cheese-plugins
-codex plugin add equity-research@cheese-plugins
-codex plugin add serenity-skill@cheese-plugins
-codex plugin add qiaomu-goal-meta-skill@cheese-plugins
-```
+Then browse, install, update, and remove plugins from the interactive UI: type
+`/plugins` (Claude Code) or `/plugins` in codex, pick `cheese-plugins`, and
+operate on the plugin you want. Available plugins: `cheese-core`,
+`financial-analysis`, `equity-research`, `serenity-skill`,
+`goal-meta-skill`.
 
-After repo changes, pull the latest marketplace snapshot and reinstall the
-plugin you changed:
-
-```bash
-codex plugin marketplace upgrade cheese-plugins
-codex plugin add <plugin-name>@cheese-plugins
-```
-
-For local development before pushing, register the working tree directly:
-
-```bash
-codex plugin marketplace add /Users/jiananliu/work/project/cheese-plugins
-```
-
-Start a new Codex thread after reinstalling so new skills and plugin metadata
-are picked up.
+Start a new thread after reinstalling so new skills and plugin metadata are
+picked up.
 
 ## Structure
 
 ```text
 cheese-plugins/
-  .agents/
-    plugins/
-      marketplace.json      # Codex plugin marketplace index
+  .claude-plugin/
+    marketplace.json        # Plugin marketplace index (Claude Code + codex)
   plugins/                  # Installable plugin bundles
     cheese-core/
-      .codex-plugin/
-        plugin.json
-      skills/
-      commands/
-      agents/
-  commands/                 # Canonical standalone command sources
-  agents/                   # Canonical standalone agent sources
-  templates/                # Reusable skeletons and snippets
-  docs/                     # Notes that are too large for README
-  examples/                 # Small usage examples
+      .claude-plugin/
+        plugin.json         # Plugin manifest
+      skills/               # Each skill is skills/<name>/SKILL.md
   scripts/
     validate.sh
     new-skill.sh
     new-plugin.sh
 ```
+
+Skills are shared across runtimes: a skill is just `skills/<name>/SKILL.md`
+with `name` and `description` frontmatter. Add `commands/` or `agents/` to a
+plugin only when that plugin actually ships them.
 
 ## Current Package
 
@@ -80,7 +68,7 @@ cheese-plugins/
 | `financial-analysis` | Models, valuation, spreadsheet checks, deck QC | `dcf-model`, `comps-analysis`, `lbo-model`, `3-statement-model`, `competitive-analysis`, `audit-xls`, `clean-data-xls`, `xlsx-author`, `ib-check-deck`, `deck-refresh`, `ppt-template-creator`, `pptx-author`, `model-builder` and related workflows. Adapted from Anthropic FSI `financial-analysis` |
 | `equity-research` | Earnings, coverage, ideas, catalysts, thesis tracking | `earnings-preview`, `earnings-analysis`, `earnings-reviewer`, `morning-note`, `initiating-coverage`, `idea-generation`, `sector-overview`, `catalyst-calendar`, `thesis-tracker`, `model-update`, `market-researcher` and related workflows. Adapted from Anthropic FSI `equity-research` |
 | `serenity-skill` | Serenity-inspired supply-chain bottleneck research | `serenity-skill` from [muxuuu/serenity-skill](https://github.com/muxuuu/serenity-skill), MIT |
-| `qiaomu-goal-meta-skill` | Turn vague tasks into strong Codex `/goal` commands | `qiaomu-goal-meta-skill` from [joeseesun/qiaomu-goal-meta-skill](https://github.com/joeseesun/qiaomu-goal-meta-skill), MIT |
+| `goal-meta-skill` | Turn vague tasks into strong `/goal` commands | adapted from [joeseesun/qiaomu-goal-meta-skill](https://github.com/joeseesun/qiaomu-goal-meta-skill), MIT (© 向阳乔木) |
 
 ## Add A Skill
 
@@ -92,7 +80,6 @@ Then edit:
 
 ```text
 plugins/financial-analysis/skills/my-skill/SKILL.md
-plugins/financial-analysis/skills/my-skill/agents/openai.yaml
 ```
 
 Use the package table above to choose the plugin. If the skill starts a new
@@ -103,19 +90,18 @@ Keep `SKILL.md` concise. Put only the instructions the agent needs at runtime.
 ## Add A Plugin
 
 ```bash
-scripts/new-plugin.sh my-plugin "Short plugin description"
+scripts/new-plugin.sh my-plugin "Short plugin description" general
 ```
 
-This creates:
+The third argument is the marketplace category (defaults to `general`). This
+creates:
 
 ```text
-plugins/my-plugin/.codex-plugin/plugin.json
+plugins/my-plugin/.claude-plugin/plugin.json
 plugins/my-plugin/skills/
-plugins/my-plugin/commands/
-plugins/my-plugin/agents/
 ```
 
-It also appends the plugin to `.agents/plugins/marketplace.json`.
+It also appends the plugin to `.claude-plugin/marketplace.json`.
 
 ## Validate
 
@@ -127,27 +113,26 @@ scripts/validate.sh
 
 The validator checks:
 
-- required files exist
-- `.agents/plugins/marketplace.json` and plugin manifests parse as JSON
-- marketplace entries point to existing plugin paths
+- `.claude-plugin/marketplace.json` and plugin manifests parse as JSON
+- each marketplace entry has a string `source`, `description`, and `category`,
+  and points to an existing plugin with a `.claude-plugin/plugin.json`
 - every plugin under `plugins/` is registered in the marketplace
-- plugin names match their folders
-- skill frontmatter contains `name` and `description`
-- `agents/openai.yaml` includes basic UI metadata when present
+- plugin manifest `name` matches its folder and its marketplace entry
+- plugin manifests have `version`, `description`, and `author.name`
+- skill frontmatter contains `name` and `description`, and `name` matches its folder
 - obvious manifest placeholders are absent
 
 ## Sync Sources
 
 Older standalone skill copies may exist outside this repo, for example under
-`/Users/jiananliu/.codex/skills/` or the Obsidian vault's `.agents/skills/`.
-When importing from those locations, copy the skill into the matching
-`plugins/<plugin-name>/skills/` directory. Do not add a top-level `skills/`
-copy.
+`~/.claude/skills/` or `~/.codex/skills/`. When importing from those locations,
+copy the skill into the matching `plugins/<plugin-name>/skills/` directory. Do
+not add a top-level `skills/` copy.
 
 ## Naming
 
 - Use lower-case kebab-case: `zongju-thinking`, `cheese-core`.
-- Plugin folder name must match `.codex-plugin/plugin.json` `name`.
+- Plugin folder name must match `.claude-plugin/plugin.json` `name`.
 - Skill folder name should match `SKILL.md` frontmatter `name`.
 - Avoid generic names like `helper`, `tool`, or `workflow` unless the scope is
   genuinely broad.

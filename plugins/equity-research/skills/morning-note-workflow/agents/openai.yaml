@@ -1,6 +1,0 @@
-interface:
-  display_name: /morning-note
-  short_description: 生成晨会短评。
-  default_prompt: Use $morning-note-workflow to run the /morning-note workflow.
-policy:
-  allow_implicit_invocation: true

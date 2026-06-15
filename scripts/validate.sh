@@ -42,9 +42,10 @@ def has_bad_placeholder(path: Path) -> bool:
     text = path.read_text(encoding="utf-8", errors="ignore")
     return bool(re.search(r"TODO|TBD|FIXME|placeholder|example\.com|\[TODO:", text, re.I))
 
-marketplace_path = root / ".agents" / "plugins" / "marketplace.json"
+# --- marketplace index (Claude Code / codex shared format) ---
+marketplace_path = root / ".claude-plugin" / "marketplace.json"
 if not marketplace_path.exists():
-    fail(".agents/plugins/marketplace.json is missing")
+    fail(".claude-plugin/marketplace.json is missing")
     marketplace = None
 else:
     marketplace = load_json(marketplace_path)
@@ -52,38 +53,33 @@ else:
 registered_plugin_dirs = set()
 if marketplace:
     if not marketplace.get("name"):
-        fail(".agents/plugins/marketplace.json missing name")
+        fail(".claude-plugin/marketplace.json missing name")
     if not isinstance(marketplace.get("plugins"), list):
-        fail(".agents/plugins/marketplace.json plugins must be a list")
+        fail(".claude-plugin/marketplace.json plugins must be a list")
     for entry in marketplace.get("plugins", []):
         name = entry.get("name")
-        source = entry.get("source") or {}
-        policy = entry.get("policy") or {}
+        source = entry.get("source")
         if not name:
             fail("marketplace entry missing name")
             continue
-        if source.get("source") != "local":
-            fail(f"marketplace entry {name} must use local source")
-        rel_path = source.get("path")
-        if not rel_path:
-            fail(f"marketplace entry {name} missing source.path")
+        if not isinstance(source, str) or not source:
+            fail(f"marketplace entry {name} must have a string source path")
             continue
-        plugin_dir = (root / rel_path).resolve()
+        if not entry.get("description"):
+            fail(f"marketplace entry {name} missing description")
+        if not entry.get("category"):
+            fail(f"marketplace entry {name} missing category")
+        plugin_dir = (root / source).resolve()
         registered_plugin_dirs.add(plugin_dir)
         try:
             plugin_dir.relative_to(root.resolve())
         except ValueError:
-            fail(f"marketplace entry {name} points outside repo: {rel_path}")
+            fail(f"marketplace entry {name} points outside repo: {source}")
             continue
         if not plugin_dir.exists():
-            fail(f"marketplace entry {name} path does not exist: {rel_path}")
-        if policy.get("installation") not in {"AVAILABLE", "INSTALLED_BY_DEFAULT", "NOT_AVAILABLE"}:
-            fail(f"marketplace entry {name} has invalid policy.installation")
-        if policy.get("authentication") not in {"ON_INSTALL", "ON_USE"}:
-            fail(f"marketplace entry {name} has invalid policy.authentication")
-        if not entry.get("category"):
-            fail(f"marketplace entry {name} missing category")
-        plugin_json = plugin_dir / ".codex-plugin" / "plugin.json"
+            fail(f"marketplace entry {name} path does not exist: {source}")
+            continue
+        plugin_json = plugin_dir / ".claude-plugin" / "plugin.json"
         if not plugin_json.exists():
             fail(f"marketplace entry {name} missing plugin manifest: {plugin_json.relative_to(root)}")
         else:
@@ -91,16 +87,18 @@ if marketplace:
             if manifest and manifest.get("name") != name:
                 fail(f"marketplace entry {name} does not match {plugin_json.relative_to(root)} name")
 
+# --- every plugin dir is registered ---
 for plugin_dir in sorted((root / "plugins").iterdir() if (root / "plugins").exists() else []):
     if not plugin_dir.is_dir() or plugin_dir.name.startswith("_"):
         continue
     if plugin_dir.resolve() not in registered_plugin_dirs:
-        fail(f"plugins/{plugin_dir.name} is not registered in .agents/plugins/marketplace.json")
+        fail(f"plugins/{plugin_dir.name} is not registered in .claude-plugin/marketplace.json")
 
 if (root / "skills").exists():
     fail("top-level skills/ is not used; put skills under plugins/<plugin>/skills/")
 
-for plugin_json in sorted((root / "plugins").glob("*/.codex-plugin/plugin.json")):
+# --- plugin manifests ---
+for plugin_json in sorted((root / "plugins").glob("*/.claude-plugin/plugin.json")):
     plugin_dir = plugin_json.parents[1]
     manifest = load_json(plugin_json)
     if not manifest:
@@ -113,18 +111,10 @@ for plugin_json in sorted((root / "plugins").glob("*/.codex-plugin/plugin.json")
         fail(f"{plugin_json.relative_to(root)} missing description")
     if not (manifest.get("author") or {}).get("name"):
         fail(f"{plugin_json.relative_to(root)} missing author.name")
-    interface = manifest.get("interface") or {}
-    for key in ["displayName", "shortDescription", "longDescription", "developerName", "category"]:
-        if not interface.get(key):
-            fail(f"{plugin_json.relative_to(root)} missing interface.{key}")
     if has_bad_placeholder(plugin_json):
         fail(f"{plugin_json.relative_to(root)} contains placeholder-like text")
-    skills_path = manifest.get("skills")
-    if skills_path:
-        skill_root = (plugin_dir / skills_path).resolve()
-        if not skill_root.exists():
-            fail(f"{plugin_json.relative_to(root)} skills path does not exist")
 
+# --- skills ---
 skill_files = sorted((root / "plugins").glob("*/skills/*/SKILL.md"))
 for skill_file in skill_files:
     data = frontmatter(skill_file)
@@ -134,12 +124,6 @@ for skill_file in skill_files:
         fail(f"{skill_file.relative_to(root)} missing frontmatter description")
     if data.get("name") and data["name"] != skill_file.parent.name:
         fail(f"{skill_file.relative_to(root)} name does not match folder")
-    openai_yaml = skill_file.parent / "agents" / "openai.yaml"
-    if openai_yaml.exists():
-        text = openai_yaml.read_text(encoding="utf-8")
-        for key in ["display_name", "short_description", "default_prompt"]:
-            if key not in text:
-                fail(f"{openai_yaml.relative_to(root)} missing {key}")
 
 if errors:
     for error in errors:

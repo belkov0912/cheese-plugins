@@ -1,6 +1,0 @@
-interface:
-  display_name: /competitive-analysis
-  short_description: 创建竞争格局分析。
-  default_prompt: Use $competitive-analysis-workflow to run the /competitive-analysis workflow.
-policy:
-  allow_implicit_invocation: true

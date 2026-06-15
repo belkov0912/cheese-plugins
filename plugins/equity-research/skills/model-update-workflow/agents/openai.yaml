@@ -1,6 +1,0 @@
-interface:
-  display_name: /model-update
-  short_description: 用新数据更新财务模型。
-  default_prompt: Use $model-update-workflow to run the /model-update workflow.
-policy:
-  allow_implicit_invocation: true

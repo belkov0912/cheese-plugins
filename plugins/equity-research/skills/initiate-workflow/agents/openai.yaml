@@ -1,6 +1,0 @@
-interface:
-  display_name: /initiate
-  short_description: 创建一篇首次覆盖/深度覆盖报告。
-  default_prompt: Use $initiate-workflow to run the /initiate workflow.
-policy:
-  allow_implicit_invocation: true

@@ -1,6 +1,0 @@
-interface:
-  display_name: /dcf
-  short_description: 构建结合可比公司终值倍数的 DCF 估值模型。
-  default_prompt: Use $dcf-workflow to run the /dcf workflow.
-policy:
-  allow_implicit_invocation: true

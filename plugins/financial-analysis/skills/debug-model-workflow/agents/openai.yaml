@@ -1,6 +1,0 @@
-interface:
-  display_name: /debug-model
-  short_description: 调试和审计财务模型错误。
-  default_prompt: Use $debug-model-workflow to run the /debug-model workflow.
-policy:
-  allow_implicit_invocation: true
