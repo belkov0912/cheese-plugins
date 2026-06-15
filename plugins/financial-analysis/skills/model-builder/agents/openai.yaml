@@ -1,6 +1,0 @@
-interface:
-  display_name: Model Builder
-  short_description: 财务建模 Agent：从零搭建 DCF、LBO、三表或可比公司模型。
-  default_prompt: 用财务建模 Agent 为给定公司或场景搭建估值/三表/可比公司模型。
-policy:
-  allow_implicit_invocation: true

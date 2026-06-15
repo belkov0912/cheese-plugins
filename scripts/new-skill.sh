@@ -23,7 +23,7 @@ if [[ -z "$NAME" ]]; then
 fi
 
 PLUGIN_DIR="$ROOT/plugins/$PLUGIN"
-if [[ ! -f "$PLUGIN_DIR/.codex-plugin/plugin.json" ]]; then
+if [[ ! -f "$PLUGIN_DIR/.claude-plugin/plugin.json" ]]; then
   echo "plugin does not exist: $PLUGIN_DIR" >&2
   exit 1
 fi
@@ -34,15 +34,7 @@ if [[ -e "$DIR" ]]; then
   exit 1
 fi
 
-SHORT_DESCRIPTION="$DESCRIPTION"
-if [[ ${#SHORT_DESCRIPTION} -lt 25 ]]; then
-  SHORT_DESCRIPTION="$DESCRIPTION for reusable agent work"
-fi
-if [[ ${#SHORT_DESCRIPTION} -gt 64 ]]; then
-  SHORT_DESCRIPTION="${SHORT_DESCRIPTION:0:64}"
-fi
-
-mkdir -p "$DIR/agents"
+mkdir -p "$DIR"
 cat > "$DIR/SKILL.md" <<EOF_SKILL
 ---
 name: $NAME
@@ -59,12 +51,5 @@ $DESCRIPTION
 2. Do the smallest useful work that moves the task forward.
 3. Verify the result before handing it back.
 EOF_SKILL
-
-cat > "$DIR/agents/openai.yaml" <<EOF_OPENAI
-interface:
-  display_name: "$NAME"
-  short_description: "$SHORT_DESCRIPTION"
-  default_prompt: "Use \$$NAME to help with this task:"
-EOF_OPENAI
 
 echo "created skill: $DIR"

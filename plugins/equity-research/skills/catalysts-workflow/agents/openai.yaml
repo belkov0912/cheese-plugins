@@ -1,6 +1,0 @@
-interface:
-  display_name: /catalysts
-  short_description: 查看或更新催化剂日历。
-  default_prompt: Use $catalysts-workflow to run the /catalysts workflow.
-policy:
-  allow_implicit_invocation: true

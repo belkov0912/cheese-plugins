@@ -1,6 +1,0 @@
-interface:
-  display_name: /earnings
-  short_description: 分析季度财报并生成财报点评。
-  default_prompt: Use $earnings-workflow to run the /earnings workflow.
-policy:
-  allow_implicit_invocation: true

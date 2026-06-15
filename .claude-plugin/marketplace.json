@@ -1,0 +1,44 @@
+{
+  "name": "cheese-plugins",
+  "owner": {
+    "name": "Jianan Liu"
+  },
+  "description": "Personal agent plugin workspace. Same plugins served to both Codex (.agents/plugins/marketplace.json) and Claude Code (this file); skills are shared.",
+  "plugins": [
+    {
+      "name": "cheese-core",
+      "displayName": "Cheese Core",
+      "source": "./plugins/cheese-core",
+      "description": "Core personal reasoning skills for cheese-plugins.",
+      "category": "general"
+    },
+    {
+      "name": "financial-analysis",
+      "displayName": "Financial Analysis",
+      "source": "./plugins/financial-analysis",
+      "description": "Core financial modeling and analysis tools: DCF, comps, LBO, 3-statement models, competitive analysis, and deck QC. Adapted from Anthropic FSI.",
+      "category": "finance"
+    },
+    {
+      "name": "equity-research",
+      "displayName": "Equity Research",
+      "source": "./plugins/equity-research",
+      "description": "Equity research tools: earnings analysis, initiating coverage, idea generation, catalysts, thesis tracking, and research workflows. Adapted from Anthropic FSI.",
+      "category": "finance"
+    },
+    {
+      "name": "serenity-skill",
+      "displayName": "Serenity Skill",
+      "source": "./plugins/serenity-skill",
+      "description": "Serenity-inspired supply-chain bottleneck research for investment themes, stock screening, and thesis challenges.",
+      "category": "finance"
+    },
+    {
+      "name": "goal-meta-skill",
+      "displayName": "Goal Meta Skill",
+      "source": "./plugins/goal-meta-skill",
+      "description": "Turn vague or complex tasks into strong, copy-ready /goal commands with verification, constraints, boundaries, iteration policy, and pause conditions.",
+      "category": "general"
+    }
+  ]
+}
