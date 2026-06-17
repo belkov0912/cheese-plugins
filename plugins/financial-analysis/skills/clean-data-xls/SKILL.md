@@ -5,8 +5,6 @@ description: 清洗表格数据：去空格、统一格式、文本转数字、�
 
 # Clean Data
 
-> Codex note: This skill was migrated for Codex. When upstream text says to load or invoke a skill, use the matching Codex skill by name. Prefer Codex file/artifact tooling for spreadsheets, presentations, and documents; treat live Office JS add-in paths as legacy upstream guidance unless the user explicitly provides that environment.
-
 
 Clean messy data in the active sheet or a specified range.
 

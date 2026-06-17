@@ -5,8 +5,6 @@ description: 撰写晨会短评：隔夜变化、交易线索、覆盖股票重�
 
 # Morning Note
 
-> Codex note: This skill was migrated for Codex. When upstream text says to load or invoke a skill, use the matching Codex skill by name. Prefer Codex file/artifact tooling for spreadsheets, presentations, and documents; treat live Office JS add-in paths as legacy upstream guidance unless the user explicitly provides that environment.
-
 
 ## Workflow
 

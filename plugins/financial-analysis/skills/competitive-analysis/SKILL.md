@@ -5,8 +5,6 @@ description: 竞争格局分析：市场定位、竞品对比、玩家拆解、�
 
 # Competitive Landscape Mapping
 
-> Codex note: This skill was migrated for Codex. When upstream text says to load or invoke a skill, use the matching Codex skill by name. Prefer Codex file/artifact tooling for spreadsheets, presentations, and documents; treat live Office JS add-in paths as legacy upstream guidance unless the user explicitly provides that environment.
-
 
 Build a complete competitive analysis deck. This is a two-phase process: gather requirements and get outline approval first, then build.
 

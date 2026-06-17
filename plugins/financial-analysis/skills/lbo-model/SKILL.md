@@ -3,8 +3,6 @@ name: lbo-model
 description: LBO 模型：交易假设、融资结构、债务偿还、IRR/MOIC 和敏感性分析。
 ---
 
-> Codex note: This skill was migrated for Codex. When upstream text says to load or invoke a skill, use the matching Codex skill by name. Prefer Codex file/artifact tooling for spreadsheets, presentations, and documents; treat live Office JS add-in paths as legacy upstream guidance unless the user explicitly provides that environment.
-
 ---
 
 ## TEMPLATE REQUIREMENT
