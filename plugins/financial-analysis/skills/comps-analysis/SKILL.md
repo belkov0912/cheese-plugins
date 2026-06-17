@@ -26,7 +26,7 @@ This skill teaches Codex to build institutional-grade comparable company analyse
 
 **Reference Material & Contextualization:**
 
-An example comparable company analysis is provided in `examples/comps_example.xlsx`. When using this or other example files in this skill directory, use them intelligently:
+An example comparable company analysis may be attached by the user (e.g. a `comps_example.xlsx`). When the user provides such an example file, use it intelligently:
 
 **DO use examples for:**
 - Understanding structural hierarchy (how sections flow)
