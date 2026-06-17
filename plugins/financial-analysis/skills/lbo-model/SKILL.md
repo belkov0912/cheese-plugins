@@ -14,7 +14,7 @@ description: LBO 模型：交易假设、融资结构、债务偿还、IRR/MOIC 
 Before starting any LBO model:
 1. **If a template file is attached/provided**: Use that template's structure exactly - copy it and populate with the user's data
 2. **If no template is attached**: Ask the user: *"Do you have a specific LBO template you'd like me to use? If not, I can use the standard template which includes Sources & Uses, Operating Model, Debt Schedule, and Returns Analysis."*
-3. **If using the standard template**: Copy `examples/LBO_Model.xlsx` as your starting point and populate it with the user's assumptions
+3. **If using the standard template**: build from the standard structure described in this skill (Sources & Uses, Operating Model, Debt Schedule, Returns Analysis) and populate it with the user's assumptions
 
 **IMPORTANT**: When a file like `LBO_Model.xlsx` is attached, you MUST use it as your template - do not build from scratch. Even if the template seems complex or has more features than needed, copy it and adapt it to the user's requirements. Never decide to "build from scratch" when a template is provided.
 
@@ -40,7 +40,7 @@ The rest of this skill is written with openpyxl examples, but the same principle
 
 ### Core Principles
 * **Every calculation must be an Excel formula** - NEVER compute values in Python and hardcode results into cells. When using openpyxl, write `cell.value = "=B5*B6"` (formula string), NOT `cell.value = 1250` (computed result). The model must be dynamic and update when inputs change.
-* **Use the template structure** - Follow the organization in `examples/LBO_Model.xlsx` or the user's provided template. Do not invent your own layout.
+* **Use the template structure** - Follow the standard LBO structure described in this skill (Sources & Uses, Operating Model, Debt Schedule, Returns Analysis) or the user's provided template. Do not invent your own layout.
 * **Use proper cell references** - All formulas should reference the appropriate cells. Never type numbers that should come from other cells.
 * **Maintain sign convention consistency** - Follow whatever sign convention the template uses (some use negative for outflows, some use positive). Be consistent throughout.
 * **Work section by section, verify with user at each step** - Complete one section fully, show the user what was built, run the section's verification checks, and get confirmation BEFORE moving to the next section. Do NOT build the entire model end-to-end and then present it — later sections depend on earlier ones, so catching a mistake in Sources & Uses after the returns are already built means rework everywhere.
