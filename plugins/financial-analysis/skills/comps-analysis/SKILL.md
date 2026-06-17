@@ -5,8 +5,6 @@ description: 可比公司分析：同行选择、经营指标、估值倍数、�
 
 # Comparable Company Analysis
 
-> Codex note: This skill was migrated for Codex. When upstream text says to load or invoke a skill, use the matching Codex skill by name. Prefer Codex file/artifact tooling for spreadsheets, presentations, and documents; treat live Office JS add-in paths as legacy upstream guidance unless the user explicitly provides that environment.
-
 
 ## ⚠️ CRITICAL: Data Source Priority (READ FIRST)
 

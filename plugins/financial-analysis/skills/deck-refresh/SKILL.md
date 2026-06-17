@@ -5,8 +5,6 @@ description: 更新 PPT/报告中的最新数据：季度滚动、财报刷新�
 
 # Deck Refresh
 
-> Codex note: This skill was migrated for Codex. When upstream text says to load or invoke a skill, use the matching Codex skill by name. Prefer Codex file/artifact tooling for spreadsheets, presentations, and documents; treat live Office JS add-in paths as legacy upstream guidance unless the user explicitly provides that environment.
-
 
 Update numbers across the deck. The deck is the source of truth for formatting; you're only changing values.
 

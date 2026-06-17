@@ -5,8 +5,6 @@ description: 构建结合可比公司终值倍数的 DCF 估值模型。
 
 # /dcf Workflow
 
-> Codex note: This skill was migrated for Codex. When upstream text says to load or invoke a skill, use the matching Codex skill by name. Prefer Codex file/artifact tooling for spreadsheets, presentations, and documents; treat live Office JS add-in paths as legacy upstream guidance unless the user explicitly provides that environment.
-
 This is the Codex-native equivalent of the upstream `/dcf` slash command. If arguments are missing, ask only for the information needed to continue.
 
 # DCF Valuation Command

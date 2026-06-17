@@ -5,8 +5,6 @@ description: 审计 Excel/表格模型：检查公式、硬编码、勾稽关系
 
 # Audit Spreadsheet
 
-> Codex note: This skill was migrated for Codex. When upstream text says to load or invoke a skill, use the matching Codex skill by name. Prefer Codex file/artifact tooling for spreadsheets, presentations, and documents; treat live Office JS add-in paths as legacy upstream guidance unless the user explicitly provides that environment.
-
 
 Audit formulas and data for accuracy and mistakes. Scope determines depth — from quick formula checks on a selection up to full financial-model integrity audits.
 

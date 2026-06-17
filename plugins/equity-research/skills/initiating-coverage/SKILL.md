@@ -5,8 +5,6 @@ description: 生成机构风格首次覆盖报告；中文场景默认使用中�
 
 # 首次覆盖 / Initiating Coverage
 
-> Codex note: This skill was migrated for Codex. When upstream text says to load or invoke a skill, use the matching Codex skill by name. Prefer Codex file/artifact tooling for spreadsheets, presentations, and documents; treat live Office JS add-in paths as legacy upstream guidance unless the user explicitly provides that environment.
-
 
 通过 5 个任务生成机构风格首次覆盖研究。默认情况下，Task 1-3 作为核心流程自动执行；Task 4 图表生成和 Task 5 报告组装属于更重的生产任务，必须在完成前置任务后再询问用户是否继续。
 

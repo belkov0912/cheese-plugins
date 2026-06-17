@@ -5,8 +5,6 @@ description: 根据财报、公告、指引或假设变化更新财务模型，�
 
 # Model Update
 
-> Codex note: This skill was migrated for Codex. When upstream text says to load or invoke a skill, use the matching Codex skill by name. Prefer Codex file/artifact tooling for spreadsheets, presentations, and documents; treat live Office JS add-in paths as legacy upstream guidance unless the user explicitly provides that environment.
-
 
 ## Workflow
 

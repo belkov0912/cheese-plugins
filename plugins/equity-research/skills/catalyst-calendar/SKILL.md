@@ -5,8 +5,6 @@ description: 维护覆盖股票的催化剂日历：财报、会议、产品发�
 
 # Catalyst Calendar
 
-> Codex note: This skill was migrated for Codex. When upstream text says to load or invoke a skill, use the matching Codex skill by name. Prefer Codex file/artifact tooling for spreadsheets, presentations, and documents; treat live Office JS add-in paths as legacy upstream guidance unless the user explicitly provides that environment.
-
 
 ## Workflow
 

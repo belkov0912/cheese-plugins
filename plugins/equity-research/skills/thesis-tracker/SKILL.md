@@ -5,8 +5,6 @@ description: 维护和更新个股投资 thesis：核心逻辑、数据点、催
 
 # Thesis Tracker
 
-> Codex note: This skill was migrated for Codex. When upstream text says to load or invoke a skill, use the matching Codex skill by name. Prefer Codex file/artifact tooling for spreadsheets, presentations, and documents; treat live Office JS add-in paths as legacy upstream guidance unless the user explicitly provides that environment.
-
 
 ## Workflow
 

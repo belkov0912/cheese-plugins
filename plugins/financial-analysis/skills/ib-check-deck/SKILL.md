@@ -5,8 +5,6 @@ description: 检查投行/路演材料：数字一致性、脚注、叙事匹配
 
 # IB Deck Checker
 
-> Codex note: This skill was migrated for Codex. When upstream text says to load or invoke a skill, use the matching Codex skill by name. Prefer Codex file/artifact tooling for spreadsheets, presentations, and documents; treat live Office JS add-in paths as legacy upstream guidance unless the user explicitly provides that environment.
-
 
 Perform comprehensive QC on the presentation across four dimensions. Read every slide, then report findings.
 

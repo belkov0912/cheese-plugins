@@ -5,8 +5,6 @@ description: 系统化选股和投资想法挖掘：主题筛选、量化条件�
 
 # Idea Generation
 
-> Codex note: This skill was migrated for Codex. When upstream text says to load or invoke a skill, use the matching Codex skill by name. Prefer Codex file/artifact tooling for spreadsheets, presentations, and documents; treat live Office JS add-in paths as legacy upstream guidance unless the user explicitly provides that environment.
-
 
 ## Workflow
 

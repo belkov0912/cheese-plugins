@@ -5,8 +5,6 @@ description: DCF 估值建模：现金流预测、WACC、终值、敏感性分�
 
 # DCF Model Builder
 
-> Codex note: This skill was migrated for Codex. When upstream text says to load or invoke a skill, use the matching Codex skill by name. Prefer Codex file/artifact tooling for spreadsheets, presentations, and documents; treat live Office JS add-in paths as legacy upstream guidance unless the user explicitly provides that environment.
-
 
 ## Overview
 

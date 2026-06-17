@@ -5,8 +5,6 @@ description: 财报前预览：梳理市场预期、关键指标、情景假设�
 
 # Earnings Preview
 
-> Codex note: This skill was migrated for Codex. When upstream text says to load or invoke a skill, use the matching Codex skill by name. Prefer Codex file/artifact tooling for spreadsheets, presentations, and documents; treat live Office JS add-in paths as legacy upstream guidance unless the user explicitly provides that environment.
-
 
 ## Workflow
 
