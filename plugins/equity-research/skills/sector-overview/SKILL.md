@@ -80,6 +80,18 @@ For each company, brief profile:
   - Key charts: market growth, share trends, valuation history
 - Excel appendix with detailed company data
 
+### Step 7: Storage
+
+Persist the sector overview by default unless the user explicitly asks for an inline-only answer.
+
+- Search for an existing sector overview before creating a new file; update it when the request is a refresh or continuation.
+- Default storage path: `research/sector-overviews/` under the current workspace or vault root.
+- Save the main report as Markdown using `YYYY-MM-DD-{sector-slug}.md`.
+- Save reusable structured data as JSON or CSV alongside the report, including market size assumptions, segment data, company comparison tables, valuation metrics, catalysts, and source metadata.
+- If Word, PowerPoint, Excel, or chart files are created, save them alongside the Markdown report and link or list them in the Markdown file.
+- Include a generated date, scope, source list, and brief update log so the report can be referenced across sessions.
+- At the end of the response, tell the user which files were created or updated.
+
 ## Important Notes
 
 - Source all market size data — cite the research firm or methodology
