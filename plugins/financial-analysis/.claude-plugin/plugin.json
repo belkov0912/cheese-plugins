@@ -1,9 +1,16 @@
 {
   "name": "financial-analysis",
-  "version": "0.1.1",
+  "version": "1.1.0",
   "description": "Core financial modeling and analysis tools: DCF, comps, LBO, 3-statement models, competitive analysis, and deck QC. Adapted from Anthropic FSI.",
   "author": {
     "name": "Anthropic FSI, cheese-plugins adaptation"
   },
-  "keywords": ["finance", "modeling", "dcf", "comps", "lbo", "valuation"]
+  "keywords": [
+    "finance",
+    "modeling",
+    "dcf",
+    "comps",
+    "lbo",
+    "valuation"
+  ]
 }
