@@ -1,11 +1,16 @@
 {
   "name": "serenity-skill",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Serenity-inspired supply-chain bottleneck research workflow for investment themes, stock screening, and thesis challenges.",
   "author": {
     "name": "muxu, cheese-plugins adaptation"
   },
   "license": "MIT",
   "homepage": "https://github.com/muxuuu/serenity-skill",
-  "keywords": ["investment-research", "supply-chain", "stock-research", "serenity"]
+  "keywords": [
+    "investment-research",
+    "supply-chain",
+    "stock-research",
+    "serenity"
+  ]
 }

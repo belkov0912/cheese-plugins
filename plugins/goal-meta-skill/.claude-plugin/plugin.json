@@ -1,11 +1,15 @@
 {
   "name": "goal-meta-skill",
-  "version": "0.2.0",
+  "version": "1.1.0",
   "description": "Turn vague or complex tasks into strong, copy-ready /goal commands with verification, constraints, boundaries, iteration policy, and pause conditions.",
   "author": {
     "name": "向阳乔木, cheese-plugins adaptation"
   },
   "license": "MIT",
   "homepage": "https://github.com/joeseesun/qiaomu-goal-meta-skill",
-  "keywords": ["goal-command", "prompt-engineering", "bilingual"]
+  "keywords": [
+    "goal-command",
+    "prompt-engineering",
+    "bilingual"
+  ]
 }

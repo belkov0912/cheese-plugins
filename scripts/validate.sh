@@ -98,6 +98,7 @@ if (root / "skills").exists():
     fail("top-level skills/ is not used; put skills under plugins/<plugin>/skills/")
 
 # --- plugin manifests ---
+plugin_versions = {}
 for plugin_json in sorted((root / "plugins").glob("*/.claude-plugin/plugin.json")):
     plugin_dir = plugin_json.parents[1]
     manifest = load_json(plugin_json)
@@ -113,6 +114,12 @@ for plugin_json in sorted((root / "plugins").glob("*/.claude-plugin/plugin.json"
         fail(f"{plugin_json.relative_to(root)} missing author.name")
     if has_bad_placeholder(plugin_json):
         fail(f"{plugin_json.relative_to(root)} contains placeholder-like text")
+    if manifest.get("version"):
+        plugin_versions[plugin_dir.name] = manifest["version"]
+
+# all plugins share one version — bump them together
+if len(set(plugin_versions.values())) > 1:
+    fail(f"plugins must all share one version, found: {plugin_versions}")
 
 # --- skills ---
 skill_files = sorted((root / "plugins").glob("*/skills/*/SKILL.md"))

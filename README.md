@@ -48,6 +48,7 @@ cheese-plugins/
     validate.sh
     new-skill.sh
     new-plugin.sh
+    bump.sh                 # Set all plugins to one shared version
 ```
 
 技能在两个运行时之间是共享的:一个技能就是 `skills/<name>/SKILL.md`,带上
@@ -131,3 +132,14 @@ scripts/validate.sh
 - 插件目录名必须与 `.claude-plugin/plugin.json` 的 `name` 一致。
 - 技能目录名应与 `SKILL.md` frontmatter 的 `name` 一致。
 - 避免 `helper`、`tool`、`workflow` 这类泛化名,除非范围确实很宽。
+
+## 版本
+
+所有插件**共用同一个版本号**。任何改动后,用 `scripts/bump.sh <版本>` 把所有插件的
+`version` 一起往上 bump 一次——这样 Claude Code / codex 会把每个已安装插件都当成升级、
+重新拉取最新内容(只改内容不 bump 版本,已安装的副本不会更新)。`validate.sh` 会强制
+所有版本一致。当前:`1.1.0`。
+
+```bash
+scripts/bump.sh 1.2.0
+```
