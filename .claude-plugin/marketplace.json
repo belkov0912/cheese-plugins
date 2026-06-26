@@ -39,6 +39,13 @@
       "source": "./plugins/goal-meta-skill",
       "description": "Turn vague or complex tasks into strong, copy-ready /goal commands with verification, constraints, boundaries, iteration policy, and pause conditions.",
       "category": "general"
+    },
+    {
+      "name": "zrec-debug",
+      "displayName": "Zrec Debug",
+      "source": "./plugins/zrec-debug",
+      "description": "zrec-model 远程调试闭环：本地改 → git 同步 → 远程服务器跑 ./run.sh → 报错回本地改再重测。SSH host 默认读 ssh config 里的 v11_x2，未配置则让用户输入；可选传入 debug 信息和 IP。",
+      "category": "general"
     }
   ]
 }

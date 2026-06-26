@@ -29,7 +29,8 @@ codex plugin marketplace add git@github.com:belkov0912/cheese-plugins.git
 
 之后浏览、安装、更新、卸载都走交互界面:输入 `/plugins`(Claude Code 或
 codex),选中 `cheese-plugins`,对想要的插件操作即可。现有插件:`cheese-core`、
-`financial-analysis`、`equity-research`、`serenity-skill`、`goal-meta-skill`。
+`financial-analysis`、`equity-research`、`serenity-skill`、`goal-meta-skill`、
+`zrec-debug`。
 
 重新安装后请开一个新会话,新技能和插件元数据才会被加载。
 
@@ -68,6 +69,7 @@ cheese-plugins/
 | `equity-research` | 财报、覆盖、选题、催化剂、论点跟踪 | `earnings-preview`、`earnings-analysis`、`earnings-reviewer`、`morning-note`、`initiating-coverage`、`idea-generation`、`sector-overview`、`catalyst-calendar`、`thesis-tracker`、`model-update`、`market-researcher` 及配套工作流。改编自 Anthropic FSI 的 `equity-research` |
 | `serenity-skill` | Serenity 式供应链卡点研究 | 来自 [muxuuu/serenity-skill](https://github.com/muxuuu/serenity-skill),MIT |
 | `goal-meta-skill` | 把模糊任务收敛成强 `/goal` 指令 | 改编自 [joeseesun/qiaomu-goal-meta-skill](https://github.com/joeseesun/qiaomu-goal-meta-skill),MIT(© 向阳乔木) |
+| `zrec-debug` | zrec-model 本地改 → git 同步 → 远程跑 `run.sh` 的调试闭环（host 默认 v11_x2，可传 IP） | `zrec-debug` |
 
 ## 新增技能
 
