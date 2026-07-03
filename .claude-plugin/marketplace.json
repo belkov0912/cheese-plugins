@@ -39,6 +39,13 @@
       "source": "./plugins/goal-meta-skill",
       "description": "Turn vague or complex tasks into strong, copy-ready /goal commands with verification, constraints, boundaries, iteration policy, and pause conditions.",
       "category": "general"
+    },
+    {
+      "name": "r0-trigger",
+      "displayName": "R0 Trigger",
+      "source": "./plugins/r0-trigger",
+      "description": "R0 launch-trigger instant check for A-shares: score the strongest volume-breakout confirmation candle in the last 5 trading days (1-5), backed by the prelaunch scanner's validated score_R0.",
+      "category": "finance"
     }
   ]
 }
