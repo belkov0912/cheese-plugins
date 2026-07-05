@@ -41,10 +41,10 @@
       "category": "general"
     },
     {
-      "name": "r0-trigger",
-      "displayName": "R0 Trigger",
-      "source": "./plugins/r0-trigger",
-      "description": "R0 launch-trigger instant check for A-shares: score the strongest volume-breakout confirmation candle in the last 5 trading days (1-5), backed by the prelaunch scanner's validated score_R0.",
+      "name": "rule-trigger",
+      "displayName": "Rule Trigger",
+      "source": "./plugins/rule-trigger",
+      "description": "Rule-based A-share trigger toolkit: local market data warehouse plus R0 launch-trigger and R7 probe-pullback checks, designed to grow into R1-R8 scanning.",
       "category": "finance"
     }
   ]

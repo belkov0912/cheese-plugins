@@ -6,8 +6,9 @@ R0 语义 = "判定窗 J（最近5个交易日）里最强的启动确认K线有
 
 用法：
   python3 r0.py 景旺电子 603228 sz300476     # 逐票报 R0（名称或代码都行）
-  python3 r0.py --today                        # 扫本地仓，列出今日 R0≥4 的票
+  python3 r0.py --today                        # 扫本地仓，列出今日 R0≥4 的票（默认排除 bj* / sh688*）
   python3 r0.py --today --min 5                # 只看 R0=5
+  python3 r0.py --today --include-bj688        # 包含北交所和科创板 688
 诚实边界见 skill：R0 是"候选池里的票扣扳机"，不是选股信号；IC 仅 +0.07、满分票八成也不涨。
 """
 from __future__ import annotations
@@ -16,6 +17,7 @@ import yaml
 import store, features, score, fetch
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_TODAY_EXCLUDES = ("bj", "sh688")
 
 
 def _cfg():
@@ -59,6 +61,11 @@ def _r0_of(frame, cfg):
     return score.score_R0(feat, cfg)
 
 
+def _is_default_today_excluded(sym):
+    """--today 默认剔除北交所和科创板688；单票查询不受影响。"""
+    return sym.startswith(DEFAULT_TODAY_EXCLUDES)
+
+
 def score_one(sym, cfg):
     """(tier, desc)。仓里没有就 live 抓一次（约需网络几秒）。
     live 现抓同样只取到上一个收盘（走 store._data_end_date 的 15:05 北京时间保护）——
@@ -79,7 +86,7 @@ def score_one(sym, cfg):
     return tier, desc
 
 
-def cmd_today(min_score, cfg):
+def cmd_today(min_score, cfg, include_bj688=False):
     import datetime as dt
     syms = store.list_symbols()
     if not syms:
@@ -87,9 +94,13 @@ def cmd_today(min_score, cfg):
         sys.exit(1)
     c2n, _ = _name_map()
     rows, lasts = [], []
+    excluded = 0
     for i, sym in enumerate(syms):
         if i % 1000 == 0:
             print(f"  扫描 {i}/{len(syms)}", file=sys.stderr)
+        if not include_bj688 and _is_default_today_excluded(sym):
+            excluded += 1
+            continue
         frame = store.load_frame(sym)
         if not frame:
             continue
@@ -105,7 +116,12 @@ def cmd_today(min_score, cfg):
     stale_n = sum(1 for r in rows if r[4] < stale_cut)
     rows = [r for r in rows if r[4] >= stale_cut]   # 停牌/久未更新的票：J窗是旧的，不该挂在名单里
     rows.sort(key=lambda r: (-r[0], r[1]))
-    note = f"；另剔除 {stale_n} 只停牌/数据过旧票" if stale_n else ""
+    notes = []
+    if not include_bj688:
+        notes.append(f"默认排除 bj*/sh688* {excluded} 只")
+    if stale_n:
+        notes.append(f"另剔除 {stale_n} 只停牌/数据过旧票")
+    note = "；" + "；".join(notes) if notes else ""
     print(f"# 最近5个交易日内扣过扳机（R0≥{min_score}）的名单（数据截至 {data_max}，共 {len(rows)} 只{note}）\n")
     for tier, sym, name, desc, _ in rows:
         print(f"{tier}  {sym} {name:<6}  {desc}")
@@ -116,11 +132,12 @@ def main():
     ap.add_argument("tickers", nargs="*", help="名称或代码，可多只")
     ap.add_argument("--today", action="store_true", help="扫本地仓列出今日 R0≥min 的票")
     ap.add_argument("--min", type=int, default=4, help="--today 的分数门槛，默认4")
+    ap.add_argument("--include-bj688", action="store_true", help="--today 时包含 bj* 和 sh688*（默认排除）")
     args = ap.parse_args()
     cfg = _cfg()
 
     if args.today:
-        cmd_today(args.min, cfg)
+        cmd_today(args.min, cfg, include_bj688=args.include_bj688)
         return
     if not args.tickers:
         ap.print_help()
@@ -149,6 +166,10 @@ if __name__ == "__main__" and len(sys.argv) == 1:
     assert resolve("300476", {}) == "sz300476"
     assert resolve("920819", {}) == "bj920819"
     assert resolve("不存在的鬼票xyz", {}) is None
+    assert _is_default_today_excluded("bj920510")
+    assert _is_default_today_excluded("sh688017")
+    assert not _is_default_today_excluded("sh603228")
+    assert not _is_default_today_excluded("sz300476")
     # 合成K线：横盘40根 → 最后一根放量强阳破前高 → 应扣扳机 R0≥4
     n = 56
     close = [10.0] * 55 + [10.9]

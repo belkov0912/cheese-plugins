@@ -1,0 +1,4 @@
+interface:
+  display_name: "R7 Trigger"
+  short_description: "Check A-share probe-and-pullback R7 scores."
+  default_prompt: "给这只A股查一下R7试盘回踩形态。"

@@ -20,6 +20,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 COLS = ["date", "open", "high", "low", "close", "volume", "turnover"]
 STORE = os.path.expanduser(os.environ.get("R0_DATA_DIR") or "~/.r0-data")
 FAIL_ABORT = 10   # 连续抓取失败这么多只就中止：多半是断网/限流/缺依赖，硬扛只是空耗
+MIN_R0_BARS = 50  # 少于这个数量会入仓但不参与 R0 打分，视为次新/短历史
 
 
 def _ensure_store():
@@ -31,11 +32,30 @@ def _ensure_store():
         raise SystemExit(f"数据目录不可写：{STORE}。把 $R0_DATA_DIR 指向可写位置。")
 
 
+def _need_parquet():
+    try:
+        import pandas as _pd
+    except ImportError as e:
+        pkg = getattr(e, "name", None) or str(e)
+        raise SystemExit(f"缺依赖 {pkg}：python3 -m pip install -r {os.path.join(HERE, 'requirements.txt')}")
+    try:
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            p = os.path.join(tmp, "check.parquet")
+            _pd.DataFrame({"date": ["2000-01-01"], "close": [1.0]}).to_parquet(p)
+            _pd.read_parquet(p)
+    except Exception as e:
+        raise SystemExit(f"parquet 读写不可用（通常缺 pyarrow）：python3 -m pip install pyarrow。原始错误：{type(e).__name__}: {e}")
+
+
 def _need_akshare():
     try:
         import akshare  # noqa: F401
-    except ImportError:
-        raise SystemExit("缺依赖 akshare（这不是限流）：pip install akshare")
+        import yaml  # noqa: F401
+    except ImportError as e:
+        pkg = getattr(e, "name", None) or str(e)
+        raise SystemExit(f"缺依赖 {pkg}（这不是限流）：python3 -m pip install -r {os.path.join(HERE, 'requirements.txt')}")
+    _need_parquet()
 
 
 def _path(sym):
@@ -98,6 +118,13 @@ def _merge_write(p, df):
     df.to_parquet(p)
 
 
+def _is_fresh_dates(d, end_ok_cut):
+    """已有文件只要尾部够新就跳过；新股没有 400 天历史，强求起点会导致反复重抓。"""
+    if d.empty:
+        return False
+    return str(d.max())[:10] >= end_ok_cut
+
+
 def backfill(days, limit):
     _ensure_store()
     _need_akshare()
@@ -114,18 +141,18 @@ def backfill(days, limit):
         if not uni:
             print("[backfill] 本地也没有票列表。若是首次建仓：票池接口偶尔限流，过几分钟重跑。", file=sys.stderr)
             sys.exit(1)
-    # 跳过判断用自然日容差：start/end 可能落在周末/长假，而K线只有交易日
-    start_ok_cut = (dt.date.fromisoformat(start) + dt.timedelta(days=10)).isoformat()
+    # 跳过判断用自然日容差：end 可能落在周末/长假，而K线只有交易日。
+    # 只看尾部是否够新，不强求起点覆盖 start：新股天然没有更早历史，重抓也补不出来。
     end_ok_cut = (dt.date.fromisoformat(end) - dt.timedelta(days=9)).isoformat()
     print(f"[backfill] 全市场 {len(uni)} 只，窗口 {start}~{end}（断点续跑：已覆盖的自动跳过）", file=sys.stderr)
-    ok = skip = fail = consec = 0
+    ok = short = skip = fail = consec = 0
     t0 = time.time()
     for i, (sym, name) in enumerate(uni):
         p = _path(sym)
         if os.path.exists(p):
             try:
                 d = pd.read_parquet(p, columns=["date"])["date"].astype(str)
-                if d.max()[:10] >= end_ok_cut and d.min()[:10] <= start_ok_cut:
+                if _is_fresh_dates(d, end_ok_cut):
                     skip += 1
                     continue
             except ImportError:
@@ -133,20 +160,23 @@ def backfill(days, limit):
             except Exception:
                 pass
         df = _raw(sym, start, end)
-        if df is not None and len(df) > 5:
+        if df is not None and len(df) > 0:
             _merge_write(p, df)
-            ok += 1
+            if len(df) < MIN_R0_BARS:
+                short += 1
+            else:
+                ok += 1
             consec = 0
         else:
             fail += 1
             consec += 1
             if consec >= FAIL_ABORT:
                 print(f"[backfill] 连续 {consec} 只抓取失败，中止（多半是断网/被限流）。"
-                      f"已完成 {ok+skip} 只不会丢，恢复后重跑即可续上。", file=sys.stderr)
+                      f"已完成 {ok+short+skip} 只不会丢，恢复后重跑即可续上。", file=sys.stderr)
                 sys.exit(2)
         if (i + 1) % 200 == 0:
-            print(f"  {i+1}/{len(uni)}  新增{ok} 跳过{skip} 失败{fail}  {time.time()-t0:.0f}s", file=sys.stderr)
-    print(f"[backfill] 完成 新增{ok} 跳过{skip} 失败{fail}  用时{(time.time()-t0)/60:.1f}分钟", file=sys.stderr)
+            print(f"  {i+1}/{len(uni)}  新增{ok} 短史{short} 跳过{skip} 失败{fail}  {time.time()-t0:.0f}s", file=sys.stderr)
+    print(f"[backfill] 完成 新增{ok} 短史{short} 跳过{skip} 失败{fail}  用时{(time.time()-t0)/60:.1f}分钟", file=sys.stderr)
 
 
 def update():
@@ -228,10 +258,26 @@ if __name__ == "__main__":
     elif a.cmd == "update":
         update()
     else:
+        _need_parquet()
         syms = list_symbols()
         print(f"数据目录 {STORE}")
         print(f"本地仓 {len(syms)} 只")
         if syms:
+            short = 0
+            latest = []
+            for sym in syms:
+                try:
+                    d = pd.read_parquet(_path(sym), columns=["date"])["date"].astype(str)
+                    if len(d) < MIN_R0_BARS:
+                        short += 1
+                    if not d.empty:
+                        latest.append(str(d.max())[:10])
+                except Exception:
+                    pass
+            if latest:
+                print("全仓最新日", max(latest))
+            if short:
+                print(f"短历史(<{MIN_R0_BARS}根，次新/暂不可打分) {short} 只")
             fr = load_frame(syms[0])
             print("样例(任一只，仅供参考)", syms[0], "根数", len(fr["date"]) if fr else None,
                   "末日", fr["date"][-1] if fr else None)

@@ -1,0 +1,16 @@
+{
+  "name": "rule-trigger",
+  "version": "1.1.0",
+  "description": "Rule-based A-share trigger toolkit: local hfq price warehouse plus R0 launch-trigger and R7 probe-pullback checks, with room for R1-R8 scorecard and scanner workflows. Self-contained scripts; includes r0-data skill to build/update the local warehouse.",
+  "author": {
+    "name": "Jianan Liu"
+  },
+  "keywords": [
+    "a-shares",
+    "trading",
+    "rule-trigger",
+    "launch-trigger",
+    "breakout",
+    "prelaunch-scanner"
+  ]
+}
