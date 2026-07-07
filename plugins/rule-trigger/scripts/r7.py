@@ -177,14 +177,16 @@ def _pullback_state(frame, setup_start, last5_start, probe_idx):
 
 
 def score_r7(frame):
-    """一个归一化K线 dict → (tier, desc)。"""
+    """一个归一化K线 dict → (tier, desc, info)。
+    info 只在找到试盘时给：{platform_low, tolerance_low, pullback_low, last_close}（后复权价），
+    供单票模式换算成屏幕价打印结构线；没有试盘时为 None。"""
     if not frame or len(frame["date"]) < MIN_BARS:
-        return None, "数据不足(<50根K线，次新或停牌)"
+        return None, "数据不足(<50根K线，次新或停牌)", None
     n = len(frame["date"])
     setup_start = max(0, n - SETUP_LEN)
     last5_start = n - PULLBACK_LEN
     if setup_start >= last5_start:
-        return None, "历史不足以算R7窗口"
+        return None, "历史不足以算R7窗口", None
 
     pct = _pct_series(frame["close"])
     setup_idx = list(range(setup_start, n))
@@ -211,23 +213,32 @@ def score_r7(frame):
             f"相对换手{completed_probe['turnover_ratio60']:.1f}x 相对额{completed_probe['amount_ratio60']:.1f}x "
             f"回踩量比{pull['pullback_ratio']:.2f} 结构{'未破' if pull['structure_ok'] else '跌破'}"
         )
-        return s, desc
+        info = {"platform_low": pull["platform_low"],
+                "tolerance_low": pull["platform_low"] * (1 - STRUCTURE_BREAK_BUFFER),
+                "pullback_low": pull["pullback_low"], "last_close": frame["close"][-1]}
+        return s, desc, info
 
     if recent_probe:
+        i = recent_probe["idx"]
+        prior5 = list(range(max(0, i - 5), i))
+        plat = min(frame["close"][j] for j in prior5) if prior5 else frame["close"][i]
+        info = {"platform_low": plat, "tolerance_low": plat * (1 - STRUCTURE_BREAK_BUFFER),
+                "pullback_low": min(frame["close"][j] for j in range(i, n)),
+                "last_close": frame["close"][-1]}
         return 3, (
             f"R7=3 近5日刚试盘{recent_probe['date']} 涨{recent_probe['pct']*100:.1f}% "
             f"换手{recent_probe['turnover']*100:.1f}% 量比5={recent_probe['volratio5']:.1f}，"
             "尚未完成缩量回踩"
-        )
+        ), info
 
     if light:
         return 2, (
             f"R7=2 仅轻微活跃 {light['date']} 涨{light['pct']*100:.1f}% "
             f"量比5={light['volratio5']:.1f} 相对换手{light['turnover_ratio60']:.1f}x "
             f"相对额{light['amount_ratio60']:.1f}x，未形成试盘回踩"
-        )
+        ), None
 
-    return 1, "R7=1 最近20日无明显相对放量试盘，也没有缩量回踩结构"
+    return 1, "R7=1 最近20日无明显相对放量试盘，也没有缩量回踩结构", None
 
 
 def _name_map():
@@ -259,6 +270,25 @@ def _is_default_today_excluded(sym):
     return sym.startswith(DEFAULT_TODAY_EXCLUDES)
 
 
+def _screen_factor(sym, frame):
+    """后复权→屏幕价换算因子（= 仓内 hfq 收盘 / 同日原始收盘）。
+    拉最近两周原始价按日期配对；拿不到（断网/限流/停牌无重叠日）返回 None，调用方退回打后复权价。"""
+    try:
+        import akshare as ak
+        end = frame["date"][-1]
+        start = (dt.date.fromisoformat(end) - dt.timedelta(days=14)).isoformat()
+        raw = ak.stock_zh_a_daily(symbol=sym, start_date=start.replace("-", ""),
+                                  end_date=end.replace("-", ""), adjust="")
+        m = {str(d)[:10]: float(c) for d, c in zip(raw["date"], raw["close"])}
+        for i in range(len(frame["date"]) - 1, max(-1, len(frame["date"]) - 15), -1):
+            d, hc = frame["date"][i], frame["close"][i]
+            if d in m and m[d] and hc:
+                return hc / m[d]
+    except Exception:
+        pass
+    return None
+
+
 def score_one(sym):
     frame = store.load_frame(sym)
     if not frame:
@@ -267,11 +297,18 @@ def score_one(sym):
         frame = fetch.get_kline(sym, start, end)
         if not frame:
             return None, "联网现抓失败：网络不通/被 sina 限流/代码不存在。稍后再试，或先用 r0-data 建仓走本地"
-    tier, desc = score_r7(frame)
+    tier, desc, info = score_r7(frame)
     if tier is not None:
         last = frame["date"][-1]
         if last < (dt.date.fromisoformat(store._data_end_date()) - dt.timedelta(days=15)).isoformat():
             desc += f" ⚠数据止于{last}（疑似停牌，或本地仓太久没更新——跑 r0-data 增量）"
+        if info:
+            # 结构线换算成屏幕价（行情软件的除权价），对不上屏幕是后复权口径——这里替用户除掉因子
+            f2 = _screen_factor(sym, frame)
+            cv = (lambda v: f"{v / f2:.2f}") if f2 else (lambda v: f"{v:.2f}")
+            unit = f"屏幕价,复权因子{f2:.2f}" if f2 else "后复权价,原始价没拿到"
+            desc += (f"｜结构线({unit}): 平台{cv(info['platform_low'])} / "
+                     f"容忍{cv(info['tolerance_low'])} / 最近收{cv(info['last_close'])}")
     return tier, desc
 
 
@@ -293,7 +330,7 @@ def cmd_today(min_score, include_bj688=False):
         if not frame:
             continue
         lasts.append(frame["date"][-1])
-        tier, desc = score_r7(frame)
+        tier, desc, _ = score_r7(frame)   # 名单不换算屏幕价（每只都要一次网络请求，不值得）
         if tier is not None and tier >= min_score:
             rows.append((tier, sym, c2n.get(sym, ""), desc, frame["date"][-1]))
     if not lasts:
@@ -371,11 +408,13 @@ if __name__ == "__main__" and len(sys.argv) == 1:
         turnover[i] = 0.01
     frame = {"date": [f"d{i:02d}" for i in range(n)], "open": close, "high": [c * 1.01 for c in close],
              "low": [c * 0.99 for c in close], "close": close, "volume": vol, "turnover": turnover}
-    tier, desc = score_r7(frame)
+    tier, desc, info = score_r7(frame)
     assert tier == 5, f"试盘后缩量回踩应 R7=5，实际 {tier} {desc}"
+    assert info and abs(info["platform_low"] - 10.0) < 1e-9, f"平台线应=试盘前5日最低收盘10.0，实际 {info}"
+    assert abs(info["tolerance_low"] - 9.7) < 1e-9, "容忍线应=平台×0.97"
 
-    short, _ = score_r7({"date": ["d0"] * 10, "open": [1] * 10, "high": [1] * 10, "low": [1] * 10,
-                         "close": [1] * 10, "volume": [1] * 10, "turnover": [0.01] * 10})
+    short, _, _ = score_r7({"date": ["d0"] * 10, "open": [1] * 10, "high": [1] * 10, "low": [1] * 10,
+                            "close": [1] * 10, "volume": [1] * 10, "turnover": [0.01] * 10})
     assert short is None
     print(f"r7 自检通过 ✓  合成票 R7={tier} | {desc}")
     sys.exit(0)

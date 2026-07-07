@@ -14,13 +14,13 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
-import math
 import os
 import sys
 
 import pandas as pd
 import yaml
 
+import bt_common as bt
 import features
 import r7
 import score
@@ -29,72 +29,18 @@ import store
 HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_OUT = os.path.join(os.path.dirname(HERE), "out")
 
+# 结果标签/IC/分桶/精度召回等协议口径统一在 bt_common.py，与 backtest_r0.py 共用
+_outcome_return = bt.outcome_return
+_safe_ic = bt.safe_ic
+_fmt_pct = bt.fmt_pct
+_fmt_num = bt.fmt_num
+_bucket_table = bt.bucket_table
+_coverage_precision = bt.coverage_precision
+_summary_rows = bt.summary_rows
+
 
 def _frame_slice(frame, end_idx):
     return {k: v[: end_idx + 1] for k, v in frame.items()}
-
-
-def _outcome_return(frame, anchor_idx, outcome_len):
-    close = frame["close"]
-    if anchor_idx + outcome_len >= len(close):
-        return None
-    base = close[anchor_idx]
-    fwd = close[anchor_idx + 1: anchor_idx + 1 + outcome_len]
-    return max(fwd) / base - 1 if base and fwd else None
-
-
-def _safe_ic(df, col):
-    if col not in df.columns or df[col].nunique(dropna=True) < 2:
-        return float("nan")
-    return df[[col, "outcome_ret"]].corr(method="spearman").iloc[0, 1]
-
-
-def _fmt_pct(x):
-    return "—" if x != x else f"{x * 100:.1f}%"
-
-
-def _fmt_num(x, nd=2):
-    return "—" if x != x else f"{x:.{nd}f}"
-
-
-def _bucket_table(df, rule, theta):
-    hit = (df["outcome_ret"] >= theta).astype(int)
-    g = hit.groupby(df[rule]).agg(["size", "mean"])
-    rows = []
-    for s in range(1, 6):
-        if s in g.index:
-            rows.append((s, int(g.loc[s, "size"]), float(g.loc[s, "mean"])))
-        else:
-            rows.append((s, 0, float("nan")))
-    return rows
-
-
-def _coverage_precision(df, rule, theta, min_score=4):
-    sel = df[rule] >= min_score
-    hit = df["outcome_ret"] >= theta
-    winners = int(hit.sum())
-    selected = int(sel.sum())
-    selected_hits = int((sel & hit).sum())
-    precision = selected_hits / selected if selected else float("nan")
-    recall = selected_hits / winners if winners else float("nan")
-    coverage = selected / len(df) if len(df) else float("nan")
-    return selected, selected_hits, precision, recall, coverage
-
-
-def _summary_rows(windows, rules):
-    out = []
-    for rname, col in rules:
-        ics = [_safe_ic(w["df"], col) for w in windows]
-        good = [x for x in ics if x == x]
-        mean_ic = sum(good) / len(good) if good else float("nan")
-        out.append({
-            "rule": rname,
-            "mean_ic": mean_ic,
-            "ic_positive": sum(1 for x in good if x > 0),
-            "ic_windows": len(good),
-            "ics": ics,
-        })
-    return out
 
 
 def _write_report(windows, pool, args, out_dir, cfg):
@@ -200,7 +146,7 @@ def run(args):
             if outcome is None:
                 break
             hist = _frame_slice(frame, anchor)
-            new_score, new_desc = r7.score_r7(hist)
+            new_score, new_desc, _ = r7.score_r7(hist)
             if new_score is None:
                 k += 1
                 continue

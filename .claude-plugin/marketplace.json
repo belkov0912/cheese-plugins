@@ -44,7 +44,7 @@
       "name": "rule-trigger",
       "displayName": "Rule Trigger",
       "source": "./plugins/rule-trigger",
-      "description": "Rule-based A-share trigger toolkit: local market data warehouse plus R0 launch-trigger and R7 probe-pullback checks, designed to grow into R1-R8 scanning.",
+      "description": "Rule-based A-share trigger toolkit: local market data warehouse plus R0 launch-trigger, R7 probe-pullback, R9 downtrend-reversal and R1R3 mainline-strength checks, designed to grow into full scorecard scanning.",
       "category": "finance"
     }
   ]
