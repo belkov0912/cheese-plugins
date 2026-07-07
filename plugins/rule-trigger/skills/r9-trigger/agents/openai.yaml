@@ -1,0 +1,4 @@
+interface:
+  display_name: "R9 Trigger"
+  short_description: "Check A-share downtrend-reversal R9 scores."
+  default_prompt: "给这只A股查一下R9下跌反转形态。"

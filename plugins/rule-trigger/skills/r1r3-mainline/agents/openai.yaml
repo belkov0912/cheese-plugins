@@ -1,0 +1,4 @@
+interface:
+  display_name: "R1R3 Mainline"
+  short_description: "Check A-share AI-mainline relative-strength R1R3 scores."
+  default_prompt: "给这只A股查一下R1R3主线内强度。"
