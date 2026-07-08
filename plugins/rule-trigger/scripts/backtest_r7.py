@@ -29,14 +29,7 @@ import store
 HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_OUT = os.path.join(os.path.dirname(HERE), "out")
 
-# 结果标签/IC/分桶/精度召回等协议口径统一在 bt_common.py，与 backtest_r0.py 共用
-_outcome_return = bt.outcome_return
-_safe_ic = bt.safe_ic
-_fmt_pct = bt.fmt_pct
-_fmt_num = bt.fmt_num
-_bucket_table = bt.bucket_table
-_coverage_precision = bt.coverage_precision
-_summary_rows = bt.summary_rows
+# 结果标签/IC/分桶/精度召回等协议口径统一在 bt_common.py，与 backtest_r0.py 共用（直接用 bt.<fn>）
 
 
 def _frame_slice(frame, end_idx):
@@ -52,7 +45,7 @@ def _write_report(windows, pool, args, out_dir, cfg):
 
     labels = [w["anchor_date"] for w in windows]
     rules = [("R7_new", "R7_new"), ("R7_old", "R7_old")]
-    summaries = _summary_rows(windows, rules)
+    summaries = bt.summary_rows(windows, rules)
 
     report = []
     report.append(f"# R7 新口径历史回测 {run_date}\n")
@@ -69,24 +62,24 @@ def _write_report(windows, pool, args, out_dir, cfg):
     report.append("| 规则 | " + " | ".join(labels) + " | 均值 | IC>0窗口 |")
     report.append("|---|" + "--:|" * (len(labels) + 2))
     for row in summaries:
-        cells = " | ".join(_fmt_num(x, 2) for x in row["ics"])
-        report.append(f"| {row['rule']} | {cells} | {_fmt_num(row['mean_ic'], 2)} | {row['ic_positive']}/{row['ic_windows']} |")
+        cells = " | ".join(bt.fmt_num(x, 2) for x in row["ics"])
+        report.append(f"| {row['rule']} | {cells} | {bt.fmt_num(row['mean_ic'], 2)} | {row['ic_positive']}/{row['ic_windows']} |")
 
     for theta in cfg["outcome"]["thetas"]:
         base = (pool["outcome_ret"] >= theta).mean()
-        report.append(f"\n## 合并分桶 θ={int(theta * 100)}%，基础命中率 {_fmt_pct(base)}（N={len(pool)}）\n")
+        report.append(f"\n## 合并分桶 θ={int(theta * 100)}%，基础命中率 {bt.fmt_pct(base)}（N={len(pool)}）\n")
         report.append("| 规则 | 分数 | n | 命中率 | lift |")
         report.append("|---|--:|--:|--:|--:|")
         for rname, col in rules:
-            for s, n, rate in _bucket_table(pool, col, theta):
+            for s, n, rate in bt.bucket_table(pool, col, theta):
                 lift = rate / base if base and rate == rate else float("nan")
-                report.append(f"| {rname} | {s} | {n} | {_fmt_pct(rate)} | {_fmt_num(lift, 2)} |")
+                report.append(f"| {rname} | {s} | {n} | {bt.fmt_pct(rate)} | {bt.fmt_num(lift, 2)} |")
         report.append("\n### R7>=4 观察名单表现\n")
         report.append("| 规则 | 选中数 | 选中命中 | 精度 | 赢家召回 | 覆盖率 |")
         report.append("|---|--:|--:|--:|--:|--:|")
         for rname, col in rules:
-            selected, hits, precision, recall, coverage = _coverage_precision(pool, col, theta, min_score=4)
-            report.append(f"| {rname} | {selected} | {hits} | {_fmt_pct(precision)} | {_fmt_pct(recall)} | {_fmt_pct(coverage)} |")
+            selected, hits, precision, recall, coverage = bt.coverage_precision(pool, col, theta, min_score=4)
+            report.append(f"| {rname} | {selected} | {hits} | {bt.fmt_pct(precision)} | {bt.fmt_pct(recall)} | {bt.fmt_pct(coverage)} |")
 
     hi = max(cfg["outcome"]["thetas"])
     report.append(f"\n## 赢家召回（O内 >= {int(hi * 100)}%）\n")
@@ -101,8 +94,8 @@ def _write_report(windows, pool, args, out_dir, cfg):
     report.append("\n## 快速结论\n")
     new = next(x for x in summaries if x["rule"] == "R7_new")
     old = next(x for x in summaries if x["rule"] == "R7_old")
-    report.append(f"- R7_new 均值 IC：{_fmt_num(new['mean_ic'], 2)}，IC>0 窗口：{new['ic_positive']}/{new['ic_windows']}。")
-    report.append(f"- R7_old 均值 IC：{_fmt_num(old['mean_ic'], 2)}，IC>0 窗口：{old['ic_positive']}/{old['ic_windows']}。")
+    report.append(f"- R7_new 均值 IC：{bt.fmt_num(new['mean_ic'], 2)}，IC>0 窗口：{new['ic_positive']}/{new['ic_windows']}。")
+    report.append(f"- R7_old 均值 IC：{bt.fmt_num(old['mean_ic'], 2)}，IC>0 窗口：{old['ic_positive']}/{old['ic_windows']}。")
     report.append("- 这只是价格/量能历史回放，不含主线、财报、公告过滤；R7 高分只能当观察名单，不能单独当买点。")
 
     with open(rp, "w", encoding="utf-8") as f:
@@ -142,7 +135,7 @@ def run(args):
             anchor = n - 1 - outcome_len - k * step
             if anchor < min_anchor:
                 break
-            outcome = _outcome_return(frame, anchor, outcome_len)
+            outcome = bt.outcome_return(frame, anchor, outcome_len)
             if outcome is None:
                 break
             hist = _frame_slice(frame, anchor)

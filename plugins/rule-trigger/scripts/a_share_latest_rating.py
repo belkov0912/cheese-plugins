@@ -68,12 +68,6 @@ def pct(x: float | None) -> str:
     return f"{x * 100:.1f}%"
 
 
-def num(x: float | None, nd: int = 2) -> str:
-    if x is None or (isinstance(x, float) and math.isnan(x)):
-        return "-"
-    return f"{x:.{nd}f}"
-
-
 def frame_slice(frame: dict[str, list], end_idx: int) -> dict[str, list]:
     return {k: v[: end_idx + 1] for k, v in frame.items()}
 

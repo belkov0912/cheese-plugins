@@ -33,17 +33,13 @@ def _ensure_store():
 
 
 def _need_parquet():
-    try:
-        import pandas as _pd
-    except ImportError as e:
-        pkg = getattr(e, "name", None) or str(e)
-        raise SystemExit(f"缺依赖 {pkg}：python3 -m pip install -r {os.path.join(HERE, 'requirements.txt')}")
+    # pandas 在模块顶部已无条件 import；缺 pandas 会在加载时就报错，这里只验 parquet 读写（通常缺 pyarrow）
     try:
         import tempfile
         with tempfile.TemporaryDirectory() as tmp:
             p = os.path.join(tmp, "check.parquet")
-            _pd.DataFrame({"date": ["2000-01-01"], "close": [1.0]}).to_parquet(p)
-            _pd.read_parquet(p)
+            pd.DataFrame({"date": ["2000-01-01"], "close": [1.0]}).to_parquet(p)
+            pd.read_parquet(p)
     except Exception as e:
         raise SystemExit(f"parquet 读写不可用（通常缺 pyarrow）：python3 -m pip install pyarrow。原始错误：{type(e).__name__}: {e}")
 
@@ -118,13 +114,6 @@ def _merge_write(p, df):
     df.to_parquet(p)
 
 
-def _is_fresh_dates(d, end_ok_cut):
-    """已有文件只要尾部够新就跳过；新股没有 400 天历史，强求起点会导致反复重抓。"""
-    if d.empty:
-        return False
-    return str(d.max())[:10] >= end_ok_cut
-
-
 def backfill(days, limit):
     _ensure_store()
     _need_akshare()
@@ -152,7 +141,8 @@ def backfill(days, limit):
         if os.path.exists(p):
             try:
                 d = pd.read_parquet(p, columns=["date"])["date"].astype(str)
-                if _is_fresh_dates(d, end_ok_cut):
+                # 已有文件只要尾部够新就跳过；新股没有 400 天历史，强求起点会导致反复重抓（and 短路，空序列不取 max）
+                if not d.empty and str(d.max())[:10] >= end_ok_cut:
                     skip += 1
                     continue
             except ImportError:
