@@ -1,13 +1,13 @@
-"""R1R3 主线内强度 · 单票/多票即时查 + 全市场板块内强度前排名单。
+"""R1 主线内强度 · 单票/多票即时查 + 全市场板块内强度前排名单。
 
-R1R3 语义 = "这只票在不在 AI 主线白名单里,在的话它的 20 日涨幅在板块内排第几"。
+R1 语义 = "这只票在不在 AI 主线白名单里,在的话它的 20 日涨幅在板块内排第几"。
 把旧 R1=R3 的二值门(在白名单=5/不在=1)拆成 5 档,rank 当"主线兑现度"的市场代理:
 主线的钱如果真在兑现,会先落在板块内被资金选中的强势票上。
 
 分档: 1=非白名单 | 2=板块内rank<0.33(主线掉队者,反面信号) | 3=0.33~0.66 |
       4=0.66~0.93 | 5=rank>=0.93(板块内前7%,主线兑现正落在这只票上)
 
-它是状态排序不是扳机——动手仍看 R0/R9;定版与回测同源:扫描器仓 r1r3_mainline.py
+它是状态排序不是扳机——动手仍看 R0/R9;定版与回测同源:扫描器仓 r1_mainline.py
 (2026-07-07 十轮迭代,5分 hit10=41.7%/hit20=21.0%,白名单前视上界)。
 注意:rank 要在全板块内算,单票查询也需要本地行情仓(r0-data 建仓),没有联网兜底。
 """
@@ -75,9 +75,9 @@ def build_cohort():
 def describe(sym, cohort, data_max, c2n):
     name = c2n.get(sym, "")
     if sym.startswith(COHORT_EXCLUDES):
-        return None, f"✗ {sym} {name}：北交所/科创板688 不在 R1R3 回测口径内，不打分"
+        return None, f"✗ {sym} {name}：北交所/科创板688 不在 R1 回测口径内，不打分"
     if sym[2:] not in load_whitelist():
-        return 1, f"R1R3=1  {sym} {name}  非 AI 白名单成员(主线门槛没过,与板块内强弱无关)"
+        return 1, f"R1=1  {sym} {name}  非 AI 白名单成员(主线门槛没过,与板块内强弱无关)"
     if sym not in cohort:
         return None, (f"✗ {sym} {name}：白名单成员但当日板块排名缺数据"
                       f"(停牌/数据不新鲜,仓最新日 {data_max})——跑 r0-data 增量后重试")
@@ -86,7 +86,7 @@ def describe(sym, cohort, data_max, c2n):
     tier = tier_from_rank(r)
     label = {5: "板块内前7%,主线兑现正落在这只票上", 4: "板块内偏强",
              3: "板块内中游", 2: "板块内弱,主线掉队者(反面信号)"}[tier]
-    return tier, (f"R1R3={tier}  {sym} {name}  20日涨幅{cohort[sym]*100:+.1f}% "
+    return tier, (f"R1={tier}  {sym} {name}  20日涨幅{cohort[sym]*100:+.1f}% "
                   f"板块内rank {r:.2f}(第{(1-r)*100:.0f}名百分位) {label}"
                   f"｜板块{len(vals)}只,数据截至{data_max}")
 
@@ -105,7 +105,7 @@ def cmd_today(min_score):
         if tier >= min_score:
             rows.append((r, tier, sym, c2n.get(sym, ""), ret))
     rows.sort(key=lambda x: -x[0])
-    print(f"# 主线内强度前排（R1R3≥{min_score}）名单（板块{len(vals)}只，数据截至 {data_max}，共 {len(rows)} 只）")
+    print(f"# 主线内强度前排（R1≥{min_score}）名单（板块{len(vals)}只，数据截至 {data_max}，共 {len(rows)} 只）")
     print("# 状态排序不是买点;白名单是当前名单(有前视),数字当上界读\n")
     for r, tier, sym, name, ret in rows:
         print(f"{tier}  {sym} {name:<6}  rank {r:.2f}  20日{ret*100:+.1f}%")
@@ -114,7 +114,7 @@ def cmd_today(min_score):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("tickers", nargs="*", help="名称或代码，可多只")
-    ap.add_argument("--today", action="store_true", help="列出板块内强度前排(R1R3≥min)")
+    ap.add_argument("--today", action="store_true", help="列出板块内强度前排(R1≥min)")
     ap.add_argument("--min", type=int, default=5, help="--today 的分数门槛，默认5")
     args = ap.parse_args()
 
@@ -127,7 +127,7 @@ def main():
 
     cohort, data_max = build_cohort()
     if cohort is None:
-        print(f"本地仓为空（{store.STORE}）。R1R3 的排名要全板块数据,没有联网兜底——先用 r0-data 建仓", file=sys.stderr)
+        print(f"本地仓为空（{store.STORE}）。R1 的排名要全板块数据,没有联网兜底——先用 r0-data 建仓", file=sys.stderr)
         sys.exit(1)
     c2n, n2c = _name_map()
     for tok in args.tickers:
@@ -149,7 +149,7 @@ if __name__ == "__main__" and len(sys.argv) == 1:
     assert rank_of(0.10, vals) == 0.75
     wl = load_whitelist()
     assert len(wl) > 1000 and all(len(c) == 6 for c in wl), "白名单快照应为6位代码"
-    print(f"r1r3 自检通过 ✓  白名单快照 {len(wl)} 只")
+    print(f"r1 自检通过 ✓  白名单快照 {len(wl)} 只")
     sys.exit(0)
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
 interface:
   display_name: "A-Share Latest Rating"
-  short_description: "Rate A-shares S/A/B/C/D from backtested R7+R1R3 combo."
+  short_description: "Rate A-shares S/A/B/C/D from backtested R7+R1 combo."
   default_prompt: "给A股最近完整交易日做一次S/A/B/C/D观察评级。"

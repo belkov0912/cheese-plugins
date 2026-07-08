@@ -3,11 +3,11 @@
 
 The script intentionally reuses the rule-trigger plugin implementation:
 - R7 comes from r7.score_r7 on a frame truncated at anchor date.
-- R1R3 is rebuilt cross-sectionally for each historical anchor date with the
+- R1 is rebuilt cross-sectionally for each historical anchor date with the
   current AI whitelist. That makes the historical result an upper-bound version
   because the whitelist itself is a current snapshot.
 
-Default universe excludes bj* and sh688*, matching r7/r1r3 plugin defaults.
+Default universe excludes bj* and sh688*, matching r7/r1 plugin defaults.
 """
 from __future__ import annotations
 
@@ -32,7 +32,7 @@ if not RULE_SCRIPTS.exists():
     raise SystemExit(f"rule-trigger scripts not found: {RULE_SCRIPTS}")
 sys.path.insert(0, str(RULE_SCRIPTS))
 
-import r1r3  # noqa: E402
+import r1  # noqa: E402
 import r7  # noqa: E402
 import store  # noqa: E402
 
@@ -48,14 +48,14 @@ MIN_FRESH_COVERAGE = 0.95
 
 
 # Iteration rule block. Change only one small rule unit per optimization round.
-RULE_VERSION = "v2_a_requires_r1r3_4"
+RULE_VERSION = "v2_a_requires_r1_4"
 S_MIN_R7 = 4
-S_MIN_R1R3 = 5
+S_MIN_R1 = 5
 S_MIN_TOTAL = 9
-A_MIN_R1R3 = 4
+A_MIN_R1 = 4
 A_MIN_TOTAL = 8
 B_CORE_MIN = 4
-FILTER_R1R3_2_TO_D = False
+FILTER_R1_2_TO_D = False
 
 
 def is_excluded(sym: str) -> bool:
@@ -97,9 +97,9 @@ def load_frames(limit: int = 0) -> dict[str, dict[str, list]]:
     syms = [s for s in sorted(store.list_symbols()) if not is_excluded(s)]
     if limit:
         syms = syms[:limit]
-    # 门槛对齐 r1r3 定版:只要够算 20 日涨幅即入 cohort（RET_N+1 根）。
-    # 历史不足 50 根的票 R7 会自然返回“数据不足”→评级 N/A，但仍参与 R1R3 板块排名（见 #9）。
-    min_bars = r1r3.RET_N + 1
+    # 门槛对齐 r1 定版:只要够算 20 日涨幅即入 cohort（RET_N+1 根）。
+    # 历史不足 50 根的票 R7 会自然返回“数据不足”→评级 N/A，但仍参与 R1 板块排名（见 #9）。
+    min_bars = r1.RET_N + 1
     frames: dict[str, dict[str, list]] = {}
     for i, sym in enumerate(syms):
         if i % 500 == 0:
@@ -132,7 +132,7 @@ def r7_probe_age(desc: str, hist: dict[str, list]) -> int | None:
 
 
 def future_metrics(frame: dict[str, list], anchor_idx: int) -> dict[str, float] | None:
-    # hit10/hit20 用“最高收盘价”口径,与 r7/r9/r1r3 定版一致(features.outcome_return 也用 close);
+    # hit10/hit20 用“最高收盘价”口径,与 r7/r9/r1 定版一致(features.outcome_return 也用 close);
     # 之前用 frame["high"](盘中最高价)导致同名 hit10 系统性偏高、跨 skill 不可比(见 #2)。
     close0 = float(frame["close"][anchor_idx])
     if not close0 or anchor_idx + max(OUTCOME_WINDOWS) >= len(frame["close"]):
@@ -170,7 +170,7 @@ def build_anchor_rows(
 ) -> tuple[list[dict], set[str]]:
     rows: list[dict] = []
     needed_dates: set[str] = set()
-    min_anchor = max(r7.MIN_BARS - 1, r1r3.RET_N)
+    min_anchor = max(r7.MIN_BARS - 1, r1.RET_N)
     outcome_len = max(OUTCOME_WINDOWS)
     for sym, frame in frames.items():
         n = len(frame["date"])
@@ -190,11 +190,11 @@ def build_anchor_rows(
     return rows, needed_dates
 
 
-def build_r1r3_context(
+def build_r1_context(
     frames: dict[str, dict[str, list]],
     needed_dates: set[str],
 ) -> dict[str, dict[str, tuple[float, float, int]]]:
-    whitelist = r1r3.load_whitelist()
+    whitelist = r1.load_whitelist()
     index_by_sym = {sym: date_index(frame) for sym, frame in frames.items()}
     by_date: dict[str, list[tuple[str, float]]] = defaultdict(list)
     for sym, frame in frames.items():
@@ -204,9 +204,9 @@ def build_r1r3_context(
         close = frame["close"]
         for d in needed_dates:
             idx = idx_map.get(d)
-            if idx is None or idx < r1r3.RET_N:
+            if idx is None or idx < r1.RET_N:
                 continue
-            base = float(close[idx - r1r3.RET_N])
+            base = float(close[idx - r1.RET_N])
             if base:
                 by_date[d].append((sym, float(close[idx]) / base - 1))
 
@@ -222,7 +222,7 @@ def build_r1r3_context(
     return context
 
 
-def r1r3_score_for(
+def r1_score_for(
     sym: str,
     anchor_date: str,
     r1_context: dict[str, dict[str, tuple[float, float, int]]],
@@ -236,23 +236,23 @@ def r1r3_score_for(
     if row is None:
         return None, None, None, len(r1_context.get(anchor_date, {}))
     rank, ret20, cohort_n = row
-    return r1r3.tier_from_rank(rank), rank, ret20, cohort_n
+    return r1.tier_from_rank(rank), rank, ret20, cohort_n
 
 
 def rate_combo(r7_score: int | None, r1_score: int | None) -> tuple[str, str]:
     if r7_score is None or r1_score is None:
         return "N/A", "数据不足"
     total = r7_score + r1_score
-    if FILTER_R1R3_2_TO_D and r1_score == 2:
-        return "D", "R1R3=2 主线掉队过滤"
-    if r7_score >= S_MIN_R7 and r1_score >= S_MIN_R1R3 and total >= S_MIN_TOTAL:
-        return "S", f"R7>={S_MIN_R7} 且 R1R3>={S_MIN_R1R3} 且总分>={S_MIN_TOTAL}"
+    if FILTER_R1_2_TO_D and r1_score == 2:
+        return "D", "R1=2 主线掉队过滤"
+    if r7_score >= S_MIN_R7 and r1_score >= S_MIN_R1 and total >= S_MIN_TOTAL:
+        return "S", f"R7>={S_MIN_R7} 且 R1>={S_MIN_R1} 且总分>={S_MIN_TOTAL}"
     if (
-        r1_score >= A_MIN_R1R3
+        r1_score >= A_MIN_R1
         and total >= A_MIN_TOTAL
         and (r7_score >= B_CORE_MIN or r1_score >= B_CORE_MIN)
     ):
-        return "A", f"R1R3>={A_MIN_R1R3} 且总分>={A_MIN_TOTAL} 且至少一个核心因子>={B_CORE_MIN}"
+        return "A", f"R1>={A_MIN_R1} 且总分>={A_MIN_TOTAL} 且至少一个核心因子>={B_CORE_MIN}"
     if r7_score >= B_CORE_MIN or r1_score >= B_CORE_MIN:
         return "B", f"至少一个核心因子>={B_CORE_MIN}"
     if r1_score <= 2 and r7_score <= 2:
@@ -267,9 +267,9 @@ def build_pool(args: argparse.Namespace) -> tuple[pd.DataFrame, dict[str, str]]:
     rows, needed_dates = build_anchor_rows(frames, args.step, args.start, args.end)
     if not rows:
         raise SystemExit("无可用回测样本：检查日期区间、step 或数据长度。")
-    print(f"  anchors {len(rows)}; r1r3 dates {len(needed_dates)}", file=sys.stderr)
-    r1_context = build_r1r3_context(frames, needed_dates)
-    whitelist = r1r3.load_whitelist()
+    print(f"  anchors {len(rows)}; r1 dates {len(needed_dates)}", file=sys.stderr)
+    r1_context = build_r1_context(frames, needed_dates)
+    whitelist = r1.load_whitelist()
     names = load_name_map()
 
     out = []
@@ -281,7 +281,7 @@ def build_pool(args: argparse.Namespace) -> tuple[pd.DataFrame, dict[str, str]]:
         frame = frames[sym]
         hist = frame_slice(frame, anchor)
         r7_score, r7_desc, _ = r7.score_r7(hist)
-        r1_score, rank, ret20, cohort_n = r1r3_score_for(
+        r1_score, rank, ret20, cohort_n = r1_score_for(
             sym, row["anchor_date"], r1_context, whitelist
         )
         rating, reason = rate_combo(r7_score, r1_score)
@@ -296,10 +296,10 @@ def build_pool(args: argparse.Namespace) -> tuple[pd.DataFrame, dict[str, str]]:
                 "quarter": pd.Period(row["anchor_date"], freq="Q").strftime("%YQ%q"),
                 "r7": int(r7_score),
                 "r7_probe_age": r7_probe_age(r7_desc, hist),
-                "r1r3": int(r1_score),
-                "r1r3_rank": rank,
-                "r1r3_ret20": ret20,
-                "r1r3_cohort_n": cohort_n,
+                "r1": int(r1_score),
+                "r1_rank": rank,
+                "r1_ret20": ret20,
+                "r1_cohort_n": cohort_n,
                 "rating": rating,
                 "rating_reason": reason,
                 "hit10": metrics["max_ret_20"] >= 0.10,
@@ -356,13 +356,13 @@ def selected_baselines(pool: pd.DataFrame, random_n: int, seed: int) -> list[tup
     return [
         (f"全市场随机样本(seed={seed}, n={n})", random_df, "从全样本确定性抽样"),
         ("R7 单因子: R7>=4", pool[pool["r7"] >= 4], "只看试盘回踩形态"),
-        ("R1R3 单因子: R1R3>=4", pool[pool["r1r3"] >= 4], "只看主线内相对强度"),
+        ("R1 单因子: R1>=4", pool[pool["r1"] >= 4], "只看主线内相对强度"),
         (
-            "简单交集: R7>=4 且 R1R3>=4",
-            pool[(pool["r7"] >= 4) & (pool["r1r3"] >= 4)],
+            "简单交集: R7>=4 且 R1>=4",
+            pool[(pool["r7"] >= 4) & (pool["r1"] >= 4)],
             "两个因子硬交集",
         ),
-        ("R1R3=5 单独前排", pool[pool["r1r3"] == 5], "主线前7%"),
+        ("R1=5 单独前排", pool[pool["r1"] == 5], "主线前7%"),
     ]
 
 
@@ -435,20 +435,20 @@ def write_report(pool: pd.DataFrame, meta: dict[str, str], args: argparse.Namesp
                  f"（step<标签窗20日，同票相邻样本标签窗重叠、且状态跨锚点持续，有效独立样本远小于名义 n）。")
     lines.append("- 默认 universe: 排除 bj* 与 sh688*；用未来收盘价算标签、不用未来数据算特征。")
     lines.append("- R7: 每个锚点先截断到当日再调用 `r7.score_r7()`。")
-    lines.append("- R1R3: 每个历史日只用当日及以前 20 日涨幅做 AI 白名单横截面 rank；但 AI 白名单是当前快照，历史结果是上界版本。")
-    lines.append("- hit10 = 未来20个交易日内**最高收盘价**较锚点收盘 >=10%；hit20 = >=20%（收盘口径，与 r7/r9/r1r3 定版一致、可横比）。")
+    lines.append("- R1: 每个历史日只用当日及以前 20 日涨幅做 AI 白名单横截面 rank；但 AI 白名单是当前快照，历史结果是上界版本。")
+    lines.append("- hit10 = 未来20个交易日内**最高收盘价**较锚点收盘 >=10%；hit20 = >=20%（收盘口径，与 r7/r9/r1 定版一致、可横比）。")
     lines.append("- 「20日最低(相对入场)」= 未来20日盘中最低价相对锚点收盘的跌幅（是相对入场价的最深处，非峰谷式最大回撤）。")
     lines.append("- universe 取当前在市票的本地仓，样本期内退市/长停票不在池中，基线与各档命中率含幸存者偏差、同向偏高。\n")
 
     lines.append("## 当前组合分档规则\n")
     lines.append(f"- 版本: `{RULE_VERSION}`")
-    lines.append(f"- S: R7>={S_MIN_R7} 且 R1R3>={S_MIN_R1R3} 且 R7+R1R3>={S_MIN_TOTAL}")
+    lines.append(f"- S: R7>={S_MIN_R7} 且 R1>={S_MIN_R1} 且 R7+R1>={S_MIN_TOTAL}")
     lines.append(
-        f"- A: R1R3>={A_MIN_R1R3} 且 R7+R1R3>={A_MIN_TOTAL} "
+        f"- A: R1>={A_MIN_R1} 且 R7+R1>={A_MIN_TOTAL} "
         f"且至少一个核心因子>={B_CORE_MIN}"
     )
-    lines.append(f"- B: R7>={B_CORE_MIN} 或 R1R3>={B_CORE_MIN}")
-    lines.append("- D: R1R3<=2 且 R7<=2" + ("；并强制过滤 R1R3=2" if FILTER_R1R3_2_TO_D else ""))
+    lines.append(f"- B: R7>={B_CORE_MIN} 或 R1>={B_CORE_MIN}")
+    lines.append("- D: R1<=2 且 R7<=2" + ("；并强制过滤 R1=2" if FILTER_R1_2_TO_D else ""))
     lines.append("- C: 其他证据不足样本\n")
 
     lines.append("## 组合评级表现\n")
@@ -460,8 +460,8 @@ def write_report(pool: pd.DataFrame, meta: dict[str, str], args: argparse.Namesp
     lines.append("## 单因子分档: R7\n")
     lines.extend(factor_bucket_table(pool, "r7"))
     lines.append("")
-    lines.append("## 单因子分档: R1R3\n")
-    lines.extend(factor_bucket_table(pool, "r1r3"))
+    lines.append("## 单因子分档: R1\n")
+    lines.extend(factor_bucket_table(pool, "r1"))
     lines.append("")
     lines.append("## 分季度稳定性: S/A\n")
     lines.extend(stability_table(pool))
@@ -510,7 +510,7 @@ def run_latest(args: argparse.Namespace) -> None:
         raise SystemExit(
             f"N/A: 行情仓疑似正在更新(半更新态)——{len(frames)} 只里只有 {fresh} 只"
             f"({coverage*100:.0f}%) 追平最新日 {data_max}，低于 {MIN_FRESH_COVERAGE*100:.0f}% 阈值。\n"
-            f"    此时 R1R3 板块排名会在残缺样本上算、评级失真。等 r0-data update 跑完再查，"
+            f"    此时 R1 板块排名会在残缺样本上算、评级失真。等 r0-data update 跑完再查，"
             f"或加 --allow-stale 明确接受残缺样本(结果仅供调试)。"
         )
     if coverage < MIN_FRESH_COVERAGE:
@@ -530,8 +530,8 @@ def run_latest(args: argparse.Namespace) -> None:
             else:
                 unresolved.append(token)
     needed_dates = {data_max}
-    r1_context = build_r1r3_context(frames, needed_dates)
-    whitelist = r1r3.load_whitelist()
+    r1_context = build_r1_context(frames, needed_dates)
+    whitelist = r1.load_whitelist()
     rows = []
     for sym, frame in frames.items():
         if target_syms is not None and sym not in target_syms:
@@ -541,7 +541,7 @@ def run_latest(args: argparse.Namespace) -> None:
         anchor = len(frame["date"]) - 1
         hist = frame_slice(frame, anchor)
         r7_score, r7_desc, _ = r7.score_r7(hist)
-        r1_score, rank, ret20, cohort_n = r1r3_score_for(sym, data_max, r1_context, whitelist)
+        r1_score, rank, ret20, cohort_n = r1_score_for(sym, data_max, r1_context, whitelist)
         rating, reason = rate_combo(r7_score, r1_score)
         if rating == "N/A":
             continue
@@ -551,7 +551,7 @@ def run_latest(args: argparse.Namespace) -> None:
                 "code": sym,
                 "name": names.get(sym, ""),
                 "r7": r7_score,
-                "r1r3": r1_score,
+                "r1": r1_score,
                 "rank": rank,
                 "ret20": ret20,
                 "cohort_n": cohort_n,
@@ -560,7 +560,7 @@ def run_latest(args: argparse.Namespace) -> None:
             }
         )
     order = {"S": 0, "A": 1, "B": 2, "C": 3, "D": 4}
-    rows.sort(key=lambda x: (order[x["rating"]], -x["r1r3"], -x["r7"], x["code"]))
+    rows.sort(key=lambda x: (order[x["rating"]], -x["r1"], -x["r7"], x["code"]))
     if args.min_rating and target_syms is None:
         max_order = order[args.min_rating]
         rows = [r for r in rows if order[r["rating"]] <= max_order]
@@ -569,8 +569,8 @@ def run_latest(args: argparse.Namespace) -> None:
     single = target_syms is not None
     print(f"# A股最近完整交易日观察评级（{data_max}，规则 {RULE_VERSION}）")
     if AI_WHITELIST_FORWARD_LOOKING:
-        print("# 注意：R1R3 使用当前 AI 白名单，历史回测为上界版本；不下单、不荐股。")
-    header = "rating,code,name,r7,r1r3,rank,ret20,cohort_n,reason"
+        print("# 注意：R1 使用当前 AI 白名单，历史回测为上界版本；不下单、不荐股。")
+    header = "rating,code,name,r7,r1,rank,ret20,cohort_n,reason"
     print(header + (",r7_desc" if single else ""))
     for token in unresolved:
         print(f"N/A,{token},名称无法唯一解析,,,,,,请给6位代码")
@@ -579,9 +579,9 @@ def run_latest(args: argparse.Namespace) -> None:
         for sym in sorted(target_syms - found):
             # #13: 分因提示,别把三种原因混成一句。
             if is_excluded(sym):
-                why = "北交所/科创板688 不在 R1R3 回测口径,不打分"
+                why = "北交所/科创板688 不在 R1 回测口径,不打分"
             elif sym not in frames:
-                why = f"本地仓无数据或历史不足({r1r3.RET_N + 1}根)——次新/未建仓,跑 r0-data 补"
+                why = f"本地仓无数据或历史不足({r1.RET_N + 1}根)——次新/未建仓,跑 r0-data 补"
             else:
                 last = frames[sym]["date"][-1]
                 why = f"数据止于{last}≠最新日{data_max}(停牌,或本地仓没更新到当日——跑 r0-data 增量)"
@@ -590,7 +590,7 @@ def run_latest(args: argparse.Namespace) -> None:
         rank = "" if r["rank"] is None else f"{r['rank']:.3f}"
         ret20 = "" if r["ret20"] is None else f"{r['ret20']:.4f}"
         line = (
-            f"{r['rating']},{r['code']},{r['name']},{r['r7']},{r['r1r3']},"
+            f"{r['rating']},{r['code']},{r['name']},{r['r7']},{r['r1']},"
             f"{rank},{ret20},{r['cohort_n']},{r['reason']}"
         )
         # #12: 单票模式带上 R7 证据化描述(试盘日/量比/回踩缩量比),对齐 r7-trigger 的信息量。
@@ -633,7 +633,7 @@ def _selftest() -> None:
     # #4: 纯函数自检,不碰行情仓。rate_combo 的 S/A/B/C/D 边界改档位常量后有护栏。
     cases = {
         (5, 5): "S", (4, 5): "S",          # 试盘确认 + 主线前排 → S
-        (3, 5): "A", (5, 3): "B",          # A 需 R1R3>=4;R7=5/R1R3=3 总分8但主线未达4 → B
+        (3, 5): "A", (5, 3): "B",          # A 需 R1>=4;R7=5/R1=3 总分8但主线未达4 → B
         (4, 4): "A", (4, 3): "B",          # 简单交集 vs 单核心
         (4, 1): "B", (1, 4): "B",          # 单因子达标 → B
         (2, 2): "D", (1, 1): "D",          # 都弱 → D
@@ -641,12 +641,12 @@ def _selftest() -> None:
     }
     for (r7v, r1v), want in cases.items():
         got, _ = rate_combo(r7v, r1v)
-        assert got == want, f"rate_combo(R7={r7v},R1R3={r1v}) 应={want},实际={got}"
+        assert got == want, f"rate_combo(R7={r7v},R1={r1v}) 应={want},实际={got}"
     assert rate_combo(None, 5)[0] == "N/A" and rate_combo(4, None)[0] == "N/A", "缺因子应 N/A"
-    # A 档理由必须点出 R1R3>=4(#10 回归防护)
-    assert "R1R3>=4" in rate_combo(3, 5)[1], "A 档理由应包含 R1R3>=4"
+    # A 档理由必须点出 R1>=4(#10 回归防护)
+    assert "R1>=4" in rate_combo(3, 5)[1], "A 档理由应包含 R1>=4"
     # 白名单快照可读、为 6 位代码
-    wl = r1r3.load_whitelist()
+    wl = r1.load_whitelist()
     assert len(wl) > 1000 and all(len(c) == 6 for c in wl), "白名单快照应为6位代码"
     print(f"a_share_latest_rating 自检通过 ✓  规则 {RULE_VERSION}，白名单 {len(wl)} 只")
 
