@@ -29,7 +29,8 @@ codex plugin marketplace add git@github.com:belkov0912/cheese-plugins.git
 
 之后浏览、安装、更新、卸载都走交互界面:输入 `/plugins`(Claude Code 或
 codex),选中 `cheese-plugins`,对想要的插件操作即可。现有插件:`cheese-core`、
-`financial-analysis`、`equity-research`、`serenity-skill`、`goal-meta-skill`。
+`financial-analysis`、`equity-research`、`serenity-skill`、`goal-meta-skill`、
+`rule-trigger`。
 
 重新安装后请开一个新会话,新技能和插件元数据才会被加载。
 
@@ -68,6 +69,7 @@ cheese-plugins/
 | `equity-research` | 财报、覆盖、选题、催化剂、论点跟踪 | `earnings-preview`、`earnings-analysis`、`earnings-reviewer`、`morning-note`、`initiating-coverage`、`idea-generation`、`sector-overview`、`catalyst-calendar`、`thesis-tracker`、`model-update`、`market-researcher` 及配套工作流。改编自 Anthropic FSI 的 `equity-research` |
 | `serenity-skill` | Serenity 式供应链卡点研究 | 来自 [muxuuu/serenity-skill](https://github.com/muxuuu/serenity-skill),MIT |
 | `goal-meta-skill` | 把模糊任务收敛成强 `/goal` 指令 | 改编自 [joeseesun/qiaomu-goal-meta-skill](https://github.com/joeseesun/qiaomu-goal-meta-skill),MIT(© 向阳乔木) |
+| `rule-trigger` | A股规则触发器 | `r0-data`、`r0-trigger`、`r7-trigger`、`r9-trigger`、`r1r3-mainline`、`a-share-latest-rating` |
 
 ## 新增技能
 
@@ -138,7 +140,7 @@ scripts/validate.sh
 所有插件**共用同一个版本号**。任何改动后,用 `scripts/bump.sh <版本>` 把所有插件的
 `version` 一起往上 bump 一次——这样 Claude Code / codex 会把每个已安装插件都当成升级、
 重新拉取最新内容(只改内容不 bump 版本,已安装的副本不会更新)。`validate.sh` 会强制
-所有版本一致。当前:`1.1.0`。
+所有版本一致。当前:`1.4.0`。
 
 ```bash
 scripts/bump.sh 1.2.0
