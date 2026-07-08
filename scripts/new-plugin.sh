@@ -35,15 +35,7 @@ category = sys.argv[4]
 plugin_dir = root / "plugins" / name
 marketplace_path = root / ".claude-plugin" / "marketplace.json"
 
-if marketplace_path.exists():
-    marketplace = json.loads(marketplace_path.read_text(encoding="utf-8"))
-else:
-    marketplace = {
-        "name": "cheese-plugins",
-        "owner": {"name": "Jianan Liu"},
-        "description": "Personal agent plugin workspace.",
-        "plugins": [],
-    }
+marketplace = json.loads(marketplace_path.read_text(encoding="utf-8"))
 
 plugins = marketplace.setdefault("plugins", [])
 if any(entry.get("name") == name for entry in plugins):
@@ -73,7 +65,6 @@ plugins.append({
     "description": description,
     "category": category,
 })
-marketplace_path.parent.mkdir(parents=True, exist_ok=True)
 marketplace_path.write_text(json.dumps(marketplace, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 PY
 
