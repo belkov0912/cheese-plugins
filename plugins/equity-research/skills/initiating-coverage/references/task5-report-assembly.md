@@ -1,1352 +1,158 @@
-# Task 5: Report Assembly - Detailed Workflow
+# Task 5：首次覆盖报告组装
 
-This document provides step-by-step instructions for executing Task 5 (Report Assembly) of the initiating-coverage skill.
+## 目标与前置条件
 
-## 中文报告组装规则（最高优先级）
+把 Task 1-4 的真实产物组装成一份可交付的 `[Company]_Initiation_Report_[Date].docx`。
 
-当用户使用中文、标的是 A 股/港股/中资公司、或输出进入中文 Obsidian Vault 时，Task 5 的 DOCX 必须是中文机构研报风格：
+开始前必须确认：
 
-- 首页标题使用 `首次覆盖`，不要使用裸英文 `INITIATING COVERAGE`。如需双语，可写 `首次覆盖（Initiating Coverage）`。
-- 评级、目标价、当前价、上涨空间、总市值、企业价值等字段均使用中文字段名和本地交易币种；A 股默认 `元/股`、`亿元`。
-- 正文标题、图表标题、表格列名、脚注和资料来源均使用中文。`Investment Thesis`、`Risk Factors`、`Price Target`、`Source:` 等模板词必须改为中文。
-- 中文 DOCX 使用可读中文字体，例如 PingFang SC、Microsoft YaHei、Source Han Sans、SimSun 或平台等价字体；不要默认 Times New Roman。
-- 首页写法要更像中文卖方研报：`核心观点`、`投资逻辑`、`盈利预测与估值`、`催化剂`、`风险提示`。避免机械套用英文投行首页。
-- 从 Task 1 复制内容时，保留中文标题和中文分析口吻；不要把中文研究文档再翻译成英文报告。
-- 交付前必须搜索并修复英文模板残留：`INITIATING COVERAGE`、`Investment`、`Price Target`、`Upside`、`BUY/HOLD/SELL`、`Mkt Cap`、`$M`、`Source:`。专有名词、股票代码、英文公司名和必要英文缩写除外。
+- Task 1：6,000-8,000 字研究文档存在且内容完整。
+- Task 2：XLSX 财务模型存在、可打开、预测和三种情景完整。
+- Task 3：DCF、可比公司、目标价和评级已经完成，估值表已写入模型。
+- Task 4：图表 zip 可解压，包含 25-35 张图、`chart_index.txt` 及四张强制图。
 
-## Task Overview
+缺少任何前置产物时停止并指出具体缺口；不要创建占位章节、空表或“图表待插入”。
 
-**Purpose**: Write and assemble the comprehensive final DOCX report.
+## 交付契约
 
-**Prerequisites**: ⚠️ Verify before starting - ALL PREVIOUS TASKS REQUIRED
-- **Required**: Company research from Task 1
-- **Required**: Financial model from Task 2
-- **Required**: Valuation analysis from Task 3
-- **Required**: Chart files from Task 4
-
-**⚠️ CRITICAL: DO NOT START THIS TASK UNLESS ALL TASKS 1-4 ARE COMPLETE**
+- 格式：DOCX，仅交付这一份文件。
+- 长度：30-50 页、10,000-15,000 字。
+- 图表：内嵌 25-35 张，不以路径或附件代替。
+- 表格：12-20 张，数字直接取自 Task 2/3 模型。
+- 密度：图表与表格穿插在相关正文附近，避免连续纯文字页或单图占整页。
+- 引用：重要数字和图表有资料来源；URL 为可点击超链接。
+- 一致性：报告、模型、估值和图表的数字、年份、币种、单位、目标价和评级完全一致。
+- Task 2/3 已更新的 XLSX 仅作为前置输入和核对依据；Task 5 不重新创建或重复交付该模型，只新增并交付 DOCX。
 
-This is the final assembly task. It cannot be completed without all previous work products.
+## 中文报告规则
 
-**IF ANY OF TASKS 1, 2, 3, OR 4 ARE NOT COMPLETE**: Stop immediately and inform the user which tasks need to be completed first. The specific requirements are:
-- Task 1: Company research document (6-8K words)
-- Task 2: Financial model with all 6 tabs
-- Task 3: Valuation analysis with price target and recommendation
-- Task 4: Charts zip file with 25-35 charts
+中文用户、A/H 股、中资公司或中文 Vault 场景下：
 
-Do not attempt to create placeholder content, substitute missing sections, or assemble an incomplete report. The report requires ALL inputs to be publication-ready.
+- 首页使用“首次覆盖”，正文、表格、图表、脚注和资料来源使用中文机构研报表达。
+- 字段使用评级、当前价、目标价、上涨空间、总市值、企业价值；A 股默认元/股和亿元。
+- 字体使用 PingFang SC、Microsoft YaHei、Source Han Sans、SimSun 或等价中文字体。
+- 首页结构以核心观点、投资逻辑、盈利预测与估值、催化剂、风险提示为主。
+- 交付前搜索 `INITIATING COVERAGE`、`Investment`、`Price Target`、`Upside`、`BUY/HOLD/SELL`、`Mkt Cap`、`$M`、`Source:`，删除不必要的模板残留。
 
-**Output**: Comprehensive Equity Research Report (.docx)
-- Length: 30-50 pages (MINIMUM 30)
-- Word count: 10,000-15,000 words (MINIMUM 10,000)
-- Charts: 25-35 embedded images
-- Tables: 12-20 comprehensive tables
+用户明确要求英文或提供模板时，以用户要求或模板为准。
 
----
-
-## 🔥 CRITICAL INSTRUCTION: SPARE NO TOKENS OR EFFORT
-
-**THIS IS THE FINAL DELIVERABLE. GO ALL OUT. NO SHORTCUTS. NO ABBREVIATIONS.**
-
-After completing 4 previous tasks, this final task assembles everything into publication-ready institutional research. **This must be PERFECT.**
-
-### Absolute Requirements
-
-**DO:**
-- ✅ **Use ENTIRE token budget if needed** - This is what it's for
-- ✅ **Write EVERY section in FULL** - Not summaries, not placeholders, FULL CONTENT
-- ✅ **Include ALL 25-35 charts** - Embed every single chart from Task 4 throughout the document
-- ✅ **Create ALL 12-20 tables** - Extract every financial table from Excel, don't skip any
-- ✅ **Copy ALL 6-8K words from Task 1** - Use Company 101 content verbatim (40-50% of report)
-- ✅ **Write 2,000-3,000 words on Projection Assumptions** - Product-by-product, region-by-region detail
-- ✅ **Write 1,500-2,000 words on Scenario Analysis** - Specific Bull/Base/Bear parameters
-- ✅ **Achieve 10,000-15,000 total words** - This is a MINIMUM, not a suggestion
-- ✅ **Produce 30-50 pages minimum** - Text-dense with charts every 200-300 words
-- ✅ **Professional institutional quality** - Indistinguishable from JPMorgan/Goldman Sachs
+## 报告结构
 
-**NEVER:**
-- ❌ "This section would include..." - WRITE THE ACTUAL SECTION
-- ❌ "Charts would be inserted here..." - INSERT THE ACTUAL CHARTS
-- ❌ "See financial model for details..." - EXTRACT AND WRITE THE DETAILS
-- ❌ "For brevity, we'll summarize..." - NO SUMMARIZING, WRITE IN FULL
-- ❌ Skip sections to conserve tokens - USE WHATEVER TOKENS ARE NEEDED
-- ❌ Create abbreviated versions - EVERY SECTION MUST BE COMPLETE
-- ❌ Reference external files instead of including content - INCLUDE EVERYTHING
-
-### Quality Standard
-
-**This report will be read by institutional investors making million-dollar decisions.**
-
-It must be:
-- **Complete**: Every section written in full with no placeholders
-- **Comprehensive**: All data extracted and included, all charts embedded
-- **Professional**: Proper formatting, citations, tables, charts throughout
-- **Thorough**: Deep analysis with specific numbers, detailed assumptions, complete scenarios
-- **Dense**: 60-80% page coverage with text and visuals on every page
-
-**Creating the final work product of a 6-10 hour equity research process. Make it count.**
-
----
-
-## Input Verification (CRITICAL)
-
-**BEFORE STARTING - ALL TASKS MUST BE COMPLETE:**
-
-### Task 1 Verification:
-- [ ] Company research document exists? (6-8K words)
-- [ ] Management bios complete? (300-400 words × 3-4 execs)
-- [ ] Competitive analysis complete? (5-10 competitors)
-- [ ] Risk assessment complete? (8-12 risks)
-
-### Task 2 Verification:
-- [ ] Financial model exists and can be opened?
-- [ ] Model has projections (5 years)?
-- [ ] Scenarios exist (Bull/Base/Bear)?
-- [ ] Revenue by product table complete (20-30 rows)?
-- [ ] Revenue by geography table complete (15-20 rows)?
-
-### Task 3 Verification:
-- [ ] Valuation analysis complete?
-- [ ] 目标价已确定？
-- [ ] 评级已确定？（买入/增持/中性/减持/卖出）
-- [ ] DCF analysis complete with sensitivity table?
-- [ ] Comparable companies analysis complete with statistical summary?
-
-### Task 4 Verification:
-- [ ] 25-35 chart files exist?
-- [ ] All 4 mandatory charts present?
-  - [ ] Revenue by product (stacked area)
-  - [ ] Revenue by geography (stacked bar)
-  - [ ] DCF sensitivity (heatmap)
-  - [ ] Valuation football field
-- [ ] Chart files accessible and can be opened?
-- [ ] Chart index created?
-
-**IF ANY VERIFICATION FAILS**: Stop and complete missing task first.
-
----
-
-## Report Specifications
-
-### Length Requirements
-- **Pages**: 30-50 (MINIMUM 30 pages)
-- **Word Count**: 10,000-15,000 words (MINIMUM 10,000 words)
-- **Charts**: 25-35 embedded PNG/JPG images
-- **Tables**: 12-20 comprehensive financial tables
-- **Density**: 60-80% page coverage
-
-### Critical Sections with Word Counts
-
-| Section | Minimum | Target | Critical? |
-|---------|---------|--------|-----------|
-| Investment Summary (Page 1) | 500 | 700 | |
-| Investment Thesis | 800 | 1,200 | |
-| Risk Factors | 600 | 900 | |
-| Company Description | 800 | 1,200 | |
-| Management Bios | 1,000 | 1,400 | |
-| Products & Services | 700 | 1,000 | |
-| **Projection Assumptions** | **2,000** | **3,000** | ⭐ YES |
-| **Scenario Analysis** | **1,500** | **2,000** | ⭐ YES |
-| Financial Analysis | 1,200 | 1,800 | |
-| Valuation Methodology | 800 | 1,200 | |
-
-**Total: 10,000-15,000 words**
-
----
-
-## Report Structure
-
-### Page 1: Investment Summary (CRITICAL PAGE)
-
-**This is the most important page. Must have:**
-
-1. **`首次覆盖` header**（如需双语，可写 `首次覆盖（Initiating Coverage）`）
-2. **投资主线标题**，例如 `有机硅周期修复叠加新材料扩张，盈利弹性有望释放`
-3. **评级与估值框**，字段包括：
-   - 评级（买入/增持/中性/减持/卖出）
-   - 当前价格
-   - 目标价
-   - 52 周价格区间
-   - 总市值
-   - 企业价值
-4. **研究员信息**
-5. **股价表现图**（图 1）
-6. **3-4 条详细投资要点**，可使用 ■ 符号
-   - Each bullet has **bold topic header** + 3-5 sentences
-   - Lead with key numbers
-7. **财务摘要表**（2-3 年历史 + 2-3 年预测）
-   - Years noted as "A" for actual, "E" for estimate
-
-**Bullet Format Example:**
-```
-■ **Vertical SaaS leadership and regulatory moat should enable $50bn+ TAM by 2030.**
-Deep domain expertise in healthcare IT, strong customer retention (95%+ net revenue retention),
-and cross-sell capabilities have driven Acme Health's market expansion. With the healthcare IT
-market expected to reach $50bn+ by 2030, Acme Health is well-positioned to capture share given
-its regulatory moat and high switching costs. Management has indicated that 70% of current
-revenue comes from enterprise hospital systems, suggesting strong product-market fit.
-```
-
-### Pages 2-5: Investment Thesis & Risks
-
-**Investment Thesis (800-1,200 words)**
-- 3-5 key thesis pillars
-- Each pillar: 200-300 words
-- Lead with key statistic
-- Quantify financial impact
-- Include timeline
-
-**Risk Assessment (600-900 words)**
-- 8-12 identified risks
-- Organized by category:
-  - Company-specific risks (4-6)
-  - Industry/market risks (3-4)
-  - Financial risks (2-3)
-  - Macroeconomic risks (2-3)
-- Each risk: 50-100 word description
-
-### Pages 6-17: Company 101
-
-**Company Description (800-1,200 words)**
-- What the company does (plain English)
-- Business model and monetization
-- Geographic presence
-- Scale metrics
-
-**Company History (800-1,200 words)**
-- Founding story
-- Timeline of major milestones
-- Strategic pivots
-- Recent developments
-
-**Management Team (1,000-1,400 words)**
-- 300-400 word bio for each of 3-4 key executives
-- Include: role, background, accomplishments, education
-- Governance structure
-
-**Products & Services (700-1,000 words)**
-- Detailed product portfolio
-- Features and differentiation
-- Target customers
-- Pricing models
-
-**Customers & Go-to-Market (500-700 words)**
-- Customer segments
-- Distribution channels
-- Sales strategy
-- Key partnerships
-
-**Industry Overview (800-1,200 words)**
-- Industry definition and scope
-- Market size and growth
-- Key trends
-- Regulatory environment
-
-**Competitive Landscape (700-1,000 words)**
-- 5-10 key competitors
-- Market positioning
-- Competitive advantages
-- Market share analysis
-
-**TAM Analysis (500-700 words)**
-- Total addressable market sizing
-- Market growth projections
-- Company's serviceable market
-
-### Pages 18-30: Financial Analysis
-
-**Historical Financial Analysis (1,200-1,800 words)**
-- Revenue trends and drivers
-- Margin evolution
-- Cash flow analysis
-- Key metrics trajectory
-- Historical context
-
-**Projection Assumptions (2,000-3,000 words)** ⭐ CRITICAL
-
-**MUST be extremely detailed. Structure:**
-
-**A. Revenue by Product Assumptions (1,000-1,500 words)**
-
-For EACH major product category:
-```
-[Product Category A] Revenue Assumptions
-
-We project [Product A] revenue to grow from $XXM in 2024A to $XXM in 2029E,
-representing a XX% CAGR. This growth is driven by:
-
-1. [Driver 1 with specific quantification]
-   - Specific metric: from XX to XX
-   - Timeline: achieving YY by 2026E
-   - Basis: [source or rationale]
-
-2. [Driver 2 with specific quantification]
-3. [Driver 3 with specific quantification]
-[... 8-12 detailed points total for this product ...]
-
-Specific assumptions by year:
-- 2025E: XX% growth driven by [specific factors]
-- 2026E: XX% growth as [specific factors]
-- 2027-2029E: XX% CAGR as [longer-term factors]
-
-Key risks to these assumptions include [specific risks].
-```
-
-**Repeat for EACH major product category.**
-
-**B. Geographic Revenue Assumptions (500-800 words)**
-
-For EACH major region:
-```
-[Region] Revenue Assumptions
-
-We project [Region] revenue to grow XX% CAGR from 2024-2029E, reaching $XXM, driven by:
-
-1. [Market dynamic with quantification]
-2. [Distribution expansion with specifics]
-3. [Competitive positioning]
-[... 6-8 detailed points total for this region ...]
-```
-
-**Repeat for EACH major geographic region.**
-
-**C. Other Key Assumptions (500-700 words)**
-- Gross margin evolution (with specific drivers and bridge)
-- Operating expense assumptions (R&D, S&M, G&A as % of revenue)
-- Working capital assumptions (DSO, DIO, DPO with specific days)
-- CapEx as % of sales (with justification)
-- Tax rate assumptions
-
-**Scenario Analysis (1,500-2,000 words)** ⭐ CRITICAL
-
-**MUST have specific parameters for each scenario. Structure:**
-
-**Bull Case (500-700 words)**
-```
-Bull Case: [Title describing key optimistic scenario]
-
-Probability: XX%
-
-Key Assumptions:
-- Revenue CAGR (2024-2029E): XX% (vs. XX% base case)
-- 2029E Revenue: $X,XXXm (vs. $X,XXXm base)
-- 2029E EBITDA Margin: XX% (vs. XX% base)
-- Key product growth: XX% CAGR (vs. XX% base)
-- Geographic expansion: [specific milestones and timeline]
-- Market share: XX% by 2029E (vs. XX% base)
-
-Catalysts Required for Bull Case:
-1. [Specific catalyst] - Expected timing: [date/quarter]
-2. [Specific catalyst] - Expected timing: [date/quarter]
-3. [Specific catalyst] - Expected timing: [date/quarter]
-
-Detailed Rationale:
-[200-300 words explaining what needs to happen for bull case to materialize.
-Be specific about product launches, market conditions, competitive dynamics, etc.]
-
-Valuation Implications:
-- DCF Value: $XX per share (XX% upside from current)
-- Trading Comps: XX.Xx EV/EBITDA implies $XX per share
-- Bull Case Target: $XX per share
-```
-
-**Base Case (300-500 words)**
-```
-Base Case: [Title describing most likely scenario]
-
-Probability: XX%
-
-Key Assumptions:
-[Similar structure to Bull Case with base assumptions]
-
-Rationale:
-[Explain why this is most likely scenario]
-
-Valuation:
-- DCF Value: $XX per share
-- Trading Comps: $XX per share
-- Base Case Target: $XX per share (weighted average)
-```
-
-**Bear Case (500-700 words)**
-```
-Bear Case: [Title describing downside scenario]
-
-Probability: XX%
-
-Key Assumptions:
-[Similar structure with downside parameters]
-
-Downside Triggers:
-1. [Specific risk event] - Likelihood: [%]
-2. [Specific risk event] - Likelihood: [%]
-3. [Specific risk event] - Likelihood: [%]
-
-Rationale:
-[200-300 words on what would cause bear case]
-
-Valuation Implications:
-- DCF Value: $XX per share (XX% downside from current)
-- Trading Comps: $XX per share
-- Bear Case Target: $XX per share
-```
-
-**Scenario Comparison (200-300 words)**
-- Comprehensive comparison table with key metrics
-- Analysis of probability-weighted outcomes
-- Risk/reward assessment
-- Path dependency discussion
-
-**Growth Drivers (800-1,200 words)**
-- 3-5 key growth drivers
-- Each quantified with specific opportunity size
-- Timeline and milestones
-- Supporting data from model
-
-### Pages 31-40: Valuation Analysis
-
-**Valuation Methodology (800-1,200 words)**
-
-**DCF Analysis (300-400 words)**
-- Methodology explanation
-- Key assumptions:
-  - WACC: X.X% (calculation breakdown)
-  - Terminal growth: X.X% (rationale)
-  - Terminal margin: XX% (justification)
-- Sensitivity analysis discussion
-- DCF value: $XX per share
-
-**Comparable Companies (300-400 words)**
-- Peer selection rationale (why these 5-10 companies)
-- Statistical summary (max/75th/median/25th/min)
-- Multiple selection (why EV/EBITDA vs. EV/Revenue vs. P/E)
-- Premium/discount justification (why target deserves premium/discount)
-- Comparable companies value: $XX per share
-
-**Precedent Transactions (200-300 words, if applicable)**
-- Transaction relevance
-- Control premium analysis
-- Precedent transactions value: $XX per share
-
-**估值汇总与方法权重（200-300 中文字）**
-- Weighting rationale (e.g., DCF 50%, Comps 40%, Precedent 10%)
-- Weighted average calculation
-- Valuation range (low/base/high)
-- Final price target: XX 元/股
-
-**目标价与投资建议（300-500 中文字）**
-- Final recommendation (买入/增持/中性/减持/卖出)
-- Price target: XX 元/股（较当前价上涨/下跌 XX%）
-- Time horizon: 12 months
-- Key catalysts (3-5 with specific timeframes)
-- Key risks to price target (3-5 with impact quantification)
-
-### Pages 41-50: Appendices
-
-**Data Sources & References**
-- All sources listed with dates
-- Organized by category:
-  - SEC Filings (with EDGAR links)
-  - Earnings Calls (with transcript links)
-  - Company Materials
-  - Industry Reports
-  - News Articles
-- **ALL URLs must be clickable hyperlinks**
-
-**Detailed Financial Model Assumptions**
-- Comprehensive assumptions detail
-- Calculation methodologies
-- Data sources for historical figures
-
-**Additional Supporting Tables**
-- Extended financial projections
-- Detailed comparable companies data
-- Sensitivity analyses
-
----
-
-## Report Assembly Philosophy
-
-**CRITICAL PRINCIPLE 1**: A good equity research report is **text-dense with lots of illustrating images**.
-
-**Target density**: 60-80% page coverage
-- Every page should have BOTH text AND visuals
-- Charts should be interspersed throughout text, not grouped
-- Average 1 chart per page minimum (30-50 pages = 25-35+ charts)
-- Tables should break up large text blocks
-
-**CRITICAL PRINCIPLE 2**: Use Codex's DOCX and XLSX skills to programmatically create the report.
-
-**REQUIRED TOOLS** (Codex has built-in skills for these):
-- **DOCX skill** - To create and manipulate Word documents
-  - Read Task 1 .md file → Convert to Word formatting
-  - Insert images from Task 4 chart files
-  - Create tables
-  - Format text, headers, footers, page numbers
-  - Add hyperlinks
-- **XLSX skill** - To read data from Excel files
-  - Extract tables from Task 2 financial model
-  - Read Task 3 valuation tabs
-  - Pull historical financials from Task 1
-- **Direct file operations** - Work with actual files
-  - Read: `[Company]_Research_Document_[Date].md`
-  - Read: `[Company]_Financial_Model_[Date].xlsx`
-  - Read: `chart_01.png`, `chart_02.png`, etc.
-  - Write: `[Company]_Initiation_Report_[Date].docx`
-
-**DO NOT**: Manually copy/paste or describe what should be done
-**DO**: Use Codex's DOCX and XLSX skills to open files, extract data, and create the DOCX report
-
-**Content Reuse Strategy**:
-- **Task 1 content (40-50% of report)**: Read .md file → Convert to Word format → Add charts
-- **Task 2/3 data (30-40% of report)**: Read .xlsx file → Extract tables → Write interpretation
-- **Original writing (10-20% of report)**: Investment thesis, projection assumptions, scenario analysis
-
-**This approach**:
-- Maximizes efficiency (no rewriting 6-8K words that are already good)
-- Maintains quality (Task 1 content is substantive, professional analysis)
-- Focuses effort on value-add (quantitative interpretation and investment thesis)
-- Uses actual files programmatically (not manual work)
-
----
-
-## Step-by-Step Report Assembly Workflow
-
-### Step 1: Organize All Inputs and Verify Files
-
-**Verify all input files exist:**
-
-Use Codex's file operations to check:
-- `[Company]_Research_Document_[Date].md` (Task 1)
-- `[Company]_Historical_Financials_[Date].xlsx` (Task 1)
-- `[Company]_Financial_Model_[Date].xlsx` (Task 2 with Task 3 tabs)
-- `[Company]_Valuation_Analysis_[Date].md` (Task 3)
-- `[Company]_Charts_[Date].zip` (Task 4) - **Extract this first**
-
-**Step 1a: Extract Charts from Zip File**
-
-Before proceeding, extract all chart files from the Task 4 zip:
-- Locate `[Company]_Charts_[Date].zip`
-- Extract all contents to a working directory (e.g., `task4_charts/`)
-- Verify 25-35 PNG files were extracted
-- Verify chart_index.txt is present
-
-**Expected folder structure after extraction:**
-```
-[Company]_Report_Working/
-├── [Company]_Research_Document_[Date].md
-├── [Company]_Historical_Financials_[Date].xlsx
-├── [Company]_Financial_Model_[Date].xlsx (includes Task 3 valuation tabs)
-│   ├── [Task 2 tabs: Revenue Model, Income Statement, Scenarios, etc.]
-│   └── [Task 3 tabs: DCF, Sensitivity, Comps, Valuation Summary]
-├── [Company]_Valuation_Analysis_[Date].md
-├── [Company]_Charts_[Date].zip
-├── task4_charts/ (extracted from zip)
-│   ├── chart_01_stock_price.png
-│   ├── chart_02_revenue_growth.png
-│   ├── chart_03_revenue_by_product.png ⭐
-│   ├── chart_04_revenue_by_geography.png ⭐
-│   ├── ... (21-31 more charts)
-│   ├── chart_28_dcf_sensitivity.png ⭐
-│   ├── chart_32_valuation_football_field.png ⭐
-│   └── chart_index.txt
-└── sources_and_urls.txt
-```
-
-**Open and inspect files using Codex skills:**
-
-1. **Read Task 1 markdown file** - Use Read tool to view content
-2. **Open Task 2/3 Excel file** - Use XLSX skill to inspect tabs:
-   - Verify required tabs exist: Revenue Model, Income Statement, Scenarios, DCF, Sensitivity Analysis, Comparable Companies
-3. **Read Task 3 markdown file** - Use Read tool to view valuation analysis
-4. **Check chart files** - Verify all 25-35 PNG files present
-
-**Note**: Task 2's financial model file now contains both the original modeling tabs (from Task 2) AND the valuation tabs (added by Task 3). This single Excel file contains all quantitative data needed for report assembly.
-
-### Step 2: Extract Tables from Excel Using XLSX Skill
-
-**Use Codex's XLSX skill to extract data from Excel files:**
-
-#### Table 1: Page 1 Summary Financials
-
-Use XLSX skill to:
-1. Open `[Company]_Financial_Model_[Date].xlsx`
-2. Read from `Income Statement` tab
-3. Extract key rows: Revenue, Gross Profit, EBITDA, Net Income, EPS, FCF
-4. Extract years: 2022A, 2023A, 2024A, 2025E, 2026E, 2027E
-5. Create summary table with growth rates and margins
-
-#### Table 2: Full Income Statement (40-50 line items)
-
-Use XLSX skill to:
-1. Open `[Company]_Financial_Model_[Date].xlsx`
-2. Read entire `Income Statement` tab
-3. Extract all line items (40-50 rows)
-4. Extract columns for historical (2020A-2024A) + projected years (2025E-2029E)
-5. Include all margins and growth rates
-
-#### Table 3: Revenue by Product (20-30 rows)
-
-Use XLSX skill to:
-1. Open `[Company]_Financial_Model_[Date].xlsx`
-2. Read from `Revenue Model` tab
-3. Navigate to product section (typically starts ~row 5)
-4. Extract 20-30 rows showing each product category
-5. Include columns: Product name, historical years, projected years, % of Total, YoY Growth
-
-#### Table 4: Revenue by Geography (15-20 rows)
-
-Use XLSX skill to:
-1. Open `[Company]_Financial_Model_[Date].xlsx`
-2. Read from `Revenue Model` tab
-3. Navigate to geography section (typically starts ~row 40)
-4. Extract 15-20 rows showing each geographic region
-5. Include columns: Region, historical years, projected years, % of Total, YoY Growth
-
-#### Table 5: Comparable Companies
-**Extract from:** Task 3 valuation tabs in Task 2's financial model (`Comparable Companies` tab)
-
-Use XLSX skill to:
-1. Open `[Company]_Financial_Model_[Date].xlsx`
-2. Read from `Comparable Companies` tab (added by Task 3)
-3. Extract full table with company names as row headers
-4. **CRITICAL**: Verify statistical summary rows are present at bottom:
-   - Maximum
-   - 75th Percentile
-   - Median
-   - 25th Percentile
-   - Minimum
-5. If statistical summary is missing, report ERROR
-
-**Expected format:**
-```
-公司         代码    总市值   EV/收入 EV/收入 EV/EBITDA EV/EBITDA P/E   收入增速 EBITDA率
-                   （亿元）  LTM    NTM    LTM       NTM       NTM
-[5-10 peers plus target, then statistical summary]
-```
-
-#### Additional Tables (7-15 more)
-**Extract from Task 2 financial model (with Task 3 tabs):**
-
-Use XLSX skill to extract these tables:
-
-**DCF Assumptions Table** (Task 3 `DCF` tab)
-- Open `[Company]_Financial_Model_[Date].xlsx`
-- Read from DCF tab
-- Extract columns A-C (Assumption, Value, Source)
-- Extract first 20 rows
-
-**DCF Sensitivity Matrix** (Task 3 `Sensitivity Analysis` tab)
-- Read from Sensitivity Analysis tab
-- Extract full sensitivity matrix
-- WACC values as row headers
-- Terminal growth rates as column headers
-
-**Scenario Comparison Table** (Task 2 `Scenarios` tab)
-- Read from Scenarios tab
-- Extract full scenario table
-- Metrics as row headers (Revenue, EBITDA, Margins, etc.)
-- Columns: Bull, Base, Bear
-
-**Other supporting tables to extract:**
-- Cash flow statement
-- Balance sheet highlights
-- Key metrics dashboard
-- Margin bridge
-- Working capital schedule
-- TAM sizing table
-- Market share table
-
-**Create all 12-20 tables with proper formatting.**
-
-### Step 3: Write Quantitative Sections
-
-These sections interpret the financial model.
-
-**Write in this order:**
-
-#### A. Financial Analysis (1,200-1,800 words)
-- Analyze historical performance from model
-- Discuss trends in revenue, margins, cash flow
-- Reference specific charts and tables
-- Lead with numbers
-
-#### B. Projection Assumptions (2,000-3,000 words) ⭐ CRITICAL
-- Follow detailed structure from Report Structure section above
-- Must be product-by-product (8-12 points per product)
-- Must be region-by-region (6-8 points per region)
-- Must include margin, opex, capex, working capital assumptions
-- **This section separates amateur from professional analysis**
-
-#### C. Scenario Analysis (1,500-2,000 words) ⭐ CRITICAL
-- Follow detailed structure from Report Structure section above
-- Bull case: specific parameters, catalysts, probability, valuation
-- Base case: most likely scenario with rationale
-- Bear case: downside triggers and parameters
-- Comparison table and analysis
-- **Must have specific quantified parameters for each scenario**
-
-#### D. Growth Drivers (800-1,200 words)
-- 3-5 key drivers with quantified opportunities
-- Timeline and milestones
-- Evidence from model
-
-#### E. Valuation Methodology (800-1,200 words)
-- DCF explanation with assumptions
-- Comparables rationale
-- Precedent transactions (if applicable)
-- Reconciliation and weighting
-- Price target derivation
-
-### Step 4: Write Synthesis Sections
-
-**Write in this order:**
-
-#### A. Investment Thesis (800-1,200 words)
-- 3-5 key pillars
-- Each pillar: 200-300 words
-- Lead with key statistic
-- Quantify financial impact
-- Include timeline
-
-#### B. Risk Assessment (600-900 words)
-- Pull from Task 1 research document
-- Organize into 4 categories
-- 8-12 risks total
-- Each risk: 50-100 words
-
-#### C. 目标价与投资建议（300-500 中文字）
-- Final recommendation
-- Price target with upside %
-- Key catalysts with timeframes
-- Key risks to target
-
-#### D. Investment Summary (500-700 words) - WRITE LAST
-- Page 1 content
-- 3-4 detailed bullets with bold headers
-- Complete synthesis of all findings
-- **Write this section LAST after full analysis complete**
-
-### Step 5: Integrate Company Content from Task 1
-
-**CRITICAL INSTRUCTION**: Use Task 1 research document almost verbatim. DO NOT rewrite.
-
-**The company research from Task 1 (6-8K words) is already professional, substantive analysis. Objective:**
-1. **Reformat for Word** - Convert markdown to DOCX formatting
-2. **Insert charts inline** - Add relevant charts from Task 4 throughout the text
-3. **Minor style adjustments** - Ensure consistent formatting with rest of report
-
-**Extract these sections from Task 1 research document:**
-- Company description (800-1,200 words) → **Use verbatim, insert company overview charts**
-- Company history (800-1,200 words) → **Use verbatim, insert timeline chart**
-- Management bios (1,000-1,400 words) → **Use verbatim, insert org chart if available**
-- Products & services (700-1,000 words) → **Use verbatim, insert product portfolio charts**
-- Customers & GTM (500-700 words) → **Use verbatim, insert customer segmentation charts**
-- Industry overview (800-1,200 words) → **Use verbatim, insert market size evolution charts**
-- Competitive landscape (700-1,000 words) → **Use verbatim, insert competitive positioning charts**
-- TAM analysis (500-700 words) → **Use verbatim, insert TAM sizing charts**
-- Risk assessment (600-900 words) → **Use verbatim, format as Investment Thesis & Risks section**
-
-**Chart Integration Strategy:**
-- Every 200-300 words of text → Insert 1 chart
-- Company 101 section (pages 6-17) should have 8-12 charts interspersed
-- Place charts immediately after the paragraph that discusses the topic
-- **Result**: Dense, visually rich pages (60-80% coverage)
-
-### Step 6: Assemble DOCX Report
-
-**CRITICAL**: Create actual DOCX file, NOT markdown.
-
-**Assembly Order (Most Efficient):**
-
-#### Phase A: Create Structure & Add Page 1
-1. Create DOCX document
-2. Set up professional styling (fonts, headers, footers)
-3. Create Page 1 - Investment Summary (write this LAST after all analysis complete)
-4. Add Table of Contents placeholder
-
-#### Phase B: Copy Task 1 Content + Insert Charts
-**This is 40-50% of the report - mostly copy/paste + chart insertion**
-
-Use Codex's DOCX skill to:
-
-1. **Initialize new DOCX document**
-   - Create new Word document
-   - Set professional styling (fonts, margins)
-
-2. **Read Task 1 markdown file**
-   - Use Read tool: `[Company]_Research_Document_[Date].md`
-   - Identify sections by markdown headers (## Section Title)
-
-3. **Extract and convert each section from Task 1 to Word format:**
-
-**SECTION 1: Investment Thesis & Risks**
-- Add heading: 'Investment Thesis & Risks' (level 1)
-- Extract 'Risk Assessment' section from Task 1 markdown
-- Convert markdown formatting to Word formatting (remove ##, **, etc.)
-- Add paragraphs to Word document (split by blank lines)
-- Add new 'Investment Thesis' heading (level 2)
-- Write new investment thesis content (800-1,200 words based on all analysis)
-
-**SECTION 2: Company 101 (Pages 6-17)**
-Copy each section from Task 1 verbatim with formatting conversion:
-
-- **Company Overview**
-  - Add heading: 'Company Overview' (level 1)
-  - Extract 'Company Overview' section from Task 1
-  - Convert to Word paragraphs
-  - Insert chart: `task4_charts/chart_05_company_overview.png` (6 inches wide)
-
-- **Company History**
-  - Add heading: 'Company History' (level 1)
-  - Extract 'Company History' section from Task 1
-  - Convert to Word paragraphs
-  - Insert chart: `task4_charts/chart_06_company_timeline.png` (6 inches wide)
-
-- **Management Team**
-  - Add heading: 'Management Team' (level 1)
-  - Extract 'Management Team' section from Task 1
-  - Convert to Word paragraphs
-  - Insert chart: `task4_charts/chart_07_org_structure.png` (5 inches wide)
-
-- **Products & Services**
-  - Add heading: 'Products & Services' (level 1)
-  - Extract 'Products & Services' section from Task 1
-  - Add first paragraph
-  - Insert chart: `task4_charts/chart_08_product_portfolio.png` (6 inches wide)
-  - Add remaining paragraphs
-
-- **Customers & Go-to-Market**
-  - Add heading: 'Customers & Go-to-Market' (level 1)
-  - Extract section from Task 1
-  - Convert to Word paragraphs
-  - Insert chart: `task4_charts/chart_09_customer_segments.png` (6 inches wide)
-
-- **Industry Overview**
-  - Add heading: 'Industry Overview' (level 1)
-  - Extract section from Task 1
-  - Add first paragraph
-  - Insert chart: `task4_charts/chart_10_market_size_evolution.png` (6 inches wide)
-  - Add remaining paragraphs
-  - Insert chart: `task4_charts/chart_11_industry_trends.png` (6 inches wide)
-
-- **Competitive Landscape**
-  - Add heading: 'Competitive Landscape' (level 1)
-  - Extract section from Task 1
-  - Add first paragraph
-  - Insert chart: `task4_charts/chart_16_competitive_positioning.png` (6 inches wide)
-  - Add remaining paragraphs
-  - Insert chart: `task4_charts/chart_17_market_share.png` (5 inches wide)
-
-- **Market Opportunity**
-  - Add heading: 'Market Opportunity' (level 1)
-  - Extract 'Market Opportunity' section from Task 1
-  - Convert to Word paragraphs
-  - Insert chart: `task4_charts/chart_15_TAM_sizing.png` (6 inches wide)
-
-**Result after Phase B**: Pages 6-17 complete (~12 pages, 6-8K words, 8-12 charts embedded)
-
-**Key Point**: Use DOCX skill to READ from Task 1's .md file and INSERT actual image files. No manual copy/paste required.
-
-#### Phase C: Add Financial Analysis with Data from Task 2
-**This requires NEW WRITING interpreting quantitative data**
-
-Use Codex's DOCX and XLSX skills to:
-
-**SECTION 3: Financial Analysis (Pages 18-30)**
-
-1. **Add section heading: 'Financial Analysis' (level 1)**
-
-2. **Historical Financial Analysis (1,200-1,800 words) - NEW WRITING**
-   - Add heading: 'Historical Performance' (level 2)
-   - Use XLSX skill to open `[Company]_Financial_Model_[Date].xlsx`
-   - Read `Income Statement` tab to extract historical data
-   - Read `Revenue Model` tab to extract revenue trends
-   - Calculate key metrics (e.g., Revenue CAGR from 2020-2024)
-   - Write analytical paragraphs interpreting the trends (1,200-1,800 words)
-   - Lead with specific numbers: "Revenue grew from $XXM in 2020 to $XXM in 2024, representing a XX% CAGR. This growth was driven by..."
-   - Insert chart: `task4_charts/chart_02_revenue_growth_trajectory.png` (6 inches wide)
-
-3. **Create Table: Full Income Statement**
-   - Add heading: 'Historical Income Statement' (level 3)
-   - Use XLSX skill to extract entire Income Statement tab (40-50 rows)
-   - Create Word table with all columns (historical years 2020A-2024A + projected 2025E-2029E)
-   - Include all line items: Revenue, COGS, Gross Profit, Operating Expenses, EBITDA, Net Income, etc.
-
-4. **Add mandatory charts and tables for Revenue breakdown:**
-   - Insert chart: `task4_charts/chart_03_revenue_by_product.png` (6.5 inches wide) ⭐ MANDATORY
-   - **Create Table: Revenue by Product (20-30 rows)**
-     - Use XLSX skill to extract from Revenue Model tab (product section, typically rows 5-35)
-     - Create Word table showing each product category with historical and projected years
-     - Include columns: Product name, historical years, projected years, % of Total, YoY Growth
-
-   - Insert chart: `task4_charts/chart_04_revenue_by_geography.png` (6.5 inches wide) ⭐ MANDATORY
-   - **Create Table: Revenue by Geography (15-20 rows)**
-     - Use XLSX skill to extract from Revenue Model tab (geography section, typically rows 40-60)
-     - Create Word table showing each geographic region with historical and projected years
-
-5. **Add additional financial charts:**
-   - Insert chart: `task4_charts/chart_10_gross_margin_evolution.png` (6 inches wide)
-   - Insert chart: `task4_charts/chart_11_ebitda_margin_progression.png` (6 inches wide)
-   - Insert chart: `task4_charts/chart_12_free_cash_flow_trend.png` (6 inches wide)
-
-6. **Projection Assumptions (2,000-3,000 words) ⭐ CRITICAL - NEW WRITING**
-   - Add heading: 'Projection Assumptions' (level 2)
-   - Use XLSX skill to read Scenarios tab to inform assumptions
-   - Use XLSX skill to read Revenue Model tab for specific product/geography projections
-   - Add heading: 'Revenue Assumptions by Product' (level 3)
-   - Write detailed product-by-product assumptions (8-12 points per major product)
-   - Write detailed region-by-region assumptions (6-8 points per major region)
-   - Include margin, opex, capex, working capital assumptions
-   - **Total: 2,000-3,000 words of specific, quantified assumptions**
-
-7. **Scenario Analysis (1,500-2,000 words) ⭐ CRITICAL - NEW WRITING**
-   - Add heading: 'Scenario Analysis' (level 2)
-   - Use XLSX skill to extract scenario data from Scenarios tab
-   - Extract Bull/Base/Bear parameters for key metrics (2029E Revenue, EBITDA Margin, etc.)
-   - Write Bull Case (500-700 words): specific parameters, catalysts, probability, valuation
-   - Write Base Case (300-500 words): most likely scenario with rationale
-   - Write Bear Case (500-700 words): downside triggers, parameters, probability, valuation
-   - Write Scenario Comparison (200-300 words)
-   - Insert chart: `task4_charts/chart_14_scenario_comparison.png` (6 inches wide)
-   - **Create Table: Scenario Comparison**
-     - Use XLSX skill to extract from Scenarios tab
-     - Create Word table with Bull/Base/Bear columns and key metrics as rows
-
-8. **Growth Drivers (800-1,200 words) - NEW WRITING**
-   - Add heading: 'Key Growth Drivers' (level 2)
-   - Write 3-5 key drivers with specific quantified opportunities
-   - Include timelines and milestones
-   - Reference specific data from financial model
-
-**Result after Phase C**: Pages 18-30 complete (~13 pages, 5-7K words, 7-8 charts, 6-8 tables)
-
-**Key Point**: Use XLSX skill to READ data from Task 2's Excel file, use the data to inform NEW analytical writing, and use DOCX skill to create Word tables from Excel data.
-
-#### Phase D: Add Valuation Analysis from Task 3
-**Mix of copying Task 3 analysis + inserting data from Excel**
-
-Use Codex's DOCX and XLSX skills to:
-
-**SECTION 4: Valuation Analysis (Pages 31-40)**
-
-1. **Add section heading: '估值分析' (level 1)**
-
-2. **Read Task 3 markdown file**
-   - Use Read tool: `[Company]_Valuation_Analysis_[Date].md`
-   - Identify sections by markdown headers: DCF 估值, 可比公司估值, 目标价与投资建议
-
-3. **DCF 估值 section**
-   - Add heading: 'DCF 估值' (level 2)
-   - Extract 'DCF 估值' section from Task 3 markdown
-   - Convert markdown to Word paragraphs
-   - Insert chart: `task4_charts/chart_28_dcf_sensitivity_heatmap.png` (6 inches wide) ⭐ MANDATORY
-
-   - **Create Table: DCF 核心假设**
-     - Add heading: 'DCF 核心假设' (level 3)
-     - Use XLSX skill to open `[Company]_Financial_Model_[Date].xlsx`
-     - Read DCF tab (columns A-C, first 20 rows: Assumption, Value, Source)
-     - Create Word table from extracted data
-
-   - **Create Table: DCF Sensitivity Matrix**
-     - Use XLSX skill to read Sensitivity Analysis tab
-     - Extract full sensitivity matrix (WACC values as rows, terminal growth as columns)
-     - Create Word table showing valuation at different parameter combinations
-
-   - Insert chart: `task4_charts/chart_29_dcf_waterfall.png` (6 inches wide)
-
-4. **可比公司估值 section**
-   - Add heading: '可比公司估值' (level 2)
-   - Extract '可比公司估值' section from Task 3 markdown
-   - Convert markdown to Word paragraphs
-
-   - **Create Table: 可比公司表 ⭐ CRITICAL**
-     - Add heading: '可比公司估值表' (level 3)
-     - Use XLSX skill to read Comparable Companies tab
-     - Extract full table including:
-       - 5-10 peer companies plus target company
-       - Statistical summary rows (Maximum, 75th Percentile, Median, 25th Percentile, Minimum)
-     - Create Word table with all columns: 代码, 总市值, EV/收入（LTM & NTM）, EV/EBITDA（LTM & NTM）, P/E（NTM）, 收入增速, EBITDA率
-     - **Verify statistical summary is included in table**
-
-   - Insert chart: `task4_charts/chart_31_peer_multiples_comparison.png` (6 inches wide)
-
-5. **Valuation Summary**
-   - Insert chart: `task4_charts/chart_32_valuation_football_field.png` (6.5 inches wide) ⭐ MANDATORY
-
-   - **Create Table: Valuation Summary**
-     - Use XLSX skill to read Valuation Summary tab
-     - Extract valuation methods (DCF, Comps, Precedent Transactions if applicable)
-     - Create Word table showing: Method, Low Case, Base Case, High Case, Weight, Weighted Value
-
-6. **目标价与投资建议**
-   - Add heading: '目标价与投资建议' (level 2)
-   - Extract '目标价与投资建议' section from Task 3 markdown
-   - Convert markdown to Word paragraphs
-   - Should include: Final recommendation (买入/增持/中性/减持/卖出), price target with % upside/downside, key catalysts, key risks
-
-**Result after Phase D**: Pages 31-40 complete (~10 pages, 3-4K words, 5-6 charts, 4-5 tables)
-
-**Key Point**: Use Read tool for Task 3's .md file to get written analysis, and use XLSX skill to READ from Task 3's Excel tabs (which were added to Task 2's model file) to create quantitative tables.
-
-#### Phase E: Add Appendices & Finalize
-
-Use Codex's DOCX skill to:
-
-**SECTION 5: Appendices (Pages 41-50)**
-
-1. **Data Sources & References**
-   - Add heading: 'Data Sources & References' (level 1)
-   - List all sources used throughout the report
-   - Organize by category:
-     - SEC Filings (10-K, 10-Q, DEF 14A, 8-K with EDGAR links)
-     - Earnings Calls (with transcript links)
-     - Company Materials (investor presentations, press releases)
-     - Industry Reports (Gartner, Forrester, etc.)
-     - News Articles
-   - **CRITICAL**: All URLs must be clickable hyperlinks (not plain text)
-   - Include dates for all sources
-
-2. **Additional Tables**
-   - Add heading: 'Additional Tables' (level 1)
-   - Add extended financial projections
-   - Add detailed assumptions tables
-   - Add any supporting tables that didn't fit in main sections
-
-#### Phase F: Write Page 1 Investment Summary
-**NOW write Page 1 - after all analysis complete**
-- `首次覆盖` header
-- 评级与估值框
-- 3-4 条详细投资要点，综合全文核心判断
-- 财务摘要表
-- 股价表现图
-
-#### Phase G: Add Table of Contents & Page Numbers
-- Auto-generate TOC
-- Add page numbers to all pages
-
-**Key formatting requirements:**
-- Professional fonts (Calibri, Arial, or similar)
-- Proper headers and footers with page numbers
-- Section breaks between major sections
-- Embed all 25-35 charts inline throughout text
-- Insert all 12-20 tables inline with text
-- **All URLs as clickable hyperlinks** (NOT plain text)
-- **60-80% page density** - Every page has text AND visuals
-
-**Visual Density Strategy:**
-```
-Good page layout example:
-┌─────────────────────────────┐
-│ Section Header              │
-│ Text paragraph (200 words)  │
-│ [Chart embedded]            │
-│ Text paragraph (200 words)  │
-│ [Table embedded]            │
-│ Text paragraph (200 words)  │
-│ [Chart embedded]            │
-└─────────────────────────────┘
-
-BAD - Avoid:
-- Full page with only one chart
-- Multiple pages of pure text
-- Charts grouped at end of sections
-```
-
-**Result**: 30-50 page report that is text-dense with illustrating images throughout
-
----
-
-## File Operations Summary
-
-**Throughout the entire assembly process, use Codex's DOCX and XLSX skills with actual file operations:**
-
-**Reading Input Files:**
-- ✓ Use Read tool: `[Company]_Research_Document_[Date].md` - Read Task 1 research
-- ✓ Use XLSX skill: Open `[Company]_Financial_Model_[Date].xlsx` and read tabs - Extract tables from Task 2/3
-- ✓ Use Read tool: `[Company]_Valuation_Analysis_[Date].md` - Read Task 3 analysis
-- ✓ Use DOCX skill: Insert images from `task4_charts/chart_XX.png` files
-
-**Writing Output File:**
-- ✓ Use DOCX skill: Create new Word document
-- ✓ Use DOCX skill: Add paragraphs (text from input .md files)
-- ✓ Use DOCX skill: Create tables (data from Excel files read via XLSX skill)
-- ✓ Use DOCX skill: Insert images (chart .png files)
-- ✓ Use DOCX skill: Save final file as `[Company]_Initiation_Report_[Date].docx`
-
-**Do NOT manually copy/paste. Use Codex's built-in skills to:**
-1. Read from .md files (Task 1, Task 3) using Read tool
-2. Read from .xlsx files (Task 2 with Task 3 tabs) using XLSX skill
-3. Read from .png files (Task 4) as image files
-4. Write to .docx file (Task 5 output) using DOCX skill
-
-This approach is efficient, reproducible, and ensures all data flows correctly from source files to final report.
-
-### Step 7: Quality Check
-
-**Run comprehensive verification:**
-
-```
-═══════════════════════════════════════════════════════════
-REPORT QUALITY CHECKLIST
-═══════════════════════════════════════════════════════════
-
-LENGTH REQUIREMENTS:
-- [ ] Report is 30-50 pages (count: ____ pages)
-- [ ] Word count is 10,000-15,000 (count: ____ words)
-- [ ] 25-35 charts embedded (count: ____ charts)
-- [ ] 12-20 tables included (count: ____ tables)
-
-PAGE 1 FORMAT:
-- [ ] `首次覆盖` header present
-- [ ] Thesis-focused Chinese title (not generic)
-- [ ] Rating box complete with all elements
-- [ ] Stock price chart (Figure 1) embedded
-- [ ] 3-4 detailed bullets with ■ character
-- [ ] Each bullet has **bold header** + 3-5 sentences
-- [ ] Financial summary table included
-- [ ] Years noted as "A" (actual) and "E" (estimate)
-
-SECTION WORD COUNTS:
-- [ ] Investment Thesis: 800-1,200 words ✓
-- [ ] Risk Assessment: 600-900 words ✓
-- [ ] Company Description: 800-1,200 words ✓
-- [ ] Management Bios: 1,000-1,400 words (300-400 per exec for 3-4 execs) ✓
-- [ ] Products & Services: 700-1,000 words ✓
-- [ ] Financial Analysis: 1,200-1,800 words ✓
-- [ ] **Projection Assumptions: 2,000-3,000 words ✓** ⭐ CRITICAL
-- [ ] **Scenario Analysis: 1,500-2,000 words ✓** ⭐ CRITICAL
-- [ ] Growth Drivers: 800-1,200 words ✓
-- [ ] Valuation Methodology: 800-1,200 words ✓
-
-MANDATORY CHARTS (4 TOTAL):
-- [ ] Revenue by Product (stacked area) embedded ⭐
-- [ ] Revenue by Geography (stacked bar) embedded ⭐
-- [ ] DCF Sensitivity (heatmap) embedded ⭐
-- [ ] Valuation Football Field embedded ⭐
-
-MANDATORY TABLES:
-- [ ] Page 1 financial summary table
-- [ ] Full income statement (40-50 line items)
-- [ ] Revenue by product table (20-30 rows)
-- [ ] Revenue by geography table (15-20 rows)
-- [ ] Comparable companies table with statistical summary ⭐
-- [ ] DCF assumptions table
-- [ ] Scenario comparison table
-- [ ] Additional 5-13 tables
-
-CITATIONS & HYPERLINKS:
-- [ ] All figures have source lines
-- [ ] All tables have source lines
-- [ ] All URLs are clickable hyperlinks (NOT plain text)
-- [ ] Test 5-10 random hyperlinks to verify they work
-- [ ] Data Sources & References page included
-- [ ] All sources have dates
-
-DATA ACCURACY:
-- [ ] All numbers match financial model exactly
-- [ ] Revenue figures consistent across all tables/text
-- [ ] Price target matches valuation analysis
-- [ ] All growth rates calculated correctly
-- [ ] All percentages sum to 100% where applicable
-
-CONTENT REUSE (CRITICAL):
-- [ ] Task 1 content used almost verbatim (not rewritten)
-- [ ] Company 101 sections (pages 6-17) copied from Task 1 with only formatting changes
-- [ ] Writing effort focused on quantitative sections (financial analysis, projections, scenarios)
-
-VISUAL DENSITY (CRITICAL):
-- [ ] Every page has BOTH text AND visuals (not pure text pages)
-- [ ] Charts interspersed throughout (not grouped at end)
-- [ ] Average 1+ chart per page (30-50 pages = 25-35+ charts)
-- [ ] Charts appear every 200-300 words of text
-- [ ] 60-80% page density achieved across entire report
-
-FORMATTING:
-- [ ] No markdown syntax visible (no #, ##, **, etc.)
-- [ ] Professional fonts throughout
-- [ ] Headers and footers present
-- [ ] Page numbers present
-- [ ] Section breaks appropriate
-- [ ] Charts embedded (not just file paths)
-- [ ] Tables formatted professionally
-
-WRITING QUALITY:
-- [ ] Lead with numbers (not generic statements)
-- [ ] Use "vs." not "versus"
-- [ ] Quantify everything
-- [ ] Professional tone throughout
-- [ ] No typos or grammatical errors
-- [ ] Specific examples (not vague statements)
-
-═══════════════════════════════════════════════════════════
-FINAL VERIFICATION
-═══════════════════════════════════════════════════════════
-
-IF ALL ITEMS CHECKED: ✓ READY FOR DELIVERY
-
-IF ANY ITEMS UNCHECKED: ✗ FIX BEFORE DELIVERY
-
-═══════════════════════════════════════════════════════════
-```
-
-**IF ANY ITEM FAILS, DO NOT DELIVER. Fix before proceeding.**
-
----
-
-## Writing Style Guidelines
-
-### Lead with Numbers (CRITICAL)
-
-✓ **CORRECT**: "Revenue increased 150% YoY to $250M in Q4 2024, driven by..."
-✗ **INCORRECT**: "The company saw strong revenue growth this quarter..."
-
-✓ **CORRECT**: "EBITDA margin expanded 500bps to 30% vs. 25% in FY2023"
-✗ **INCORRECT**: "EBITDA margin expanded versus the prior year"
-
-✓ **CORRECT**: "Market share increased 3 percentage points to 18% vs. 15% in 2023"
-✗ **INCORRECT**: "Market share increased compared to last year"
-
-✓ **CORRECT**: "Management expects 40-50% revenue growth in FY2025E"
-✗ **INCORRECT**: "Management expects strong revenue growth"
-
-### Professional Writing Standards
-
-- **Front-load**: Most important information first
-- **Data-driven**: Lead with numbers and metrics
-- **Specific**: Concrete examples, not generic statements
-- **Objective**: Present facts, acknowledge risks
-- **Confident**: State views clearly with supporting evidence
-- **Active voice**: "We estimate revenue will reach $500M"
-- **Precise**: Avoid "might", "could", "possibly"
-
-### Number Formatting
-
-**Consistency:**
-- Billions: $X.XB (e.g., "$2.5B")
-- Millions: $XXXM (e.g., "$250M")
-- Always specify: YoY, QoQ, CAGR
-- Basis points for small margin changes: "500bps"
-- Year format: "2024A" (actual), "2025E" (estimate)
-
-### Use "vs." not "versus"
-✓ **CORRECT**: "Gross margin of 65% vs. 60% in prior year"
-✗ **INCORRECT**: "Gross margin of 65% versus 60%"
-
----
-
-## Common Pitfalls to Avoid
-
-**⚠️ MOST COMMON MISTAKE: TAKING SHORTCUTS DUE TO LENGTH**
-
-Many reports fail because they use placeholders like "details would be included here" or "see model for data" instead of actually writing/extracting the content. **DO NOT DO THIS.** Write every section in full. Extract every table. Embed every chart. Use whatever tokens are needed.
-
-1. **Rewriting Task 1 content**: DO NOT rewrite the 6-8K words from Task 1. Use almost verbatim - just reformat and add charts. Focus writing effort on quantitative sections (projections, scenarios, valuation).
-2. **Sparse pages**: Every page must have BOTH text AND visuals. Target 60-80% page density. Insert charts every 200-300 words.
-3. **Grouping charts at end**: Charts must be interspersed throughout text, not grouped. Place chart immediately after paragraph discussing that topic.
-4. **Writing in markdown**: Use DOCX format, NOT markdown
-5. **Skipping Page 1 format**: Must follow exact institutional format
-6. **Generic bullets**: Page 1 bullets need bold headers + specific data
-7. **Short sections**: Must meet minimum word counts
-8. **Thin assumptions**: Projection Assumptions MUST be 2,000-3,000 words with product-by-product and region-by-region detail
-9. **Vague scenarios**: Must have specific parameters for Bull/Base/Bear
-10. **Plain text URLs**: All citations must be clickable hyperlinks
-11. **Missing statistical summary**: Comps table must have max/75th/median/25th/min
-12. **Charts not embedded**: All 25-35 charts must be IN document, not just referenced
-13. **Numbers don't match model**: Verify all figures against source
-14. **Skipping verification**: Quality check is NOT optional
-
----
-
-## Success Criteria
-
-A successful equity research report should:
-
-1. **Meet all length requirements**
-   - 30-50 pages (MINIMUM 30)
-   - 10,000-15,000 words (MINIMUM 10,000)
-   - 25-35 charts embedded
-   - 12-20 tables included
-
-2. **Have properly formatted Page 1**
-   - `首次覆盖` header
-   - 评级框、研究员信息、图表、投资要点、财务摘要表
-
-3. **Meet all section word count minimums**
-   - Especially Projection Assumptions (2,000-3,000) ⭐
-   - And Scenario Analysis (1,500-2,000) ⭐
-
-4. **Include all 4 mandatory charts**
-   - Revenue by product (stacked area) ⭐
-   - Revenue by geography (stacked bar) ⭐
-   - DCF sensitivity (heatmap) ⭐
-   - Valuation football field ⭐
-
-5. **Have management bios**
-   - 300-400 words each for 3-4 key executives
-
-6. **Include comprehensive comps table**
-   - With statistical summary (max/75th/median/25th/min)
-
-7. **Have all citations as clickable hyperlinks**
-   - Test multiple links to verify they work
-
-8. **Be professionally formatted**
-   - 60-80% page density
-   - No markdown syntax visible
-   - Charts and tables embedded properly
-
-9. **Have numbers matching model exactly**
-   - Verify all figures against Excel model
-
-10. **Enable informed investment decision**
-    - Client should understand company, valuation, risks
-    - Should be indistinguishable from JPM/GS/MS research
-
----
-
-## Output Files
-
-**Primary Deliverable:**
-`[Company]_Initiation_Report_[Date].docx`
-
-**Example**: `Tesla_Initiation_Report_2024-10-27.docx`
-
-**Supporting Deliverable:**
-`[Company]_Financial_Model_[Date].xlsx` (from Task 2)
-
-**Both files should be packaged together for final delivery.**
-
----
-
-## Final Note
-
-This is the culmination of all equity research work from Tasks 1-4. The output should be:
-- **Comprehensive**: 30-50 pages covering all aspects
-- **Professional**: Indistinguishable from major investment bank research
-- **Actionable**: Enables reader to make informed investment decision
-- **Publication-ready**: Can be delivered directly to clients
-
-**Standard**: JPMorgan, Goldman Sachs, Morgan Stanley institutional equity research.
-
-**Quality bar**: Client-ready initiation report suitable for publication.
-
----
-
-## 🔥 FINAL REMINDER: NO SHORTCUTS, NO COMPROMISES
-
-**Use whatever tokens are needed to deliver a complete, professional report.**
-
-This is not a draft. This is not a summary. This is not an outline. This is the **FINAL PUBLICATION-READY REPORT**.
-
-- Write every section in full (10,000-15,000 words minimum)
-- Embed every chart (all 25-35 charts throughout)
-- Extract and include every table (12-20 tables minimum)
-- Copy all Company 101 content from Task 1 verbatim (6-8K words)
-- Write detailed projection assumptions (2,000-3,000 words)
-- Write comprehensive scenario analysis (1,500-2,000 words)
-- Achieve 30-50 pages minimum with 60-80% page density
-
-**If running low on tokens, that's expected and acceptable for this task. Keep going.**
-
-This represents the complete professional work product. Deliver institutional-quality research worthy of a $1M+ investment decision.
+### 首页：首次覆盖摘要
+
+必须包含：
+
+- 结论性标题、评级、当前价、目标价、上涨/下跌空间、52 周区间、总市值和企业价值。
+- 3-4 条核心观点，每条有量化证据、时间线和主要风险。
+- 2-3 年历史 + 2-3 年预测的财务摘要，历史标 `A`、预测标 `E`。
+- 公司股价相对合适基准指数的表现图、研究员信息和风险提示。
+
+首页最后写：完成全文和估值核对后再提炼，不要先写一个随后与正文脱节的摘要。
+
+### 投资逻辑与风险（约 2-5 页）
+
+- 投资逻辑 800-1,200 字，3-5 个支柱；每个支柱以关键数字开头，说明财务影响和兑现时间。
+- 风险 600-900 字，覆盖公司、行业、财务和宏观风险，共 8-12 条，并写清触发条件和影响。
+
+### 公司与行业（约 6-17 页）
+
+以 Task 1 为底稿，保留已有事实、引用和中文分析口吻，只做排版、必要的衔接和重复清理。覆盖：
+
+- 公司概览、历史、管理层与治理。
+- 产品与服务、客户与销售渠道。
+- 行业规模、竞争格局、市场份额和 TAM。
+
+相关图表紧跟相应段落；不要重写已经成熟的 Task 1 内容，也不要把 Markdown 标记带进 Word。
+
+### 财务分析与预测（约 18-30 页）
+
+- 历史财务分析 1,200-1,800 字：收入、利润率、现金流、资本开支和营运资本变化。
+- 预测假设 2,000-3,000 字：按主要产品和地区逐项解释收入假设，并覆盖毛利率、费用率、CapEx、营运资本和税率。
+- 情景分析 1,500-2,000 字：乐观/中性/悲观各自给出概率、收入 CAGR、终期收入、利润率、催化剂或下行触发、估值结果。
+- 增长驱动 800-1,200 字：3-5 个可量化驱动、时间线和验证指标。
+
+至少放入完整利润表、产品收入、地区收入、情景对比及关键指标表；收入按产品和地区两张强制图必须出现。
+
+### 估值（约 31-40 页）
+
+- DCF：WACC、终值假设、显性期 FCF、终值占比、敏感性和每股价值。
+- 可比公司：5-10 家同行、选取理由、口径、最大值/75 分位/中位数/25 分位/最小值，以及目标公司的溢价或折价理由。
+- 可比交易：仅在有可比交易且数据可靠时加入。
+- 估值汇总：各方法低/中/高值、权重、加权目标价、12 个月评级、上涨/下跌空间、催化剂和风险。
+
+DCF 敏感性图和估值足球场两张强制图必须出现。
+
+### 附录与资料来源（约 41-50 页）
+
+- 扩展财务预测、详细假设、可比公司完整表和敏感性表。
+- 按监管文件、业绩材料、公司材料、行业资料和新闻分类列出来源及日期。
+- 所有 URL 使用可点击超链接。
+
+## 必需表格
+
+12-20 张表至少包括：
+
+1. 首页财务摘要。
+2. 完整利润表。
+3. 产品收入拆分。
+4. 地区收入拆分。
+5. 现金流或资产负债表重点。
+6. 关键经营指标。
+7. 毛利率/利润率桥接。
+8. 营运资本或资本开支。
+9. 乐观/中性/悲观情景对比。
+10. DCF 核心假设。
+11. DCF 敏感性矩阵。
+12. 可比公司及统计区间。
+13. 估值方法汇总。
+
+其余表格只在能支持判断时添加，不为凑数量复制数据。
+
+## 组装工作流
+
+### 1. 读取并核对输入
+
+- 解压 Task 4 图表包，核对图数、索引和四张强制图。
+- Task 4 图号仅作为素材 ID；DOCX 中按出现顺序使用连续图号，并保留素材 ID 到报告图号的映射。
+- 读取 Task 1/3 Markdown；记录章节、来源和需要保留的引用。
+- 使用电子表格能力读取 Task 2/3 模型，核对工作表、年份、单位和公式结果。
+- 建立“报告数字/表格/图表 → 模型单元格或来源”的映射，先解决冲突再写报告。
+
+### 2. 建立 DOCX 骨架
+
+使用文档技能创建真实 DOCX，并遵循其渲染验证流程。先设置页面、样式、中文字体、标题层级、页眉页脚、页码和目录，再建立五个主章节。不要用 Markdown 或纯文本冒充 DOCX。
+
+### 3. 导入 Task 1
+
+将公司与行业章节转换为 Word 段落和表格，保留事实及引用；在讨论相应主题后插入公司历史、管理层、产品、客户、TAM 和竞争图表。
+
+### 4. 写财务与情景分析
+
+从模型读取历史和预测数据，生成 Word 表格并解释驱动。每个关键结论必须带数字，预测假设写明依据和证伪条件。不得写“详见模型”来代替分析。
+
+### 5. 导入估值并写结论
+
+从 Task 3 文字和模型估值表导入 DCF、可比公司和估值汇总，插入对应图表。重新计算目标价、上涨空间和关键倍数，确认与模型一致。
+
+### 6. 写首页、附录和来源
+
+全文完成后写首页；附录放详细数据而不是正文必须结论。建立统一来源列表和可点击链接。
+
+### 7. 渲染检查并修正
+
+按文档技能要求渲染每页，检查分页、表格宽度、图片清晰度、标题孤行、页眉页脚、目录、超链接和中文字体。迭代到没有重叠、溢出、乱码或空白异常再交付。
+
+## 最终验收
+
+- [ ] 文件能打开，渲染为 30-50 页且无布局错误。
+- [ ] 10,000-15,000 字，25-35 张图，12-20 张表。
+- [ ] 首页字段、核心观点、财务摘要和相对合适基准指数的股价图完整。
+- [ ] 图 03、04、28、32 均已内嵌且清晰。
+- [ ] 预测假设和三种情景具体、量化且与模型一致。
+- [ ] 可比公司表含完整统计区间。
+- [ ] 报告数字随机抽查并复算通过；目标价和上涨空间与模型一致。
+- [ ] Task 2/3 XLSX 仍存在且可打开，仅作为核对依据，未被 Task 5 重复交付。
+- [ ] 每张图和重要表格有来源，所有 URL 可点击。
+- [ ] 中文场景没有不必要的英文模板残留或乱码。
+- [ ] 无占位符、Markdown 标记、裁切、重叠、溢出或异常空白页。
+- [ ] 最终只交付 `[Company]_Initiation_Report_[Date].docx`。

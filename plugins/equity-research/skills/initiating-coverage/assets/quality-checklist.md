@@ -24,14 +24,14 @@ Before delivering an initiation report, verify all items below are complete.
 - ❌ Fewer than 25 embedded charts → INCOMPLETE
 - ❌ Fewer than 12 comprehensive tables → INCOMPLETE
 - ❌ Fewer than 10,000 words → INCOMPLETE
-- ❌ No XLS financial model → MISSING DELIVERABLE
+- ❌ Existing Task 2/3 XLSX model is missing or cannot be opened → MISSING PREREQUISITE
 - ❌ Charts are text descriptions, not actual PNG/JPG files → MAJOR FAILURE
 
 ## Deliverables Checklist
 
 - [ ] DOCX report file created
-- [ ] XLS financial model file created
-- [ ] Both files named properly: `[Company]_Initiation_Report_[Date].docx` and `[Company]_Financial_Model_[Date].xlsx`
+- [ ] Existing Task 2/3 XLSX model opens and contains the source calculations used by the report
+- [ ] Task 5 creates and delivers only `[Company]_Initiation_Report_[Date].docx`; it does not recreate or redeliver the XLSX model
 
 ## DOCX Report - Length & Content
 
@@ -47,6 +47,7 @@ Before delivering an initiation report, verify all items below are complete.
 - [ ] Charts and tables interspersed throughout, not grouped at end
 
 **Chart Requirements:**
+- [ ] Price performance chart compares the company with an appropriate benchmark index
 - [ ] Revenue by product chart: Stacked Area format ✓
 - [ ] Revenue by geography chart: Stacked Bar format ✓
 - [ ] DCF sensitivity: 2-way Heat Map with color coding ✓
@@ -135,11 +136,11 @@ Before delivering an initiation report, verify all items below are complete.
 - [ ] Every source has date
 - [ ] Every source has clickable hyperlink (where applicable)
 
-## XLS Financial Model - Structure
+## Existing Task 2/3 XLSX Model - Structure Check
 
 **File Structure:**
-- [ ] 15+ tabs in Excel workbook
-- [ ] Tabs include: Executive Summary, Assumptions, Historical Financials, Revenue Model, Operating Expenses, Income Statement, Balance Sheet, Cash Flow, Supporting Schedules, DCF Valuation, Comps Analysis, Precedent Transactions, Scenarios, Sensitivity Analysis, Charts
+- [ ] Task 2 的 6 个核心表仍完整，Task 3 已增加 DCF、Sensitivity Analysis、Comparable Companies、Valuation Summary 四个估值表
+- [ ] 可比交易及其他辅助表只在适用且有可靠数据时增加，不以工作表数量代替模型完整性
 
 **Formatting:**
 - [ ] Blue text for hardcoded inputs
@@ -155,7 +156,7 @@ Before delivering an initiation report, verify all items below are complete.
 - [ ] All important cells/ranges are named
 - [ ] Sensitivity tables work dynamically
 
-## XLS Financial Model - Content
+## Existing Task 2/3 XLSX Model - Content Check
 
 **Projections:**
 - [ ] 3-5 years historical data
@@ -170,7 +171,7 @@ Before delivering an initiation report, verify all items below are complete.
 - [ ] WACC calculation with all components
 - [ ] Terminal value calculation
 - [ ] Comparable companies analysis (5-10 companies)
-- [ ] Precedent transactions analysis (5-10 deals)
+- [ ] Precedent transactions analysis included when applicable and supported by reliable data
 - [ ] Scenario analysis (Bull/Base/Bear)
 - [ ] Two sensitivity tables
 
@@ -238,7 +239,7 @@ Before delivering an initiation report, verify all items below are complete.
 
 Run through this quick final review:
 
-1. **Deliverables**: Both DOCX and XLS files created ✓
+1. **Deliverable**: DOCX created; existing Task 2/3 XLSX opened for verification but not redelivered ✓
 2. **Length**: DOCX is 30-50 pages ✓
 3. **Charts**: 25-35 actual PNG/JPG files embedded ✓
 4. **Tables**: 12-20 comprehensive tables included ✓
@@ -259,8 +260,8 @@ DOCX Report:
 - Table count: _____ tables (MUST BE 12-20)
 - Word count: _____ words (MUST BE 10,000-15,000)
 
-XLS Model:
-- Tab count: _____ tabs (SHOULD BE 15+)
+Existing Task 2/3 XLSX model (verification only):
+- Core/valuation tabs checked: _____ (6 Task 2 core tabs + 4 Task 3 valuation tabs required)
 - Model years: _____ historical + _____ projected
 
 If any count is below minimum, STOP and add content before delivery.

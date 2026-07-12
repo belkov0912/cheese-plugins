@@ -1,6 +1,6 @@
 # Best Practices, Examples, and Quality Guidelines
 
-This document provides examples, tips for success, common mistakes to avoid, and comprehensive quality checklists.
+This document provides examples, tips for success, common mistakes to avoid, and comprehensive quality checklists. Page, word and chart minimums apply only to a full earnings update, not to a “quick take”, “flash note” or “快评”.
 
 ## Example Headlines
 
@@ -96,6 +96,8 @@ Before delivering earnings update, verify all items below:
 
 ### Format & Length Checklist
 
+本节只适用于完整更新；快评使用 `SKILL.md` 的简短交付契约。
+
 **Overall Structure:**
 - [ ] Report is 8-12 pages (not shorter, not longer)
 - [ ] Page 1 has earnings summary format
@@ -181,7 +183,7 @@ Before delivering earnings update, verify all items below:
 - [ ] ✅ **Did NOT rely on knowledge cutoff - actively searched for current data**
 - [ ] Consensus estimates are pre-earnings (not post-earnings)
 - [ ] No outdated information included
-- [ ] Earnings release date is within last 1-3 months (not 6+ months old)
+- [ ] 已按 IR 与监管文件时间线确认这是截至当前日期公开的最新一期，不按材料年龄单独判断
 
 ### Writing Style Checklist
 
@@ -200,7 +202,9 @@ Before delivering earnings update, verify all items below:
 
 ## Pre-Delivery Final Check
 
-Run through this quick final check before sending report to user:
+本节只适用于完整更新；快评只检查数字、期间、结论和来源后按简短格式交付。
+
+Run through this final check before sending the full report to user:
 
 ### 5-Minute Final Review:
 1. **Page 1**: Rating clear? Price target updated? Key takeaways compelling?
@@ -214,7 +218,7 @@ Run through this quick final check before sending report to user:
 
 If all items check out, the report is ready for delivery.
 
-## Summary Delivery Format
+## Full Update Summary Delivery Format
 
 When delivering the completed report to the user, provide this summary:
 

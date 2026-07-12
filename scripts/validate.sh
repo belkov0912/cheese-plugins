@@ -28,13 +28,26 @@ def frontmatter(path: Path):
         fail(f"{path.relative_to(root)} missing YAML frontmatter")
         return {}
     data = {}
-    for line in lines[1:]:
+    i = 1
+    while i < len(lines):
+        line = lines[i]
         if line.strip() == "---":
             return data
         match = re.match(r"^([A-Za-z0-9_-]+):\s*(.*)$", line)
         if match:
-            value = match.group(2).strip().strip('"').strip("'")
-            data[match.group(1)] = value
+            key, value = match.group(1), match.group(2).strip()
+            if re.fullmatch(r"[>|][+-]?", value):
+                folded = value.startswith(">")
+                block = []
+                i += 1
+                while i < len(lines) and (not lines[i] or lines[i][0].isspace()):
+                    block.append(lines[i].strip())
+                    i += 1
+                parts = [part for part in block if part]
+                data[key] = (" " if folded else "\n").join(parts)
+                continue
+            data[key] = value.strip('"').strip("'")
+        i += 1
     fail(f"{path.relative_to(root)} frontmatter is not closed")
     return data
 
@@ -131,6 +144,12 @@ for skill_file in skill_files:
         fail(f"{skill_file.relative_to(root)} missing frontmatter description")
     if data.get("name") and data["name"] != skill_file.parent.name:
         fail(f"{skill_file.relative_to(root)} name does not match folder")
+    if data.get("name") and not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", data["name"]):
+        fail(f"{skill_file.relative_to(root)} name must use lowercase letters, numbers, and hyphens")
+    if len(data.get("name", "")) > 64:
+        fail(f"{skill_file.relative_to(root)} name exceeds 64 characters")
+    if len(data.get("description", "")) > 1024:
+        fail(f"{skill_file.relative_to(root)} description exceeds 1024 characters")
 
 if errors:
     for error in errors:

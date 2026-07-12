@@ -1,6 +1,6 @@
 # Report Structure and Templates
 
-This document provides complete page-by-page templates and formatting requirements for the earnings update DOCX report.
+This document provides complete page-by-page templates and formatting requirements for the full earnings update DOCX report. It does not apply to a “quick take”, “flash note” or “快评”.
 
 ## Complete Report Structure
 

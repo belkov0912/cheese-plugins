@@ -3,16 +3,14 @@
 
 The script intentionally reuses the rule-trigger plugin implementation:
 - R7 comes from r7.score_r7 on a frame truncated at anchor date.
-- R1 is rebuilt cross-sectionally for each historical anchor date with the
-  current AI whitelist. That makes the historical result an upper-bound version
-  because the whitelist itself is a current snapshot.
+- R1 uses the official SW level-1 sector 5/20-day strength and historical
+  stock-sector classification, then ranks stocks inside the selected sectors.
 
 Default universe excludes bj* and sh688*, matching r7/r1 plugin defaults.
 """
 from __future__ import annotations
 
 import argparse
-import bisect
 import csv
 import datetime as dt
 import math
@@ -20,7 +18,6 @@ import os
 import random
 import re
 import sys
-from collections import defaultdict
 from pathlib import Path
 
 import pandas as pd
@@ -42,13 +39,13 @@ DEFAULT_STEP = 10
 DEFAULT_RANDOM_N = 10000
 DEFAULT_OUT = DEFAULT_RULE_SCRIPTS.parent / "out" / "a-share-latest-rating"
 UNIVERSE_EXCLUDES = ("bj", "sh688")
-AI_WHITELIST_FORWARD_LOOKING = True
+R1_REFERENCE_HAS_REVISION_RISK = True
 # latest 模式的仓覆盖率下限:追平当日 K 线的票占比低于此值 → 拒绝评级(半更新会静默坍缩,见 #1)。
 MIN_FRESH_COVERAGE = 0.95
 
 
 # Iteration rule block. Change only one small rule unit per optimization round.
-RULE_VERSION = "v2_a_requires_r1_4"
+RULE_VERSION = "v3_dynamic_sw1_r1"
 S_MIN_R7 = 4
 S_MIN_R1 = 5
 S_MIN_TOTAL = 9
@@ -70,10 +67,6 @@ def pct(x: float | None) -> str:
 
 def frame_slice(frame: dict[str, list], end_idx: int) -> dict[str, list]:
     return {k: v[: end_idx + 1] for k, v in frame.items()}
-
-
-def date_index(frame: dict[str, list]) -> dict[str, int]:
-    return {str(d): i for i, d in enumerate(frame["date"])}
 
 
 def load_name_map() -> dict[str, str]:
@@ -126,7 +119,7 @@ def r7_probe_age(desc: str, hist: dict[str, list]) -> int | None:
 
 
 def future_metrics(frame: dict[str, list], anchor_idx: int) -> dict[str, float] | None:
-    # hit10/hit20 用“最高收盘价”口径,与 r7/r9/r1 定版一致(features.outcome_return 也用 close);
+    # hit10/hit20 用“最高收盘价”口径,与 r7/r9/r1 定版及 bt_common.outcome_return 一致;
     # 之前用 frame["high"](盘中最高价)导致同名 hit10 系统性偏高、跨 skill 不可比(见 #2)。
     close0 = float(frame["close"][anchor_idx])
     if not close0 or anchor_idx + max(OUTCOME_WINDOWS) >= len(frame["close"]):
@@ -187,50 +180,19 @@ def build_anchor_rows(
 def build_r1_context(
     frames: dict[str, dict[str, list]],
     needed_dates: set[str],
-) -> dict[str, dict[str, tuple[float, float, int]]]:
-    whitelist = r1.load_whitelist()
-    index_by_sym = {sym: date_index(frame) for sym, frame in frames.items()}
-    by_date: dict[str, list[tuple[str, float]]] = defaultdict(list)
-    for sym, frame in frames.items():
-        if is_excluded(sym) or sym[2:] not in whitelist:
-            continue
-        idx_map = index_by_sym[sym]
-        close = frame["close"]
-        for d in needed_dates:
-            idx = idx_map.get(d)
-            if idx is None or idx < r1.RET_N:
-                continue
-            base = float(close[idx - r1.RET_N])
-            if base:
-                by_date[d].append((sym, float(close[idx]) / base - 1))
-
-    context: dict[str, dict[str, tuple[float, float, int]]] = {}
-    for d, vals in by_date.items():
-        sorted_vals = sorted(ret for _, ret in vals)
-        n = len(sorted_vals)
-        daily: dict[str, tuple[float, float, int]] = {}
-        for sym, ret in vals:
-            rank = bisect.bisect_right(sorted_vals, ret) / n if n else 0.0
-            daily[sym] = (rank, ret, n)
-        context[d] = daily
-    return context
+) -> tuple[dict[str, dict[str, dict]], dict[str, dict[str, dict]]]:
+    return r1.build_context(frames, needed_dates)
 
 
 def r1_score_for(
     sym: str,
     anchor_date: str,
-    r1_context: dict[str, dict[str, tuple[float, float, int]]],
-    whitelist: set[str],
-) -> tuple[int | None, float | None, float | None, int]:
+    r1_context: dict[str, dict[str, dict]],
+) -> tuple[int | None, dict | None]:
     if is_excluded(sym):
-        return None, None, None, 0
-    if sym[2:] not in whitelist:
-        return 1, None, None, 0
-    row = r1_context.get(anchor_date, {}).get(sym)
-    if row is None:
-        return None, None, None, len(r1_context.get(anchor_date, {}))
-    rank, ret20, cohort_n = row
-    return r1.tier_from_rank(rank), rank, ret20, cohort_n
+        return None, None
+    record = r1_context.get(anchor_date, {}).get(sym)
+    return (record["score"], record) if record else (None, None)
 
 
 def rate_combo(r7_score: int | None, r1_score: int | None) -> tuple[str, str]:
@@ -262,8 +224,7 @@ def build_pool(args: argparse.Namespace) -> tuple[pd.DataFrame, dict[str, str]]:
     if not rows:
         raise SystemExit("无可用回测样本：检查日期区间、step 或数据长度。")
     print(f"  anchors {len(rows)}; r1 dates {len(needed_dates)}", file=sys.stderr)
-    r1_context = build_r1_context(frames, needed_dates)
-    whitelist = r1.load_whitelist()
+    r1_context, _ = build_r1_context(frames, needed_dates)
     names = load_name_map()
 
     out = []
@@ -275,9 +236,7 @@ def build_pool(args: argparse.Namespace) -> tuple[pd.DataFrame, dict[str, str]]:
         frame = frames[sym]
         hist = frame_slice(frame, anchor)
         r7_score, r7_desc, _ = r7.score_r7(hist)
-        r1_score, rank, ret20, cohort_n = r1_score_for(
-            sym, row["anchor_date"], r1_context, whitelist
-        )
+        r1_score, r1_record = r1_score_for(sym, row["anchor_date"], r1_context)
         rating, reason = rate_combo(r7_score, r1_score)
         metrics = future_metrics(frame, anchor)
         if metrics is None or rating == "N/A":
@@ -291,9 +250,13 @@ def build_pool(args: argparse.Namespace) -> tuple[pd.DataFrame, dict[str, str]]:
                 "r7": int(r7_score),
                 "r7_probe_age": r7_probe_age(r7_desc, hist),
                 "r1": int(r1_score),
-                "r1_rank": rank,
-                "r1_ret20": ret20,
-                "r1_cohort_n": cohort_n,
+                "r1_rank": r1_record["stock_rank"],
+                "r1_ret20": r1_record["stock_ret20"],
+                "r1_cohort_n": r1_record["sector_n"],
+                "r1_sector": r1_record["sector_name"],
+                "r1_sector_rank": r1_record["sector_rank"],
+                "r1_sector_ret5": r1_record["sector_ret5"],
+                "r1_sector_ret20": r1_record["sector_ret20"],
                 "rating": rating,
                 "rating_reason": reason,
                 "hit10": metrics["max_ret_20"] >= 0.10,
@@ -350,13 +313,13 @@ def selected_baselines(pool: pd.DataFrame, random_n: int, seed: int) -> list[tup
     return [
         (f"全市场随机样本(seed={seed}, n={n})", random_df, "从全样本确定性抽样"),
         ("R7 单因子: R7>=4", pool[pool["r7"] >= 4], "只看试盘回踩形态"),
-        ("R1 单因子: R1>=4", pool[pool["r1"] >= 4], "只看主线内相对强度"),
+        ("R1 单因子: R1>=4", pool[pool["r1"] >= 4], "动态主线行业内前排"),
         (
             "简单交集: R7>=4 且 R1>=4",
             pool[(pool["r7"] >= 4) & (pool["r1"] >= 4)],
             "两个因子硬交集",
         ),
-        ("R1=5 单独前排", pool[pool["r1"] == 5], "主线前7%"),
+        ("R1=5 单独前排", pool[pool["r1"] == 5], "动态主线行业内前7%"),
     ]
 
 
@@ -429,9 +392,10 @@ def write_report(pool: pd.DataFrame, meta: dict[str, str], args: argparse.Namesp
                  f"（step<标签窗20日，同票相邻样本标签窗重叠、且状态跨锚点持续，有效独立样本远小于名义 n）。")
     lines.append("- 默认 universe: 排除 bj* 与 sh688*；用未来收盘价算标签、不用未来数据算特征。")
     lines.append("- R7: 每个锚点先截断到当日再调用 `r7.score_r7()`。")
-    lines.append("- R1: 每个历史日只用当日及以前 20 日涨幅做 AI 白名单横截面 rank；但 AI 白名单是当前快照，历史结果是上界版本。")
+    lines.append("- R1: 申万一级行业先按 5/20 日涨幅选动态主线，再按个股 20 日涨幅做行业内 rank；价格与行业归属均按锚点日截断。")
     lines.append("- hit10 = 未来20个交易日内**最高收盘价**较锚点收盘 >=10%；hit20 = >=20%（收盘口径，与 r7/r9/r1 定版一致、可横比）。")
     lines.append("- 「20日最低(相对入场)」= 未来20日盘中最低价相对锚点收盘的跌幅（是相对入场价的最深处，非峰谷式最大回撤）。")
+    lines.append("- 申万历史行业分类文件是本次运行时下载的当前版本，虽按 start_date 还原，但仍可能含事后修订；严格无修订偏差需从现在起保存每日快照。")
     lines.append("- universe 取当前在市票的本地仓，样本期内退市/长停票不在池中，基线与各档命中率含幸存者偏差、同向偏高。\n")
 
     lines.append("## 当前组合分档规则\n")
@@ -524,8 +488,7 @@ def run_latest(args: argparse.Namespace) -> None:
             else:
                 unresolved.append(token)
     needed_dates = {data_max}
-    r1_context = build_r1_context(frames, needed_dates)
-    whitelist = r1.load_whitelist()
+    r1_context, r1_states = build_r1_context(frames, needed_dates)
     rows = []
     for sym, frame in frames.items():
         if target_syms is not None and sym not in target_syms:
@@ -535,7 +498,7 @@ def run_latest(args: argparse.Namespace) -> None:
         anchor = len(frame["date"]) - 1
         hist = frame_slice(frame, anchor)
         r7_score, r7_desc, _ = r7.score_r7(hist)
-        r1_score, rank, ret20, cohort_n = r1_score_for(sym, data_max, r1_context, whitelist)
+        r1_score, r1_record = r1_score_for(sym, data_max, r1_context)
         rating, reason = rate_combo(r7_score, r1_score)
         if rating == "N/A":
             continue
@@ -546,9 +509,13 @@ def run_latest(args: argparse.Namespace) -> None:
                 "name": names.get(sym, ""),
                 "r7": r7_score,
                 "r1": r1_score,
-                "rank": rank,
-                "ret20": ret20,
-                "cohort_n": cohort_n,
+                "rank": r1_record["stock_rank"],
+                "ret20": r1_record["stock_ret20"],
+                "cohort_n": r1_record["sector_n"],
+                "sector": r1_record["sector_name"],
+                "sector_rank": r1_record["sector_rank"],
+                "sector_ret5": r1_record["sector_ret5"],
+                "sector_ret20": r1_record["sector_ret20"],
                 "reason": reason,
                 "r7_desc": r7_desc,
             }
@@ -562,12 +529,20 @@ def run_latest(args: argparse.Namespace) -> None:
         rows = rows[: args.top]
     single = target_syms is not None
     print(f"# A股最近完整交易日观察评级（{data_max}，规则 {RULE_VERSION}）")
-    if AI_WHITELIST_FORWARD_LOOKING:
-        print("# 注意：R1 使用当前 AI 白名单，历史回测为上界版本；不下单、不荐股。")
-    header = "rating,code,name,r7,r1,rank,ret20,cohort_n,reason"
+    if R1_REFERENCE_HAS_REVISION_RISK:
+        print("# 注意：R1 已改为申万动态行业主线；历史行业分类可能含事后修订。不下单、不荐股。")
+    if data_max in r1_states:
+        mainline_names = [
+            row["sector_name"]
+            for row in sorted(r1_states[data_max].values(), key=lambda x: -x["sector_rank"])
+            if row["mainline"]
+        ]
+        print("# 动态主线行业：" + "、".join(mainline_names))
+    header = "rating,code,name,r7,r1,sector,sector_rank,sector_ret5,sector_ret20,rank,ret20,cohort_n,reason"
     print(header + (",r7_desc" if single else ""))
     for token in unresolved:
-        print(f"N/A,{token},名称无法唯一解析,,,,,,请给6位代码")
+        fields = ["N/A", token, ""] + [""] * 9 + ["名称无法唯一解析，请给6位代码"]
+        print(",".join(fields + ([""] if single else [])))
     if single:
         found = {r["code"] for r in rows}
         for sym in sorted(target_syms - found):
@@ -576,15 +551,19 @@ def run_latest(args: argparse.Namespace) -> None:
                 why = "北交所/科创板688 不在 R1 回测口径,不打分"
             elif sym not in frames:
                 why = f"本地仓无数据或历史不足({r1.RET_N + 1}根)——次新/未建仓,跑 r0-data 补"
+            elif sym not in r1_context.get(data_max, {}):
+                why = "申万行业归属、行业指数或20日前同日行情缺失，R1不打分"
             else:
                 last = frames[sym]["date"][-1]
                 why = f"数据止于{last}≠最新日{data_max}(停牌,或本地仓没更新到当日——跑 r0-data 增量)"
-            print(f"N/A,{sym},{names.get(sym, '')},,,,,,{why}" + ("," if single else ""))
+            fields = ["N/A", sym, names.get(sym, "")] + [""] * 9 + [why]
+            print(",".join(fields + ([""] if single else [])))
     for r in rows:
         rank = "" if r["rank"] is None else f"{r['rank']:.3f}"
         ret20 = "" if r["ret20"] is None else f"{r['ret20']:.4f}"
         line = (
             f"{r['rating']},{r['code']},{r['name']},{r['r7']},{r['r1']},"
+            f"{r['sector']},{r['sector_rank']:.3f},{r['sector_ret5']:.4f},{r['sector_ret20']:.4f},"
             f"{rank},{ret20},{r['cohort_n']},{r['reason']}"
         )
         # #12: 单票模式带上 R7 证据化描述(试盘日/量比/回踩缩量比),对齐 r7-trigger 的信息量。
@@ -639,10 +618,8 @@ def _selftest() -> None:
     assert rate_combo(None, 5)[0] == "N/A" and rate_combo(4, None)[0] == "N/A", "缺因子应 N/A"
     # A 档理由必须点出 R1>=4(#10 回归防护)
     assert "R1>=4" in rate_combo(3, 5)[1], "A 档理由应包含 R1>=4"
-    # 白名单快照可读、为 6 位代码
-    wl = r1.load_whitelist()
-    assert len(wl) > 1000 and all(len(c) == 6 for c in wl), "白名单快照应为6位代码"
-    print(f"a_share_latest_rating 自检通过 ✓  规则 {RULE_VERSION}，白名单 {len(wl)} 只")
+    assert len(r1.SW1) == 31 and "27" in r1.SW1, "申万一级行业映射应完整"
+    print(f"a_share_latest_rating 自检通过 ✓  规则 {RULE_VERSION}，申万一级行业 {len(r1.SW1)} 个")
 
 
 if __name__ == "__main__":

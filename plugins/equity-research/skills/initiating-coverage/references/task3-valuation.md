@@ -17,7 +17,7 @@ This document provides step-by-step instructions for executing Task 3 (Valuation
 
 ## Task Overview
 
-**Purpose**: Perform comprehensive valuation using DCF, comparables, and precedent transactions.
+**Purpose**: Perform comprehensive valuation using DCF and comparables, adding precedent transactions only when applicable and supported by reliable data.
 
 **Prerequisites**: ⚠️ Verify before starting
 - **Required**: Financial model from Task 2

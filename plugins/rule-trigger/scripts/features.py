@@ -91,13 +91,10 @@ def compute_features(frame, anchor_idx, cfg):
 
 
 def outcome_return(frame, anchor_idx, outcome_len):
-    """O 窗口结果：anchor 之后 outcome_len 根的最大收盘涨幅（相对 anchor 收盘）。不足返回 None。"""
-    close = frame["close"]
-    if anchor_idx + outcome_len >= len(close):
-        return None
-    base = close[anchor_idx]
-    fwd = close[anchor_idx + 1: anchor_idx + 1 + outcome_len]
-    return max(fwd) / base - 1 if base and fwd else None
+    """兼容旧接口；结果口径统一由 bt_common.outcome_return 维护。"""
+    from bt_common import outcome_return as _outcome_return
+
+    return _outcome_return(frame, anchor_idx, outcome_len)
 
 
 # ---------------- 自检 ----------------

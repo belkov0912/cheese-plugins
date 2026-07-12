@@ -10,14 +10,12 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import math
-import os
 import statistics
 import sys
 
 import fetch
 import store
-
-DEFAULT_TODAY_EXCLUDES = ("bj", "sh688")
+from r0 import _name_map, resolve, _is_default_today_excluded, _scan_today
 
 SETUP_LEN = 20
 PULLBACK_LEN = 5
@@ -241,35 +239,6 @@ def score_r7(frame):
     return 1, "R7=1 最近20日无明显相对放量试盘，也没有缩量回踩结构", None
 
 
-def _name_map():
-    import csv
-    c2n, n2c = {}, {}
-    up = os.path.join(store.STORE, "universe.csv")
-    if os.path.exists(up):
-        with open(up, encoding="utf-8") as f:
-            for row in csv.DictReader(f):
-                c2n[row["code"]] = row["name"]
-                n2c[row["name"]] = row["code"]
-    return c2n, n2c
-
-
-def resolve(token, n2c):
-    t = token.strip()
-    if t[:2].lower() in ("sh", "sz", "bj") and t[2:].isdigit():
-        return t.lower()
-    if t.isdigit() and len(t) == 6:
-        pref = "sh" if t[0] == "6" else ("bj" if t[0] in "489" else "sz")
-        return pref + t
-    if t in n2c:
-        return n2c[t]
-    hit = [c for n, c in n2c.items() if t in n]
-    return hit[0] if len(hit) == 1 else None
-
-
-def _is_default_today_excluded(sym):
-    return sym.startswith(DEFAULT_TODAY_EXCLUDES)
-
-
 def _screen_factor(sym, frame):
     """后复权→屏幕价换算因子（= 仓内 hfq 收盘 / 同日原始收盘）。
     拉最近两周原始价按日期配对；拿不到（断网/限流/停牌无重叠日）返回 None，调用方退回打后复权价。"""
@@ -313,43 +282,8 @@ def score_one(sym):
 
 
 def cmd_today(min_score, include_bj688=False):
-    syms = store.list_symbols()
-    if not syms:
-        print(f"本地仓为空（{store.STORE}）。先建仓： python3 store.py backfill --days 400", file=sys.stderr)
-        sys.exit(1)
-    c2n, _ = _name_map()
-    rows, lasts = [], []
-    excluded = 0
-    for i, sym in enumerate(syms):
-        if i % 1000 == 0:
-            print(f"  扫描 {i}/{len(syms)}", file=sys.stderr)
-        if not include_bj688 and _is_default_today_excluded(sym):
-            excluded += 1
-            continue
-        frame = store.load_frame(sym)
-        if not frame:
-            continue
-        lasts.append(frame["date"][-1])
-        tier, desc, _ = score_r7(frame)   # 名单不换算屏幕价（每只都要一次网络请求，不值得）
-        if tier is not None and tier >= min_score:
-            rows.append((tier, sym, c2n.get(sym, ""), desc, frame["date"][-1]))
-    if not lasts:
-        print("本地仓文件全部读不出来（多半缺 pyarrow 或文件损坏）", file=sys.stderr)
-        sys.exit(1)
-    data_max = max(lasts)
-    stale_cut = (dt.date.fromisoformat(data_max) - dt.timedelta(days=15)).isoformat()
-    stale_n = sum(1 for r in rows if r[4] < stale_cut)
-    rows = [r for r in rows if r[4] >= stale_cut]
-    rows.sort(key=lambda r: (-r[0], r[1]))
-    notes = []
-    if not include_bj688:
-        notes.append(f"默认排除 bj*/sh688* {excluded} 只")
-    if stale_n:
-        notes.append(f"另剔除 {stale_n} 只停牌/数据过旧票")
-    note = "；" + "；".join(notes) if notes else ""
-    print(f"# 最近20日试盘后回踩（R7≥{min_score}）名单（数据截至 {data_max}，共 {len(rows)} 只{note}）\n")
-    for tier, sym, name, desc, _ in rows:
-        print(f"{tier}  {sym} {name:<6}  {desc}")
+    _scan_today(score_r7, min_score, include_bj688,
+                f"最近20日试盘后回踩（R7≥{min_score}）名单")
 
 
 def main():

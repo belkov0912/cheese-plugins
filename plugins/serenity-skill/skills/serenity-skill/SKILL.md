@@ -230,7 +230,6 @@ Load only what is needed:
 - `assets/bottleneck-scorecard.json` — JSON input template for the scorecard.
 - `assets/research-prompt-pack.md` — prompts for users who want explicit task starters.
 - `scripts/serenity_scorecard.py` — local scoring script.
-- `scripts/validate_skill.py` — local Agent Skill structure validator.
 - `examples/a-share-ai-semiconductor-demo.md` — A-share AI semiconductor example shape.
 - `examples/ai-infrastructure-chokepoint-demo.md` — end-to-end example.
 - `evals/test-cases.md` — trigger and behavior tests.

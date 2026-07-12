@@ -1,51 +1,51 @@
-# R0 插件阈值快照（快照于 2026-07-03）。本文件就是本插件的有效配置，改这里即调参。
-# （维护者备注，仅作者机器适用：权威版在私有扫描器仓库，同步方式见插件 README「与扫描器的同步」。
-#   非作者机器上不存在那个仓库，以本文件为准即可。）
-# 窗口口径见 启动前规律_评分卡_v1.md §0
-# 交易日索引：today=最后一根K线。anchor = today - outcome_len（打分锚点，只用 ≤anchor 的数据）
+# R0/旧版 R7 回测阈值快照（2026-07-03）。改这里即调参。
 windows:
-  pre20_len: 20        # 启动前窗长度（算位置/换手/形态）
-  launch_len: 5        # 判定窗 J（找启动确认K线）
-  outcome_len: 15      # 结果窗 O（看涨没涨）
-  breakout_lookback: 20  # 突破前 N 日高：最大 20，另需 5 日算量比 → 每票需 pre20+launch+lookback+outcome ≈ 50+ 根
+  pre20_len: 20
+  launch_len: 5
+  outcome_len: 15
+  breakout_lookback: 20
 
 outcome:
-  thetas: [0.20, 0.30, 0.50]   # 成功阈值：O 内最大涨幅 ≥ θ
+  thetas: [0.20, 0.30, 0.50]
 
-# ---- 各规律分段 ----
-R0:   # 启动扳机（J 内最强确认K线）
-  strong_pct: 0.07      # 强阳
+R0:
+  strong_pct: 0.07
   mid_pct: 0.05
   weak_pct: 0.04
-  volratio: 1.4         # 5日量比门槛
-  onechar_turnover: 0.02  # 换手<此值视为一字/买不到，降一档
-R2:   # 位置分
-  overheat_return: 0.60   # 启动前涨幅>此 → 置1
-  overheat_turnover: 0.15 # 启动前均换手>此 → 置1
+  volratio: 1.4
+  onechar_turnover: 0.02
+
+R1:  # 旧 score.py 的主线+财报占位；当前动态主线 R1 在 r1.py，不读取本段
+  growth_strong: 0.50
+
+R2:
+  overheat_return: 0.60
+  overheat_turnover: 0.15
   s5_return: [-0.15, 0.10]
-  s5_turnover: 0.035    # 均换手≥此值 → 分数封顶4
+  s5_turnover: 0.035
   s4_return: [0.10, 0.30]
-  s4_turnover: 0.08     # 均换手≥此值 → 分数封顶2
+  s4_turnover: 0.08
   s3_return: [0.30, 0.45]
   s2_return: [0.45, 0.60]
-R4:   # 市值(亿)
-  bands: [[50,150,5],[150,300,4],[300,500,3],[0,50,3],[500,1000,2],[1000,999999,1]]
-R5:   # 真PE_TTM 估值卫生（预期弱edge）
-  bands_pos: [[0,40,5],[40,70,4],[70,150,3],[150,500,2],[500,999999,1]]
-  small_loss_pe: -30     # PE_TTM 介于 [small_loss_pe,0) 视为小幅微亏 → 3 分；更负 → 1
-R7:   # 试盘后回踩
-  active_turnover: [0.08, 0.15]
-  probe_pct: 0.10        # 试盘大阳
-  probe_turnover: 0.15
-  limit_pct: 0.099       # 近似涨停
-  pullback_ratio: 0.8    # 末5日量能/前段 ≤ 此为回踩缩量
 
-R1:   # 主线+财报
-  growth_strong: 0.50    # 同比>50% → F=2
+R4:
+  bands: [[50, 150, 5], [150, 300, 4], [300, 500, 3], [0, 50, 3], [500, 1000, 2], [1000, 999999, 1]]
+
+R5:
+  bands_pos: [[0, 40, 5], [40, 70, 4], [70, 150, 3], [150, 500, 2], [500, 999999, 1]]
+  small_loss_pe: -30
+
 R6:
-  st_cap: 2              # ST/*ST 综合分封顶
+  st_cap: 2
 
-# 综合分权重（初始，验证后按实测 edge 重定）
+# 仅供 backtest_r7.py 的旧绝对换手口径对照；当前 R7 参数在 r7.py。
+R7:
+  active_turnover: [0.08, 0.15]
+  probe_pct: 0.10
+  probe_turnover: 0.15
+  limit_pct: 0.099
+  pullback_ratio: 0.8
+
 weights:
   R0: 0.20
   R1: 0.15
@@ -57,7 +57,6 @@ weights:
   R7: 0.12
   R8: 0.08
 
-# 挑战者综合分 v2（iteration-2）：剔哑规则(R6/R8)、R1 并入 R3、R5 归零，其余等比放大
 weights_v2:
   R0: 0.25
   R1: 0.0
@@ -71,6 +70,6 @@ weights_v2:
 
 universe:
   drop_st: true
-  min_bars: 50           # 历史不足 → 剔（次新）
+  min_bars: 50
   ai_concepts: [算力, 光模块, CPO, 光通信, 半导体, 芯片, 存储, 先进封装, PCB, 覆铜板, 液冷, 智能驾驶, 汽车智能, AIGC, 人工智能, AI, GPU, 服务器, 数据中心, 华为昇腾, 英伟达, 消费电子, MLCC, 玻璃基板, 铜缆, 光刻, 电子特气]
   ai_industries: [半导体, 元件, 光学光电子, 计算机设备, 软件开发, 通信设备, 电子化学品, 消费电子, 光伏设备, 汽车零部件]

@@ -11,7 +11,7 @@ DATA = os.path.expanduser(os.environ.get("R0_DATA_DIR") or "~/.r0-data")
 
 
 def get_universe(cfg=None, limit=None):
-    """全A股 [(symbol, name)]，symbol 形如 sh688146/sz000001/bj920000。剔 ST/退市。
+    """全A股 [(symbol, name)]，symbol 形如 sh688146/sz000001/bj920000。默认剔 ST，始终剔退市。
     需要网络（sina 全A实时列表，偶尔被限流——限流时用 get_universe_offline 回退）。"""
     import akshare as ak
     drop_st = True if cfg is None else bool(cfg["universe"].get("drop_st", True))

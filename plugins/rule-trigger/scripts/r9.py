@@ -15,9 +15,8 @@ import sys
 
 import fetch
 import store
-from r7 import _name_map, resolve, _is_default_today_excluded, _screen_factor, _pct_series
-
-DEFAULT_TODAY_EXCLUDES = ("bj", "sh688")
+from r0 import _name_map, resolve, _scan_today
+from r7 import _screen_factor, _pct_series
 
 DOWN_LEN = 20        # 下跌段长度
 STAB_LEN = 7         # 企稳段长度
@@ -151,43 +150,8 @@ def score_one(sym):
 
 
 def cmd_today(min_score, include_bj688=False):
-    syms = store.list_symbols()
-    if not syms:
-        print(f"本地仓为空（{store.STORE}）。先建仓： python3 store.py backfill --days 400", file=sys.stderr)
-        sys.exit(1)
-    c2n, _ = _name_map()
-    rows, lasts = [], []
-    excluded = 0
-    for i, sym in enumerate(syms):
-        if i % 1000 == 0:
-            print(f"  扫描 {i}/{len(syms)}", file=sys.stderr)
-        if not include_bj688 and _is_default_today_excluded(sym):
-            excluded += 1
-            continue
-        frame = store.load_frame(sym)
-        if not frame:
-            continue
-        lasts.append(frame["date"][-1])
-        tier, desc, _ = score_r9(frame)   # 名单不换算屏幕价(每只都要一次网络请求,不值得)
-        if tier is not None and tier >= min_score:
-            rows.append((tier, sym, c2n.get(sym, ""), desc, frame["date"][-1]))
-    if not lasts:
-        print("本地仓文件全部读不出来（多半缺 pyarrow 或文件损坏）", file=sys.stderr)
-        sys.exit(1)
-    data_max = max(lasts)
-    stale_cut = (dt.date.fromisoformat(data_max) - dt.timedelta(days=15)).isoformat()
-    stale_n = sum(1 for r in rows if r[4] < stale_cut)
-    rows = [r for r in rows if r[4] >= stale_cut]
-    rows.sort(key=lambda r: (-r[0], r[1]))
-    notes = []
-    if not include_bj688:
-        notes.append(f"默认排除 bj*/sh688* {excluded} 只")
-    if stale_n:
-        notes.append(f"另剔除 {stale_n} 只停牌/数据过旧票")
-    note = "；" + "；".join(notes) if notes else ""
-    print(f"# 下跌反转确认（R9≥{min_score}）名单（数据截至 {data_max}，共 {len(rows)} 只{note}）\n")
-    for tier, sym, name, desc, _ in rows:
-        print(f"{tier}  {sym} {name:<6}  {desc}")
+    _scan_today(score_r9, min_score, include_bj688,
+                f"下跌反转确认（R9≥{min_score}）名单")
 
 
 def main():

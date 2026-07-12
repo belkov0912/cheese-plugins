@@ -16,7 +16,7 @@ This template provides the structure for creating a comprehensive equity researc
 **NOTE:** The actual report MUST be created using the DOCX skill. DO NOT generate markdown content.
 
 **CRITICAL REQUIREMENTS:**
-1. **Generate 20-30+ chart images** using Python (matplotlib/plotly) BEFORE creating the Word document
+1. **Generate 25-35 chart images** using Python (matplotlib/plotly) BEFORE creating the Word document
 2. **Use DOCX skill**: Create professional report with proper styles, headers/footers, and formatting
 3. **Embed actual chart images**: Insert the generated PNG/JPG chart files into the Word document at appropriate locations
 4. **NO MARKDOWN**: Do not generate markdown content. Use DOCX skill to create a .docx file.
@@ -24,7 +24,7 @@ This template provides the structure for creating a comprehensive equity researc
 **CRITICAL FORMATTING GUIDANCE:**
 - **MAXIMUM DENSITY**: Every page should be packed with information. Intersperse text, charts, and tables throughout.
 - **NO ORPHANED SECTIONS**: Never have a section header alone or a single chart on its own page.
-- **20-30+ ACTUAL CHART IMAGES**: Generate charts as image files, then embed within text sections using DOCX skill.
+- **25-35 ACTUAL CHART IMAGES**: Generate charts as image files, then embed within text sections using DOCX skill.
 
 ---
 
@@ -64,7 +64,7 @@ This template provides the structure for creating a comprehensive equity researc
 
 **TOP RIGHT - STOCK PRICE PERFORMANCE:**
 ```
-图 1 - [公司名称] 股价表现
+图 1 - [公司名称] 股价相对[合适基准指数]表现
 [展示 12-24 个月股价与基准指数对比的折线图]
 资料来源：交易所、Wind/Choice/同花顺、[机构名]估算。
 ```
@@ -128,7 +128,7 @@ EV/EBITDA（x）             XX.Xx       XX.Xx       XX.Xx       XX.Xx      XX.X
 3. **Source line** (always at bottom): `资料来源：公司公告、[机构名]估算。`
 
 **Examples:**
-- 图 1 - [公司] 股价表现
+- 图 1 - [公司] 股价相对[合适基准指数]表现
 - 图 2 - [公司] 历史与预测收入结构
 - 图 3 - [公司] 分地区收入
 - 图 4 - [产品名称] 收入与单价变化
@@ -155,7 +155,7 @@ For tables with multiple data sources:
 
 - Figures should be numbered in order of appearance in the report
 - First figure (Figure 1) is typically the stock price chart or revenue growth trajectory on Page 1
-- Each figure must have its caption directly below the visual
+- Put the numbered figure title above the visual; put source lines and any explanatory note below it
 - Source line should be in smaller font, italicized, at the very bottom of the figure
 
 ---
@@ -756,14 +756,16 @@ Add vertical line showing current stock price
 
 ## GRAPHICS & CHARTS TO INCLUDE
 
-**TARGET: 20-30+ charts throughout the report**
+**TARGET: 25-35 charts throughout the report**
+
+The numbers below are illustrative report-order slots, not Task 4 asset IDs. Select 25-35 useful charts, place them in narrative order, and assign final sequential numbers in the report.
 
 **CRITICAL PRINCIPLE**: Charts should be embedded within text sections, NOT grouped on separate pages. Every page (except TOC) should have at least one chart or table.
 
 ### Page 1 - Executive Summary (3 charts)
-1. Revenue/ARR growth trajectory (line chart, historical + projected)
-2. Key metrics dashboard (multi-panel chart)
-3. Market positioning or margin progression
+1. Stock price performance vs. an appropriate benchmark index
+2. Revenue/ARR growth trajectory (line chart, historical + projected)
+3. Key metrics dashboard (multi-panel chart)
 
 ### Pages 3-5 - Investment Thesis & Risks (3 charts)
 4. TAM growth and opportunity (stacked area chart)
@@ -833,7 +835,7 @@ Add vertical line showing current stock price
 
 3. **NO ORPHANED SECTIONS:** Never have a section header alone, or a single chart/table on its own page. Always combine elements. Example: DON'T put "Financial Snapshot" on page 6 by itself - integrate it with surrounding content.
 
-4. **20-30+ CHARTS:** Include extensive graphics throughout, with specific emphasis on:
+4. **25-35 CHARTS:** Include extensive graphics throughout, with specific emphasis on:
    - **Revenue by product/segment** (stacked area chart)
    - **Revenue by geography** (stacked bar chart)
    - **Financial performance trends** (multiple charts)

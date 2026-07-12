@@ -3,227 +3,75 @@ name: earnings-analysis
 description: 财报后点评：分析业绩超预期/低预期、关键指标、指引变化和投资结论。
 ---
 
-# Equity Research Earnings Update
+# Earnings Analysis
 
+为已有覆盖公司生成财报更新，重点回答本期超预期/低预期在哪里、原因是什么、指引和预测如何变化、原投资逻辑是否改变。
 
-Create professional **EARNINGS UPDATE REPORTS** analyzing quarterly results for companies already under coverage, following institutional standards (JPMorgan, Goldman Sachs, Morgan Stanley format).
+## 适用范围
 
-**Key Characteristics:**
-- **Length**: 8-12 pages
-- **Word Count**: 3,000-5,000 words
-- **Tables**: 1-3 summary tables (NOT comprehensive)
-- **Figures**: 8-12 charts
-- **Turnaround**: 1-2 days (within 24-48 hours of earnings)
-- **Audience**: Clients already familiar with the company
-- **Focus**: What's NEW - beat/miss, updated estimates, thesis impact
-- **Font**: Times New Roman throughout (unless user specifies otherwise)
+适用于季度/年度业绩点评和财报后更新。不用于首次覆盖。用户要求“快评”“flash note”或“quick take”时，使用简短交付格式，不套用完整报告篇幅和图表要求。
 
-## When to Use
+## 交付模式
 
-Use when the user requests:
-- "Create an earnings update for [Company] Q3 2024"
-- "Analyze [Company]'s quarterly results"
-- "Post-earnings report for [Company]"
-- "Q1/Q2/Q3/Q4 update for [Company]"
+- 完整更新：DOCX 8-12 页、3,000-5,000 字，含 8-12 张图和 1-3 张摘要表；文件名为 `[Company]_Q[Quarter]_[Year]_Earnings_Update.docx`。
+- 快评：简短文字或 1-2 页 DOCX，给出结论、3-5 条要点、关键指标差异、指引及投资逻辑影响和来源；不要求 8-12 页、8-12 张图或模型更新。
+- 两种模式都不复制完整三张报表。只有用户要求或分析确实需要时，才更新并交付原有 Excel 模型。
 
-**Do NOT use if:**
-- User requests "initiation report" → Use different skill
-- User requests "flash note" or "quick take" → Different format
-- Company is not already covered → Need initiation first
+## 最新数据要求
 
-## Critical Requirements
+开始前记录当前日期并搜索公司截至当前日期已公开的最新一期业绩。最新财报是本期分析的主要依据；历史财报只用于同比、环比、趋势、上期指引和前次预测对照。核对：
 
-### 1. Speed & Timeliness
-- Publish within 24-48 hours of earnings release
-- Focus on NEW information only
-- Don't rehash company background extensively
+- 财报期、发布日期和电话会日期一致。
+- 业绩新闻稿、监管文件、电话会、演示材料属于同一期。
+- 一致预期和上期指引有明确日期及来源。
+- 历史材料均明确标注期间，不得把历史数据、旧电话会或旧指引当成本期材料。
 
-### 2. Beat/Miss Analysis
-- Lead with whether company beat or missed estimates
-- Quantify variances (e.g., "Revenue beat by $120M or 3%")
-- Explain WHY results differed from expectations
+不得依赖训练记忆代替搜索。详细采集和分析步骤见 [workflow.md](<./references/workflow.md>)。
 
-### 3. Summary Format
-- Keep tables to 1-3 (summary only, not comprehensive)
-- No full P&L/Cash Flow/Balance Sheet (just key metrics)
-- Assume reader has seen initiation report
+## 核心分析
 
-### 4. Citations & Source Attribution ⭐⭐⭐ MANDATORY
+1. 用收入、利润率、EPS、FCF 和行业关键 KPI 做实际值 vs. 一致预期 vs. 前期预测。
+2. 同时给绝对差额和百分比差额，解释价格、销量、产品、地区、成本或一次性因素。
+3. 对比新旧指引，拆出范围中点、变化幅度和隐含下半年/下季度要求。
+4. 更新未来预测，列出旧值、新值、变化和原因。
+5. 评估投资逻辑、催化剂、风险、估值、评级和目标价是否变化。
 
-**CRITICAL**: Properly cite all data with SPECIFIC sources and CLICKABLE HYPERLINKS.
+## 报告结构
 
-**Include specific citations WITH CLICKABLE LINKS in every figure and table:**
+- 首页：结论性标题、评级、目标价、核心超预期/低预期、关键指标摘要。
+- 结果分析：收入、分部/地区、利润率、现金流和 KPI。
+- 指引与电话会：新旧指引、管理层表述、关键问答和未解决问题。
+- 预测与投资逻辑：预测调整、逻辑变化、催化剂和风险。
+- 估值：更新后的估值和目标价。
+- 附录：必要的季度数据和来源。
 
-```
-Source: Q3 2024 10-Q filed November 8, 2024; Company earnings release
-        [Hyperlink "10-Q" to: https://www.sec.gov/cgi-bin/viewer?accession=...]
-        [Hyperlink "earnings release" to: https://investor.company.com/news/q3-2024]
-```
+完整页面结构和格式见 [report-structure.md](<./references/report-structure.md>)；写作例子、常见错误和最终检查见 [best-practices.md](<./references/best-practices.md>)。
 
-**HOW HYPERLINKS SHOULD APPEAR IN WORD:**
-- Document names appear as blue, underlined clickable links
-- Reader can Ctrl+Click to open source directly
-- Not plain text URLs - formatted hyperlinks with display text
+## 引用
 
-**REQUIRED SOURCES LIST:**
+所有重要数字、表格和图必须注明具体文件及日期，并使用可点击链接。来源至少覆盖：
 
-Cite in every earnings update:
-- ✅ Earnings release (with date and URL)
-- ✅ 10-Q filing (with filing date and EDGAR link)
-- ✅ Earnings call transcript (with date)
-- ✅ Investor presentation/supplemental materials (if available)
-- ✅ Consensus estimates source (Bloomberg/FactSet/etc. with date)
-- ✅ Prior guidance (from previous quarter's materials)
+- 业绩新闻稿。
+- 监管文件（如 10-Q/10-K）。
+- 电话会文字稿。
+- 投资者演示或补充材料（如有）。
+- 一致预期及其日期。
+- 上期指引来源。
 
-**REFERENCE SECTION WITH CLICKABLE HYPERLINKS:**
+## 工作流
 
-Include "Sources" section at end of report:
+1. 读取 [workflow.md](<./references/workflow.md>) 并收齐同一期材料。
+2. 建立实际/一致预期/前期预测差异表，核对单位和期间。
+3. 完成分部、利润率、指引、预测和逻辑分析。
+4. 完整更新按 [report-structure.md](<./references/report-structure.md>) 生成 DOCX 和图表；快评按本文件的简短格式交付。
+5. 依 [best-practices.md](<./references/best-practices.md>) 检查；生成 DOCX 时必须渲染验证。
 
-```
-SOURCES & REFERENCES
+## 交付前检查
 
-Earnings Materials (Q3 2024):
-• Earnings Release (November 7, 2024)
-  [Hyperlink entire line to: https://investor.company.com/news/q3-2024-earnings]
-
-• Form 10-Q (Filed November 8, 2024)
-  [Hyperlink to: https://www.sec.gov/cgi-bin/viewer?accession=...]
-
-• Earnings Call Transcript (November 7, 2024)
-  [Hyperlink to: https://seekingalpha.com/article/...]
-
-• Investor Presentation (November 7, 2024)
-  [Hyperlink to: https://investor.company.com/presentations/q3-2024.pdf]
-```
-
-**VERIFICATION CHECKLIST:**
-- [ ] Every figure has source with specific document and date
-- [ ] Every table has source with document reference
-- [ ] Beat/miss analysis cites consensus source with date
-- [ ] Guidance changes cite current and prior guidance sources
-- [ ] Key statistics have footnotes
-- [ ] Sources section lists all materials with URLs
-- [ ] ALL URLs are CLICKABLE HYPERLINKS (not plain text)
-- [ ] All SEC filings hyperlinked to EDGAR viewer
-
-### 5. Updated Estimates
-- Update forward estimates based on results
-- Show old vs. new estimates clearly
-- Explain what changed and why
-
-## High-Level Workflow
-
-The earnings update process follows 5 phases:
-
-### Phase 1: Data Collection (30-60 minutes)
-
-**🚨🚨🚨 CRITICAL: TRAINING DATA IS OUTDATED 🚨🚨🚨**
-
-**BEFORE STARTING - COMPLETE THESE 4 STEPS IN ORDER:**
-1. **CHECK TODAY'S DATE** - Write down the current date
-2. **SEARCH FOR LATEST** - Use web search: "[Company] latest earnings results"
-3. **VERIFY THE DATE** - Confirm earnings release is within last 3 months
-4. **CHECK TRANSCRIPT DATE** - Verify transcript date matches release date
-
-**COMMON MISTAKE**: Using outdated earnings calls from training data instead of searching for the latest.
-
-**REQUIREMENTS:**
-- ✅ Search for latest earnings - do NOT rely on training data
-- ✅ Write down today's date and the release date found
-- ✅ Verify release date is within 3 months of today
-- ✅ Verify transcript date matches release date
-- ✅ If dates don't match or are old (>3 months), search again
-
-**See [references/workflow.md](<./references/workflow.md>)** for detailed search procedures and verification steps.
-
-### Phase 2: Analysis (2-3 hours)
-- Beat/miss analysis for each key metric
-- Segment/geographic/product breakdown
-- Margin and guidance analysis
-- Update financial model and estimates
-
-**See [references/workflow.md](<./references/workflow.md>)** for detailed analysis framework.
-
-### Phase 3: Chart Generation (1-2 hours)
-Create 8-12 charts focusing on quarterly trends and what's new:
-- Quarterly revenue progression
-- Quarterly EPS progression
-- Quarterly margin trends
-- Revenue by segment/geography
-- Key operating metrics
-- Beat/miss summary
-- Estimate revisions
-- Valuation charts
-
-**See [references/workflow.md](<./references/workflow.md>)** for chart specifications.
-
-### Phase 4: Report Creation (2-3 hours)
-Create 8-12 page DOCX report with specific structure.
-
-**See [references/report-structure.md](<./references/report-structure.md>)** for complete page-by-page templates and formatting requirements.
-
-**High-level structure:**
-- Page 1: Earnings summary with rating and price target
-- Pages 2-3: Detailed results analysis
-- Pages 4-5: Key metrics & guidance
-- Pages 6-7: Updated investment thesis
-- Pages 8-10: Valuation & estimates
-- Pages 11-12: Appendix (optional)
-
-### Phase 5: Quality Check & Delivery (30 minutes)
-Verify content, formatting, accuracy, and timeliness before delivery.
-
-**See [references/best-practices.md](<./references/best-practices.md>)** for quality checklist and common mistakes to avoid.
-
-## Output Specification
-
-**Primary Deliverable**: DOCX report (8-12 pages)
-**File Name**: `[Company]_Q[Quarter]_[Year]_Earnings_Update.docx`
-**Example**: `Nike_Q2_FY24_Earnings_Update.docx`
-
-**Contents:**
-- Page 1: Summary with rating, price target, key takeaways
-- Pages 2-3: Detailed results analysis
-- Pages 4-5: Key metrics and guidance
-- Pages 6-7: Updated thesis assessment
-- Pages 8-10: Valuation and estimates
-- Pages 11-12: Appendix (optional)
-- 8-12 embedded charts
-- 1-3 summary tables
-- Complete sources section with clickable hyperlinks
-
-**Optional Deliverable**: XLS model update (optional for earnings updates)
-
-## Key Differences from Initiation Report
-
-| Aspect | Earnings Update | Initiation Report |
-|--------|----------------|-------------------|
-| **Length** | 8-12 pages | 30-50 pages |
-| **Words** | 3,000-5,000 | 10,000-15,000 |
-| **Tables** | 1-3 summary | 12-20 comprehensive |
-| **Figures** | 8-12 | 25-35 |
-| **Turnaround** | 1-2 days | 3-6 weeks |
-| **Scope** | Quarterly results | Complete company |
-| **Focus** | What's NEW | Everything |
-| **Company Background** | Brief mention | 6-10 pages |
-| **XLS Model** | Optional | Required |
-
-## Resources
-
-### references/workflow.md
-Detailed Phase 1-5 instructions with step-by-step procedures for data collection, analysis, chart generation, and report creation.
-
-### references/report-structure.md
-Complete page-by-page templates, table formats, and formatting requirements for the DOCX report.
-
-### references/best-practices.md
-Examples of good/bad headlines, tips for success, common mistakes to avoid, and comprehensive quality checklist.
-
-## Dependencies
-
-**Required:**
-- Python (matplotlib, pandas, seaborn) for chart generation
-- DOCX skill for report creation
-
-**Optional:**
-- XLS skill for model updates (not required for earnings updates)
+- [ ] 本期材料确为截至当前日期已公开的最新一期，历史材料只用于对照且期间标注清楚。
+- [ ] Beat/miss、指引和预测变化均可复算。
+- [ ] 结论解释原因而非只报差额。
+- [ ] 评级、目标价和投资逻辑变化有量化依据。
+- [ ] 完整更新满足 8-12 页、3,000-5,000 字、8-12 张图、1-3 张摘要表；快评不套用这些数量要求。
+- [ ] 所有重要数字、图和表有具体来源及可点击链接。
+- [ ] DOCX 已渲染，无裁切、重叠、乱码或模板残留。

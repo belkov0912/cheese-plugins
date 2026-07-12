@@ -86,7 +86,8 @@ def score_one(sym, cfg):
     return tier, desc
 
 
-def cmd_today(min_score, cfg, include_bj688=False):
+def _scan_today(score_frame, min_score, include_bj688, heading):
+    """R0/R7/R9 共用的本地全仓扫描与过旧数据过滤。"""
     import datetime as dt
     syms = store.list_symbols()
     if not syms:
@@ -105,7 +106,7 @@ def cmd_today(min_score, cfg, include_bj688=False):
         if not frame:
             continue
         lasts.append(frame["date"][-1])
-        tier, desc = _r0_of(frame, cfg)
+        tier, desc = score_frame(frame)[:2]
         if tier is not None and tier >= min_score:
             rows.append((tier, sym, c2n.get(sym, ""), desc, frame["date"][-1]))
     if not lasts:
@@ -122,9 +123,14 @@ def cmd_today(min_score, cfg, include_bj688=False):
     if stale_n:
         notes.append(f"另剔除 {stale_n} 只停牌/数据过旧票")
     note = "；" + "；".join(notes) if notes else ""
-    print(f"# 最近5个交易日内扣过扳机（R0≥{min_score}）的名单（数据截至 {data_max}，共 {len(rows)} 只{note}）\n")
+    print(f"# {heading}（数据截至 {data_max}，共 {len(rows)} 只{note}）\n")
     for tier, sym, name, desc, _ in rows:
         print(f"{tier}  {sym} {name:<6}  {desc}")
+
+
+def cmd_today(min_score, cfg, include_bj688=False):
+    _scan_today(lambda frame: _r0_of(frame, cfg), min_score, include_bj688,
+                f"最近5个交易日内扣过扳机（R0≥{min_score}）的名单")
 
 
 def main():
@@ -159,6 +165,10 @@ def main():
 
 # ---------------- 自检（无参运行时触发，不碰网络） ----------------
 if __name__ == "__main__" and len(sys.argv) == 1:
+    from contextlib import redirect_stdout, redirect_stderr
+    from io import StringIO
+    from unittest.mock import patch
+
     cfg = _cfg()
     # 代码解析
     assert resolve("sh603228", {}) == "sh603228"
@@ -170,6 +180,17 @@ if __name__ == "__main__" and len(sys.argv) == 1:
     assert _is_default_today_excluded("sh688017")
     assert not _is_default_today_excluded("sh603228")
     assert not _is_default_today_excluded("sz300476")
+    # 共用全仓扫描：排除 688，并剔除相对全仓水位过旧的命中票。
+    fake = {"sz000001": {"date": ["2026-07-09"]}, "sh688001": {"date": ["2026-07-09"]},
+            "sz000002": {"date": ["2026-06-01"]}}
+    output = StringIO()
+    with patch.object(store, "list_symbols", return_value=list(fake)), \
+         patch.object(store, "load_frame", side_effect=fake.get), \
+         patch(__name__ + "._name_map", return_value=({"sz000001": "平安银行"}, {})), \
+         redirect_stdout(output), redirect_stderr(StringIO()):
+        _scan_today(lambda frame: (5, "命中", {}), 4, False, "测试名单")
+    assert "共 1 只" in output.getvalue() and "sz000001 平安银行" in output.getvalue()
+    assert "sh688001" not in output.getvalue() and "sz000002" not in output.getvalue()
     # 合成K线：横盘40根 → 最后一根放量强阳破前高 → 应扣扳机 R0≥4
     n = 56
     close = [10.0] * 55 + [10.9]

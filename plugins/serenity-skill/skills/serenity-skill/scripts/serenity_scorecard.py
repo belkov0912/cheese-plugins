@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from pathlib import Path
 from typing import Any, Dict, Tuple
 
 WEIGHTS = {
@@ -26,26 +27,7 @@ WEIGHTS = {
 
 PENALTY_MULTIPLIER = 2.0
 
-TEMPLATE = {
-    "ticker": "EXAMPLE",
-    "company": "Example Co",
-    "market": "US/HK/A-share/Taiwan/Japan/Korea/Europe",
-    "factors": {key: 0 for key in WEIGHTS},
-    "penalties": {
-        "dilution_financing": 0,
-        "governance": 0,
-        "geopolitics": 0,
-        "liquidity": 0,
-        "hype_risk": 0,
-        "accounting_quality": 0,
-        "cyclicality": 0,
-        "alternative_design_risk": 0,
-    },
-    "evidence": [
-        {"claim": "", "source": "", "strength": "primary/media/analysis/social/rumor"}
-    ],
-    "what_could_weaken_view": ["", "", ""],
-}
+TEMPLATE_PATH = Path(__file__).parent.parent / "assets" / "bottleneck-scorecard.json"
 
 
 def _num_0_to_5(value: Any, label: str) -> float:
@@ -178,7 +160,7 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.template:
-        print(json.dumps(TEMPLATE, ensure_ascii=False, indent=2))
+        print(TEMPLATE_PATH.read_text(encoding="utf-8"), end="")
         return
 
     if not args.input:

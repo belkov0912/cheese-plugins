@@ -2,6 +2,11 @@
 
 This document provides detailed step-by-step instructions for each phase of the earnings update process.
 
+## 交付模式
+
+- 完整更新执行全部阶段及 8-12 页、8-12 张图要求。
+- “快评”“flash note”或“quick take”只执行数据采集和核心分析，交付简短文字或 1-2 页 DOCX；不执行强制图表数量、完整页面结构或模型更新要求，但仍须引用来源。
+
 ## ⚠️⚠️⚠️ CRITICAL WARNING: ALWAYS USE THE LATEST EARNINGS DATA ⚠️⚠️⚠️
 
 **STOP AND READ THIS FIRST:**
@@ -11,8 +16,8 @@ Training data is OUTDATED. Actively search for and retrieve the MOST RECENT earn
 **BEFORE STARTING:**
 1. **CHECK TODAY'S DATE** - Write down the current date
 2. **SEARCH FOR LATEST** - Use web search to find the most recent earnings
-3. **VERIFY THE DATE** - Confirm the earnings release is within the last 3 months
-4. **IF OLDER THAN 3 MONTHS** - Wrong quarter obtained, search again
+3. **VERIFY THE PERIOD** - Confirm it is the latest period publicly reported as of today
+4. **CHECK CHRONOLOGY** - Search the IR site and filings for any later release; age alone does not make a report the wrong quarter
 
 ## Phase 1: Earnings Data Collection (30-60 minutes)
 
@@ -27,7 +32,7 @@ Training data is OUTDATED. Actively search for and retrieve the MOST RECENT earn
 
 **MANDATORY STEP 1: CHECK TODAY'S DATE**
 - **Write down today's date explicitly**: [Month] [Day], [Year]
-- **Use this to verify** that any earnings found are within 3 months
+- **Use this to verify** which earnings period was the latest publicly available on that date
 - **Example**: "Today is October 29, 2024"
 
 **MANDATORY STEP 2: SEARCH FOR "LATEST EARNINGS"**
@@ -43,23 +48,23 @@ Training data is OUTDATED. Actively search for and retrieve the MOST RECENT earn
 
 **MANDATORY STEP 3: VERIFY THE RELEASE DATE**
 - **Look at the date of the earnings release found**
-- **Calculate**: Is this date within the last 3 months from today?
-- **If YES** → Proceed to next step
-- **If NO (older than 3 months)** → 🚨 WRONG QUARTER - Search again for more recent
+- **Compare chronologically** with the IR release list and latest regulatory filings
+- **Proceed only if** no later earnings release or filing exists as of today
+- A release older than three months may still be the latest; do not reject it based on age alone
 
 **❌ COMMON MISTAKES TO AVOID:**
 - ❌ Using earnings data from training without searching
 - ❌ Assuming "Q3 2024" is latest based on expectations
 - ❌ Grabbing the first earnings release found without checking the date
 - ❌ Not comparing the release date to today's date
-- ❌ Proceeding when the release is 4+ months old
+- ❌ Treating report age alone as proof that a newer quarter exists
 
 **✅ CORRECT APPROACH:**
 - ✅ Check today's date first
 - ✅ Search explicitly for "latest" or "most recent"
 - ✅ Read the actual release date on the materials
-- ✅ Confirm release date is within 3 months of today
-- ✅ If unsure, search again with different terms
+- ✅ Confirm no later earnings release or filing exists
+- ✅ If unsure, check both the company IR chronology and the relevant regulator
 
 **MANDATORY STEP 4: IDENTIFY THE QUARTER**
 - **Read the title/headline** to identify the quarter (Q1, Q2, Q3, Q4 or fiscal quarter)
@@ -96,18 +101,18 @@ Many companies state their fiscal year in the earnings release header. Search `[
 - [ ] ✅ **Today's date written down**: [Month] [Day], [Year]
 - [ ] ✅ **Actively searched** using "latest earnings" or "most recent earnings"
 - [ ] ✅ **Earnings release date found**: [Month] [Day], [Year]
-- [ ] ✅ **Verified release is within 3 months of today** (do the math!)
+- [ ] ✅ **Verified this is the latest public earnings period** using IR and filing chronology
 - [ ] ✅ **Did NOT assume** the quarter based on today's date alone
 - [ ] ✅ **Can see the actual press release** confirming the quarter/period
 - [ ] ✅ **Opened and read** the actual earnings materials (not just assumed they exist)
 
 **🚨 RED FLAGS - If ANY of these are true, WRONG quarter obtained:**
-- 🚨 Release date is more than 90 days old
+- 🚨 A later earnings release or filing exists
 - 🚨 Relying on expectations rather than what was FOUND by searching
 - 🚨 Have not actually SEEN a press release or filing confirming this quarter exists
 - 🚨 Used data from training without searching
 - 🚨 Cannot state the exact release date
-- 🚨 Release date found is from 2023 or earlier (when today is 2024+)
+- 🚨 IR 或监管时间线显示该材料之后还有更新一期业绩
 
 **IF ANY RED FLAGS PRESENT**: STOP and search again. Do not proceed with outdated data.
 
@@ -140,7 +145,7 @@ After SEARCHING FOR and confirming the latest quarter, collect the following:
   - Navigate to IR site and find the actual press release
   - Search patterns: "[Company name] latest earnings", "[Company name] Q[X] [Year] earnings results"
   - Look for PDF or HTML version
-  - **Verify the date matches what was found in Step 1** (should be within last 1-3 months)
+  - **Verify the date and period match Step 1**; age alone is not a reason to reject the latest public release
   - **Read the actual document** to confirm the quarter and get reported numbers
 
 - **10-Q or 10-K filing** - On SEC EDGAR (sec.gov/edgar/searchedgar/companysearch.html)
@@ -171,12 +176,14 @@ After SEARCHING FOR and confirming the latest quarter, collect the following:
 - **Supplemental data file** - Some companies provide Excel files with detailed metrics
   - Look for "Supplemental Financial Information" or "Investor Data Sheet"
 
-**Reference Materials (for comparison):**
+**Reference Materials (for comparison only):**
 - **Prior quarter results** - For QoQ comparison
   - From prior quarter's earnings release (90 days ago)
 
 - **Prior year same quarter** - For YoY comparison
   - From same quarter last year (4 quarters ago)
+
+Label every historical period explicitly. Use these materials only for YoY/QoQ trends, prior guidance and prior-estimate comparisons; never present historical results, calls or guidance as the current period.
 
 - **Prior estimates** - If this company was previously covered
   - From last earnings update or initiation report
@@ -191,7 +198,7 @@ After SEARCHING FOR and confirming the latest quarter, collect the following:
 
 **DATES - Verify ALL dates match:**
 - [ ] ✅ **Today's date written down**: _______________
-- [ ] ✅ **Earnings release date**: _______________ (MUST be within 3 months of today)
+- [ ] ✅ **Earnings release date**: _______________ (verified as the latest public period)
 - [ ] ✅ **Earnings call transcript date**: _______________ (MUST match release date ±1 day)
 - [ ] ✅ **10-Q/10-K filing date**: _______________ (MUST be same quarter as release)
 - [ ] ✅ **ALL materials show SAME quarter** (e.g., all say "Q3 2024", not mixed quarters)
@@ -207,7 +214,7 @@ After SEARCHING FOR and confirming the latest quarter, collect the following:
 **🚨 RED FLAGS - STOP if ANY of these are true:**
 - 🚨 Did NOT actually search for or access the earnings materials
 - 🚨 Working from memory or training data instead of current documents
-- 🚨 The earnings release date is more than 90 days old
+- 🚨 A later earnings release or filing exists
 - 🚨 Cannot state the EXACT DATE of the earnings release
 - 🚨 The transcript date does NOT match the release date
 - 🚨 Materials show different quarters (e.g., release says Q3 but transcript says Q2)
@@ -357,6 +364,8 @@ Decide whether to change rating:
 
 ## Phase 3: Chart Generation (1-2 hours)
 
+Phase 3-4 只适用于完整更新。快评在 Phase 2 后直接按 `SKILL.md` 的简短格式交付，并在 Phase 5 只检查事实、期间、来源和结论一致性。
+
 ### Step 12: Generate 8-12 Charts
 
 Create charts focusing on QUARTERLY TRENDS and WHAT'S NEW.
@@ -410,7 +419,7 @@ Create charts focusing on QUARTERLY TRENDS and WHAT'S NEW.
 - Highlight CHANGES (beat/miss, estimate revisions)
 - Keep simple and clear (this is a fast-turnaround report)
 
-## Phase 4: Report Creation (2-3 hours)
+## Phase 4: Full Report Creation (2-3 hours)
 
 ### Step 13: Create DOCX Report
 
@@ -494,7 +503,7 @@ Before publishing, verify:
 - [ ] All data is from LATEST quarter
 - [ ] Consensus estimates are pre-earnings (not post-earnings)
 
-### Step 16: Deliver Report
+### Step 16: Deliver Full Report
 
 Provide user with:
 

@@ -1,6 +1,6 @@
 {
   "name": "rule-trigger",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Rule-based A-share trigger toolkit: local hfq price warehouse plus R0 launch-trigger, R7 probe-pullback, R9 downtrend-reversal, R1 mainline-strength, and backtested latest observation rating workflows. Self-contained scripts; includes r0-data skill to build/update the local warehouse.",
   "author": {
     "name": "Jianan Liu"
