@@ -1,0 +1,4 @@
+interface:
+  display_name: "R9 Reclaim"
+  short_description: "Check A-share downtrend reclaims with R9."
+  default_prompt: "用 $r9-reclaim 查这只A股的下跌反转确认形态。"

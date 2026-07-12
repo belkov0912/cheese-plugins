@@ -41,10 +41,10 @@
       "category": "general"
     },
     {
-      "name": "rule-trigger",
-      "displayName": "Rule Trigger",
-      "source": "./plugins/rule-trigger",
-      "description": "Rule-based A-share trigger toolkit: local market data warehouse plus R0/R7/R9/R1 checks and a backtested latest observation rating workflow.",
+      "name": "stock-selection-rules",
+      "displayName": "Stock Selection Rules",
+      "source": "./plugins/stock-selection-rules",
+      "description": "Rule-based A-share stock-selection toolkit: local market data warehouse plus R0/R7/R9/R1 checks and a backtested observation rating workflow.",
       "category": "finance"
     }
   ]

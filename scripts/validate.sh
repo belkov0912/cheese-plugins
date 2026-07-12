@@ -151,6 +151,17 @@ for skill_file in skill_files:
     if len(data.get("description", "")) > 1024:
         fail(f"{skill_file.relative_to(root)} description exceeds 1024 characters")
 
+# Current rule docs state only the active contract; migration history belongs in archives.
+migration_terms = re.compile(r"旧版|新版|原来|此前|不再|改为|当前版|本轮|初版|新口径|旧\s*AI")
+stock_selection_rules = root / "plugins" / "stock-selection-rules"
+current_rule_docs = [stock_selection_rules / "README.md"]
+current_rule_docs += sorted((stock_selection_rules / "docs").glob("*.md"))
+current_rule_docs += sorted((stock_selection_rules / "skills").glob("*/SKILL.md"))
+for path in current_rule_docs:
+    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        if migration_terms.search(line):
+            fail(f"{path.relative_to(root)}:{line_number} contains migration history; state the current rule directly")
+
 if errors:
     for error in errors:
         print(f"ERROR: {error}", file=sys.stderr)

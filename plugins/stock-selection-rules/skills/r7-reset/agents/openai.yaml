@@ -1,0 +1,4 @@
+interface:
+  display_name: "R7 Reset"
+  short_description: "Check A-share probe-and-reset setups with R7."
+  default_prompt: "用 $r7-reset 查这只A股的试盘回踩形态。"
