@@ -44,7 +44,7 @@
       "name": "stock-selection-rules",
       "displayName": "Stock Selection Rules",
       "source": "./plugins/stock-selection-rules",
-      "description": "Rule-based A-share stock-selection toolkit: local market data warehouse plus R0/R7/R9/R1 checks and a backtested observation rating workflow.",
+      "description": "Rule-based A-share toolkit: local market data warehouse, R0/R7/R9/R1 checks, backtested observation ratings, and no-lookahead trade-blotter reviews.",
       "category": "finance"
     }
   ]

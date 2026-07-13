@@ -1,7 +1,7 @@
 {
   "name": "stock-selection-rules",
-  "version": "1.6.0",
-  "description": "Rule-based A-share stock-selection toolkit: local hfq price warehouse plus R0 launch-trigger, R7 probe-pullback, R9 downtrend-reversal, R1 mainline-strength, and backtested observation rating workflows. Self-contained scripts; includes r0-data skill to build/update the local warehouse.",
+  "version": "1.7.0",
+  "description": "Rule-based A-share toolkit: local hfq price warehouse, R0/R7/R9/R1 checks, backtested observation ratings, and no-lookahead trade-blotter reviews.",
   "author": {
     "name": "Jianan Liu"
   },

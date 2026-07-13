@@ -1,0 +1,4 @@
+interface:
+  display_name: "Trade Review"
+  short_description: "冻结成交时点复盘A股逐笔买卖，给出明确可执行的优化规则"
+  default_prompt: "使用 $trade-review 复盘今天的交割单，只按每笔成交时可见的信息评价。"
