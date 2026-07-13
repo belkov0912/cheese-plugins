@@ -37,7 +37,7 @@ import store  # noqa: E402
 OUTCOME_WINDOWS = (5, 10, 20)
 DEFAULT_STEP = 10
 DEFAULT_RANDOM_N = 10000
-DEFAULT_OUT = DEFAULT_RULE_SCRIPTS.parent / "out" / "a-share-latest-rating"
+DEFAULT_OUT = DEFAULT_RULE_SCRIPTS.parent / "out" / "r-stock-rating"
 UNIVERSE_EXCLUDES = ("bj", "sh688")
 R1_REFERENCE_HAS_REVISION_RISK = True
 # latest 模式的仓覆盖率下限:追平当日 K 线的票占比低于此值 → 拒绝评级(半更新会静默坍缩,见 #1)。
@@ -619,7 +619,7 @@ def _selftest() -> None:
     # A 档理由必须点出 R1>=4(#10 回归防护)
     assert "R1>=4" in rate_combo(3, 5)[1], "A 档理由应包含 R1>=4"
     assert len(r1.SW1) == 31 and "27" in r1.SW1, "申万一级行业映射应完整"
-    print(f"a_share_latest_rating 自检通过 ✓  规则 {RULE_VERSION}，申万一级行业 {len(r1.SW1)} 个")
+    print(f"r_stock_rating 自检通过 ✓  规则 {RULE_VERSION}，申万一级行业 {len(r1.SW1)} 个")
 
 
 if __name__ == "__main__":

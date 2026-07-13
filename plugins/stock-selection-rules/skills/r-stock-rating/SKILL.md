@@ -1,5 +1,5 @@
 ---
-name: a-share-latest-rating
+name: r-stock-rating
 description: 查询 A 股最近一个完整交易日的 S/A/B/C/D/N/A 观察评级，并复现 R7 试盘回踩与 R1 动态行业主线强度组合规则的历史回测。Use when 用户要A股最新观察评级、观察池、S/A/B/C/D分档、R7与R1组合评分或评级回测。依赖r0-data、r7-reset、r1-mainline；只做观察池筛选，不下单不荐股。
 ---
 
@@ -27,10 +27,10 @@ python3 r1.py --refresh-industries
 ## 查询
 
 ```bash
-python3 a_share_latest_rating.py latest --min-rating A --top 200
-python3 a_share_latest_rating.py latest 胜宏科技 603228 sz300476
-python3 a_share_latest_rating.py backtest --step 10 --random-n 10000
-python3 a_share_latest_rating.py
+python3 r_stock_rating.py latest --min-rating A --top 200
+python3 r_stock_rating.py latest 胜宏科技 603228 sz300476
+python3 r_stock_rating.py backtest --step 10 --random-n 10000
+python3 r_stock_rating.py
 ```
 
 输出 `rating/code/name/r7/r1`，以及 R1 的行业名、行业综合 rank、行业5/20日涨幅、个股行业内rank、个股20日涨幅和行业有效成员数。单票/多票模式额外输出 `r7_desc`。
