@@ -1,4 +1,4 @@
-# A股最近观察评级（a-share-latest-rating）
+# A股最近观察评级（r-stock-rating）
 
 把 R7（试盘后回踩形态）和 R1（动态行业主线强度）组合成 S/A/B/C/D/N/A 观察评级。**它是观察池评级器，不是交易建议**：R7 不是买点、R1 不是扳机，动手时机仍看 R0/R9。
 
@@ -6,10 +6,10 @@
 
 ```bash
 cd plugins/stock-selection-rules/scripts
-python3 a_share_latest_rating.py latest --min-rating A --top 200
-python3 a_share_latest_rating.py latest 胜宏科技 603228 sz300476
-python3 a_share_latest_rating.py backtest --step 10 --random-n 10000
-python3 a_share_latest_rating.py
+python3 r_stock_rating.py latest --min-rating A --top 200
+python3 r_stock_rating.py latest 胜宏科技 603228 sz300476
+python3 r_stock_rating.py backtest --step 10 --random-n 10000
+python3 r_stock_rating.py
 ```
 
 - 单票查询也要全市场本地仓，因为 R1 需要同日行业内排名。
