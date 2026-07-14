@@ -6,6 +6,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [[ "${1:-}" == "--trade-snapshot" ]]; then
   shift
   target="${SCRIPT_DIR}/trade_snapshot.py"
+elif [[ "${1:-}" == "--fetch-minutes" ]]; then
+  shift
+  target="${SCRIPT_DIR}/fetch_minute_bars.py"
 else
   target="${SCRIPT_DIR}/trade_context.py"
 fi
