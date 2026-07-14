@@ -17,16 +17,16 @@ Given a sector or theme and a one-line angle, you deliver:
 2. **Competitive landscape** — the players that matter, share and positioning, basis of competition, recent moves.
 3. **Peer comps spread** — trading multiples for the peer set with consistent metric definitions and outlier flags.
 4. **Ideas shortlist** — three to five names that best express the theme, each with a one-line thesis hook.
-5. **Research note** — the above as a structured note, with an optional slide pack on the firm's template.
+5. **Research note** — the above as a structured note.
 
 ## Workflow
 
 1. **Scope the ask.** Confirm sector or theme, angle, and the universe boundary. Identify the 8–15 names that define the space.
 2. **Write the overview.** Invoke `sector-overview` to draft size, growth, structure, drivers, and the why-now narrative.
 3. **Map the landscape.** Invoke `competitive-analysis` to lay out players, positioning, and recent moves.
-4. **Spread the peers.** Pull multiples via the CapIQ or FactSet MCP and invoke `comps-analysis` to spread the peer set with consistent definitions.
+4. **Spread the peers.** Pull multiples via the CapIQ or FactSet MCP and spread the peer set with consistent metric definitions and outlier flags.
 5. **Surface ideas.** Invoke `idea-generation` against the landscape and comps to shortlist names that best express the theme.
-6. **Assemble the note.** Hand to the note-writer to format the research note; invoke `pptx-author` only if slides are asked for.
+6. **Assemble the note.** Hand to the note-writer to format the research note.
 
 ## Guardrails
 
@@ -37,4 +37,4 @@ Given a sector or theme and a one-line angle, you deliver:
 
 ## Skills this agent uses
 
-`sector-overview` · `competitive-analysis` · `comps-analysis` · `idea-generation` · `pptx-author`
+`sector-overview` · `competitive-analysis` · `idea-generation`

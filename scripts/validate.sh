@@ -152,7 +152,8 @@ for skill_file in skill_files:
         fail(f"{skill_file.relative_to(root)} description exceeds 1024 characters")
 
 # Current rule docs state only the active contract; migration history belongs in archives.
-migration_terms = re.compile(r"旧版|新版|原来|此前|不再|改为|当前版|本轮|初版|新口径|旧\s*AI")
+# 「当日此前」is intraday metric wording (earlier the same day), not migration history.
+migration_terms = re.compile(r"旧版|新版|原来|(?<!当日)此前|不再|改为|当前版|本轮|初版|新口径|旧\s*AI")
 stock_selection_rules = root / "plugins" / "stock-selection-rules"
 current_rule_docs = [stock_selection_rules / "README.md"]
 current_rule_docs += sorted((stock_selection_rules / "docs").glob("*.md"))

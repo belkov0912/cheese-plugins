@@ -35,7 +35,7 @@ tags:
   - 竞争格局
 status: draft
 generated_by:
-  plugin: financial-analysis
+  plugin: equity-research
   skill: competitive-analysis
 ---
 ```

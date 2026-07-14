@@ -13,17 +13,10 @@
       "category": "general"
     },
     {
-      "name": "financial-analysis",
-      "displayName": "Financial Analysis",
-      "source": "./plugins/financial-analysis",
-      "description": "Core financial modeling and analysis tools: DCF, comps, LBO, 3-statement models, competitive analysis, and deck QC. Adapted from Anthropic FSI.",
-      "category": "finance"
-    },
-    {
       "name": "equity-research",
       "displayName": "Equity Research",
       "source": "./plugins/equity-research",
-      "description": "Equity research tools: earnings analysis, initiating coverage, idea generation, catalysts, thesis tracking, and research workflows. Adapted from Anthropic FSI.",
+      "description": "Equity research tools: morning notes, sector research, competitive analysis, idea generation, catalysts, thesis tracking, stock news-pulse ratings, and research workflows. Adapted from Anthropic FSI.",
       "category": "finance"
     },
     {

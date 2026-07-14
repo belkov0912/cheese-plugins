@@ -29,8 +29,7 @@ codex plugin marketplace add git@github.com:belkov0912/cheese-plugins.git
 
 之后浏览、安装、更新、卸载都走交互界面:输入 `/plugins`(Claude Code 或
 codex),选中 `cheese-plugins`,对想要的插件操作即可。现有插件:`cheese-core`、
-`financial-analysis`、`equity-research`、`serenity-skill`、`goal-meta-skill`、
-`stock-selection-rules`。
+`equity-research`、`serenity-skill`、`goal-meta-skill`、`stock-selection-rules`。
 
 重新安装后请开一个新会话,新技能和插件元数据才会被加载。
 
@@ -65,8 +64,7 @@ cheese-plugins/
 | 插件 | 范围 | 包含的技能 |
 | --- | --- | --- |
 | `cheese-core` | 核心推理 | `zongju-thinking` |
-| `financial-analysis` | 模型、估值、表格检查、Deck 质检 | `dcf-model`、`comps-analysis`、`lbo-model`、`3-statement-model`、`competitive-analysis`、`audit-xls`、`clean-data-xls`、`xlsx-author`、`ib-check-deck`、`deck-refresh`、`ppt-template-creator`、`pptx-author`、`model-builder` 及配套工作流。改编自 Anthropic FSI 的 `financial-analysis` |
-| `equity-research` | 财报、覆盖、选题、催化剂、论点跟踪 | `earnings-preview`、`earnings-analysis`、`earnings-reviewer`、`morning-note`、`initiating-coverage`、`idea-generation`、`sector-overview`、`catalyst-calendar`、`thesis-tracker`、`model-update`、`market-researcher` 及配套工作流。改编自 Anthropic FSI 的 `equity-research` |
+| `equity-research` | 晨会、行业研究、竞争格局、选题、催化剂、论点跟踪、个股消息面 | `morning-note`、`idea-generation`、`sector-overview`、`competitive-analysis`、`catalyst-calendar`、`thesis-tracker`、`market-researcher`、`stock-pulse` 及配套工作流。改编自 Anthropic FSI 的 `equity-research` |
 | `serenity-skill` | Serenity 式供应链卡点研究 | 来自 [muxuuu/serenity-skill](https://github.com/muxuuu/serenity-skill),MIT |
 | `goal-meta-skill` | 把模糊任务收敛成强 `/goal` 指令 | 改编自 [joeseesun/qiaomu-goal-meta-skill](https://github.com/joeseesun/qiaomu-goal-meta-skill),MIT(© 向阳乔木) |
 | `stock-selection-rules` | A股选股与交易过程复盘 | `r0-data`、`r0-breakout`、`r1-mainline`、`r7-reset`、`r9-reclaim`、`r-stock-rating`、`trade-review` |
@@ -74,13 +72,13 @@ cheese-plugins/
 ## 新增技能
 
 ```bash
-scripts/new-skill.sh financial-analysis my-skill "Short description of when to use it"
+scripts/new-skill.sh equity-research my-skill "Short description of when to use it"
 ```
 
 然后编辑:
 
 ```text
-plugins/financial-analysis/skills/my-skill/SKILL.md
+plugins/equity-research/skills/my-skill/SKILL.md
 ```
 
 参考上面的插件表选择合适的插件。如果这个技能会开启一条新的工作流,就新建一个
@@ -140,7 +138,7 @@ scripts/validate.sh
 所有插件**共用同一个版本号**。任何改动后,用 `scripts/bump.sh <版本>` 把所有插件的
 `version` 一起往上 bump 一次——这样 Claude Code / codex 会把每个已安装插件都当成升级、
 重新拉取最新内容(只改内容不 bump 版本,已安装的副本不会更新)。`validate.sh` 会强制
-所有版本一致。当前:`1.10.1`。
+所有版本一致。当前:`1.11.0`。
 
 ```bash
 scripts/bump.sh 1.2.0

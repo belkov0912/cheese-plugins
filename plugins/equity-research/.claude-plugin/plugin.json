@@ -1,15 +1,14 @@
 {
   "name": "equity-research",
-  "version": "1.10.1",
-  "description": "Equity research tools: earnings analysis, initiating coverage reports, idea generation, catalysts, thesis tracking, and research workflows. Adapted from Anthropic FSI.",
+  "version": "1.11.0",
+  "description": "Equity research tools: morning notes, sector research, competitive analysis, idea generation, catalysts, thesis tracking, stock news-pulse ratings, and research workflows. Adapted from Anthropic FSI.",
   "author": {
     "name": "Anthropic FSI, cheese-plugins adaptation"
   },
   "keywords": [
     "finance",
     "equity-research",
-    "earnings",
-    "coverage",
-    "thesis"
+    "thesis",
+    "news-pulse"
   ]
 }
