@@ -1,6 +1,6 @@
 {
   "name": "goal-meta-skill",
-  "version": "1.9.1",
+  "version": "1.9.2",
   "description": "Turn vague or complex tasks into strong, copy-ready /goal commands with verification, constraints, boundaries, iteration policy, and pause conditions.",
   "author": {
     "name": "向阳乔木, cheese-plugins adaptation"
