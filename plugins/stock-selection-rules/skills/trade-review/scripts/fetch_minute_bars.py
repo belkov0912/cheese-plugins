@@ -24,6 +24,7 @@ def parse_args():
     parser.add_argument("--date", required=True, help="交易日 YYYY-MM-DD")
     parser.add_argument("--out", required=True, help="输出 CSV 路径")
     parser.add_argument("--indices", default=DEFAULT_INDICES, help="附带下载的指数，默认上证/深证/创业板；传空串跳过")
+    parser.add_argument("--prior-days", type=int, default=5, help="额外保留交易日之前最多 N 个交易日的分钟K作量能基准，0 关闭；这些K全部早于交易日，不违反无后视")
     parser.add_argument("--retries", type=int, default=3)
     return parser.parse_args()
 
@@ -89,21 +90,25 @@ def main():
             continue
         prior = bars[bars["day"].dt.strftime("%Y-%m-%d") < trade_date]
         prev_close = float(prior["close"].iloc[-1]) if len(prior) else None
+        prior_dates = sorted(prior["day"].dt.strftime("%Y-%m-%d").unique())[-args.prior_days:] if args.prior_days > 0 else []
+        keep = bars[bars["day"].dt.strftime("%Y-%m-%d").isin(prior_dates + [trade_date])]
+        is_trade_day = keep["day"].dt.strftime("%Y-%m-%d") == trade_date
         out = pd.DataFrame({
             "symbol": symbol,
-            "datetime": day_bars["day"].dt.strftime("%Y-%m-%d %H:%M:%S"),
-            "open": day_bars["open"],
-            "high": day_bars["high"],
-            "low": day_bars["low"],
-            "close": day_bars["close"],
-            "volume": day_bars["volume"],
-            "amount": day_bars.get("amount"),
-            "prev_close": prev_close,
+            "datetime": keep["day"].dt.strftime("%Y-%m-%d %H:%M:%S"),
+            "open": keep["open"],
+            "high": keep["high"],
+            "low": keep["low"],
+            "close": keep["close"],
+            "volume": keep["volume"],
+            "amount": keep.get("amount"),
+            "prev_close": [prev_close if flag else None for flag in is_trade_day],
         })
         frames.append(out)
-        report.append("%s: %d 根，%s → %s，prev_close=%s" % (
-            symbol, len(out), day_bars["day"].min().strftime("%H:%M"),
-            day_bars["day"].max().strftime("%H:%M"), prev_close if prev_close is not None else "无",
+        report.append("%s: 交易日 %d 根（%s → %s），量能基准 %d 个前置交易日，prev_close=%s" % (
+            symbol, len(day_bars), day_bars["day"].min().strftime("%H:%M"),
+            day_bars["day"].max().strftime("%H:%M"), len(prior_dates),
+            prev_close if prev_close is not None else "无",
         ))
 
     if frames:

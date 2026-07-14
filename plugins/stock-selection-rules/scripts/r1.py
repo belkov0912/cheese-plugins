@@ -79,14 +79,44 @@ def _cache_old(path: Path) -> bool:
     return age > CACHE_MAX_AGE_DAYS * 86400
 
 
+def _sw_ssl_workaround():
+    """swsresearch.com 的证书链不完整，requests 校验必失败；只对该域跳过校验，其余请求不受影响。
+
+    返回被替换前的原方法，调用方负责在 finally 里恢复。
+    """
+    import requests
+    import urllib3
+
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    original = requests.Session.merge_environment_settings
+
+    def merged(self, url, proxies, stream, verify, cert):
+        settings = original(self, url, proxies, stream, verify, cert)
+        if "swsresearch.com" in str(url):
+            settings["verify"] = False
+        return settings
+
+    requests.Session.merge_environment_settings = merged
+    return original
+
+
 def refresh_reference_data() -> None:
     """原子刷新申万行业分类历史和 31 个一级行业指数日线。"""
     try:
         import akshare as ak
+        import requests
     except ImportError as exc:
         raise RuntimeError("缺 akshare，先按 r0-data 的依赖安装流程补齐") from exc
 
     Path(store.STORE).mkdir(parents=True, exist_ok=True)
+    _original_merge = _sw_ssl_workaround()
+    try:
+        _refresh_reference_data_impl(ak)
+    finally:
+        requests.Session.merge_environment_settings = _original_merge
+
+
+def _refresh_reference_data_impl(ak) -> None:
     print("  刷新申万行业分类历史…", file=sys.stderr)
     history = ak.stock_industry_clf_hist_sw().copy()
     required = {"symbol", "start_date", "industry_code", "update_time"}

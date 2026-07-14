@@ -1,6 +1,6 @@
 {
   "name": "stock-selection-rules",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "Rule-based A-share toolkit: local hfq price warehouse, R0/R7/R9/R1 checks, backtested observation ratings, and no-lookahead trade-blotter reviews.",
   "author": {
     "name": "Jianan Liu"

@@ -140,7 +140,7 @@ scripts/validate.sh
 所有插件**共用同一个版本号**。任何改动后,用 `scripts/bump.sh <版本>` 把所有插件的
 `version` 一起往上 bump 一次——这样 Claude Code / codex 会把每个已安装插件都当成升级、
 重新拉取最新内容(只改内容不 bump 版本,已安装的副本不会更新)。`validate.sh` 会强制
-所有版本一致。当前:`1.8.0`。
+所有版本一致。当前:`1.9.0`。
 
 ```bash
 scripts/bump.sh 1.2.0

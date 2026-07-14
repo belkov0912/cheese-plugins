@@ -198,6 +198,54 @@ def stock_context(code, name, data_dir, trade_date, previous_session=None):
     return result
 
 
+def sector_daily_context(symbols, as_of_date):
+    """申万一级行业日线强度（复用插件 r1），截至 as_of_date（应为交易日前一交易日，无后视）。
+
+    r1.build_context 按历史日构建，行业指数、行业归属和个股收益只使用 as_of_date 及以前的数据。
+    返回 {symbol: dict}；任何一步失败都降级为 status=unavailable，不影响其余评估。
+    """
+    symbols = list(symbols)
+    result = {sym: {"status": "unavailable", "reason": "未计算"} for sym in symbols}
+    try:
+        plugin_scripts = str(Path(__file__).resolve().parents[3] / "scripts")
+        if plugin_scripts not in sys.path:
+            sys.path.insert(0, plugin_scripts)
+        import r1 as r1_module
+
+        frames, _latest = r1_module._load_frames()
+        if not frames:
+            raise RuntimeError("r0-data 本地仓为空，无法计算行业横截面")
+        date = str(as_of_date)[:10]
+        contexts, _states = r1_module.build_context(frames, {date})
+        daily = contexts.get(date)
+        if daily is None:
+            raise RuntimeError("行业横截面无法计算 %s（申万行业数据或历史不足）" % date)
+        for sym in symbols:
+            record = daily.get(sym)
+            if record is None:
+                result[sym] = {"status": "unavailable", "reason": "行业归属、当日或20日前行情缺失（ETF/北交所/科创板688不在口径内）"}
+                continue
+            result[sym] = {
+                "status": "ready",
+                "as_of": date,
+                "sector_name": record["sector_name"],
+                "sector_ret5_pct": round(record["sector_ret5"] * 100, 2),
+                "sector_ret20_pct": round(record["sector_ret20"] * 100, 2),
+                "sector_rank": round(record["sector_rank"], 2),
+                "sector_mainline": bool(record["mainline"]),
+                "stock_ret20_pct": round(record["stock_ret20"] * 100, 2),
+                "stock_rank_in_sector": (
+                    round(record["stock_rank"], 2) if record.get("stock_rank") is not None else None
+                ),
+                "r1_score": record["score"],
+            }
+    except Exception as exc:
+        for sym in symbols:
+            if result[sym].get("status") != "ready":
+                result[sym] = {"status": "unavailable", "reason": str(exc)}
+    return result
+
+
 def render_markdown(results):
     lines = ["# 交易前日线背景（严格无后视）", ""]
     for item in results:
