@@ -29,7 +29,8 @@ codex plugin marketplace add git@github.com:belkov0912/cheese-plugins.git
 
 之后浏览、安装、更新、卸载都走交互界面:输入 `/plugins`(Claude Code 或
 codex),选中 `cheese-plugins`,对想要的插件操作即可。现有插件:`cheese-core`、
-`equity-research`、`serenity-skill`、`goal-meta-skill`、`stock-selection-rules`。
+`equity-research`、`serenity-skill`、`goal-meta-skill`、`stock-selection-rules`、
+`clash-ipfly`。
 
 重新安装后请开一个新会话,新技能和插件元数据才会被加载。
 
@@ -68,6 +69,7 @@ cheese-plugins/
 | `serenity-skill` | Serenity 式供应链卡点研究 | 来自 [muxuuu/serenity-skill](https://github.com/muxuuu/serenity-skill),MIT |
 | `goal-meta-skill` | 把模糊任务收敛成强 `/goal` 指令 | 改编自 [joeseesun/qiaomu-goal-meta-skill](https://github.com/joeseesun/qiaomu-goal-meta-skill),MIT(© 向阳乔木) |
 | `stock-selection-rules` | A股选股与交易过程复盘 | `r0-data`、`r0-breakout`、`r1-mainline`、`r7-reset`、`r9-reclaim`、`r-stock-rating`、`trade-review` |
+| `clash-ipfly` | Clash Verge 静态出口配置与诊断 | `clash-ipfly`，从本地工作簿读取 IPFly 凭据，持久化 `7898` 静态出口并验证多目标出口一致性 |
 
 ## 新增技能
 
@@ -138,7 +140,7 @@ scripts/validate.sh
 所有插件**共用同一个版本号**。任何改动后,用 `scripts/bump.sh <版本>` 把所有插件的
 `version` 一起往上 bump 一次——这样 Claude Code / codex 会把每个已安装插件都当成升级、
 重新拉取最新内容(只改内容不 bump 版本,已安装的副本不会更新)。`validate.sh` 会强制
-所有版本一致。当前:`1.12.1`。
+所有版本一致。当前:`1.13.0`。
 
 ```bash
 scripts/bump.sh 1.2.0

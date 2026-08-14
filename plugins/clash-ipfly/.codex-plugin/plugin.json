@@ -1,0 +1,29 @@
+{
+  "name": "clash-ipfly",
+  "version": "1.13.0",
+  "description": "Configure, persist, diagnose, and verify IPFly static egress through Clash Verge Rev.",
+  "author": {
+    "name": "Jianan Liu"
+  },
+  "keywords": [
+    "clash-verge",
+    "mihomo",
+    "ipfly",
+    "static-proxy"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Clash IPFly",
+    "shortDescription": "Persistent IPFly static egress for Clash Verge",
+    "longDescription": "Configure a dedicated local listener, persist IPFly SOCKS5 chaining across subscription changes, and verify fixed egress without exposing credentials.",
+    "developerName": "Jianan Liu",
+    "category": "Productivity",
+    "capabilities": [
+      "Local configuration",
+      "Network diagnostics"
+    ],
+    "defaultPrompt": [
+      "Configure and verify IPFly static egress on Clash Verge port 7898."
+    ]
+  }
+}

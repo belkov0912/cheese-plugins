@@ -1,6 +1,6 @@
 {
   "name": "equity-research",
-  "version": "1.12.1",
+  "version": "1.13.0",
   "description": "Equity research tools: morning notes, sector research, competitive analysis, idea generation, catalysts, thesis tracking, stock news-pulse ratings, and research workflows. Adapted from Anthropic FSI.",
   "author": {
     "name": "Anthropic FSI, cheese-plugins adaptation"

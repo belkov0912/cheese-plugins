@@ -39,6 +39,13 @@
       "source": "./plugins/stock-selection-rules",
       "description": "Rule-based A-share toolkit: local market data warehouse, R0/R7/R9/R1 checks, backtested observation ratings, and no-lookahead trade-blotter reviews.",
       "category": "finance"
+    },
+    {
+      "name": "clash-ipfly",
+      "displayName": "Clash IPFly",
+      "source": "./plugins/clash-ipfly",
+      "description": "Configure, persist, diagnose, and verify IPFly static egress through Clash Verge Rev.",
+      "category": "general"
     }
   ]
 }

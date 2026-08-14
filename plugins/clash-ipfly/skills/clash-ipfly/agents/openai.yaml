@@ -1,0 +1,4 @@
+interface:
+  display_name: "Clash IPFly Static Egress"
+  short_description: "Persist and verify IPFly static egress in Clash Verge"
+  default_prompt: "Use $clash-ipfly to configure and verify a persistent IPFly static egress on port 7898."
