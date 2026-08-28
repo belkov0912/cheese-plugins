@@ -1,13 +1,15 @@
 {
   "name": "cheese-core",
   "version": "1.13.0",
-  "description": "Core personal reasoning skills for cheese-plugins.",
+  "description": "Zongju thinking: turn a vague investment idea into a falsifiable, numbers-backed verdict.",
   "author": {
     "name": "Jianan Liu"
   },
   "keywords": [
-    "reasoning",
-    "thinking",
-    "decision-making"
+    "investment-judgment",
+    "zongju",
+    "falsifiable",
+    "equity",
+    "thesis-teardown"
   ]
 }

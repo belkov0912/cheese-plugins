@@ -9,7 +9,7 @@
       "name": "cheese-core",
       "displayName": "Cheese Core",
       "source": "./plugins/cheese-core",
-      "description": "Core personal reasoning skills for cheese-plugins.",
+      "description": "Zongju thinking: turn a vague investment idea into a falsifiable, numbers-backed verdict.",
       "category": "general"
     },
     {

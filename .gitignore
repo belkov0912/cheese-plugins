@@ -11,3 +11,9 @@ __pycache__/
 # Local IPFly credentials. Keep the workbook in the skill for local use,
 # but never publish its username/password to the marketplace repository.
 plugins/clash-ipfly/skills/clash-ipfly/assets/IP列表.xlsx
+
+# skill eval scratch outputs (reproducible, time-stamped)
+zongju-thinking-workspace/iteration-*/
+zongju-thinking-workspace/skill-snapshot/
+zongju-thinking-workspace/review.html
+zongju-thinking-workspace/viewer.log

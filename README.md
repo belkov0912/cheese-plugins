@@ -64,7 +64,7 @@ cheese-plugins/
 
 | 插件 | 范围 | 包含的技能 |
 | --- | --- | --- |
-| `cheese-core` | 核心推理 | `zongju-thinking` |
+| `cheese-core` | 总局思维投资判断 | `zongju-thinking`,把模糊的投资想法压成带数字、带证伪点的可下注判断 |
 | `equity-research` | 晨会、行业研究、竞争格局、选题、催化剂、论点跟踪、个股消息面 | `morning-note`、`idea-generation`、`sector-overview`、`competitive-analysis`、`catalyst-calendar`、`thesis-tracker`、`market-researcher`、`stock-pulse` 及配套工作流。改编自 Anthropic FSI 的 `equity-research` |
 | `serenity-skill` | Serenity 式供应链卡点研究 | 来自 [muxuuu/serenity-skill](https://github.com/muxuuu/serenity-skill),MIT |
 | `goal-meta-skill` | 把模糊任务收敛成强 `/goal` 指令 | 改编自 [joeseesun/qiaomu-goal-meta-skill](https://github.com/joeseesun/qiaomu-goal-meta-skill),MIT(© 向阳乔木) |
