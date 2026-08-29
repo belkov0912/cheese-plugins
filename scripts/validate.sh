@@ -104,6 +104,10 @@ if marketplace:
 for plugin_dir in sorted((root / "plugins").iterdir() if (root / "plugins").exists() else []):
     if not plugin_dir.is_dir() or plugin_dir.name.startswith("_"):
         continue
+    # Deleting a plugin leaves its empty directories behind (git does not track
+    # empty dirs), so only flag directories that still hold files.
+    if not any(path.is_file() for path in plugin_dir.rglob("*")):
+        continue
     if plugin_dir.resolve() not in registered_plugin_dirs:
         fail(f"plugins/{plugin_dir.name} is not registered in .claude-plugin/marketplace.json")
 
