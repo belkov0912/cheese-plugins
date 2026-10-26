@@ -1,6 +1,6 @@
 {
   "name": "clash-ipfly",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "description": "Configure, persist, diagnose, and verify IPFly static egress through Clash Verge Rev.",
   "author": {
     "name": "Jianan Liu"

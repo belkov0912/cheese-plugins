@@ -46,6 +46,13 @@
       "source": "./plugins/clash-ipfly",
       "description": "Configure, persist, diagnose, and verify IPFly static egress through Clash Verge Rev.",
       "category": "general"
+    },
+    {
+      "name": "prompt-deepen",
+      "displayName": "Prompt Deepen",
+      "source": "./plugins/prompt-deepen",
+      "description": "Rewrite a task prompt into a deeper (not bigger) version: expert moves, primary sources, methods and tools, external verification.",
+      "category": "general"
     }
   ]
 }
