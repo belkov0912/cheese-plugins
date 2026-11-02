@@ -68,7 +68,7 @@ cheese-plugins/
 | `equity-research` | 晨会、行业研究、竞争格局、选题、催化剂、论点跟踪、个股消息面 | `morning-note`、`idea-generation`、`sector-overview`、`competitive-analysis`、`catalyst-calendar`、`thesis-tracker`、`market-researcher`、`stock-pulse` 及配套工作流。改编自 Anthropic FSI 的 `equity-research` |
 | `serenity-skill` | Serenity 式供应链卡点研究 | 来自 [muxuuu/serenity-skill](https://github.com/muxuuu/serenity-skill),MIT |
 | `goal-meta-skill` | 把模糊任务收敛成强 `/goal` 指令 | 改编自 [joeseesun/qiaomu-goal-meta-skill](https://github.com/joeseesun/qiaomu-goal-meta-skill),MIT(© 向阳乔木) |
-| `stock-selection-rules` | A股选股与交易过程复盘 | `r0-data`、`r0-breakout`、`r1-mainline`、`r7-reset`、`r9-reclaim`、`r-stock-rating`、`trade-review` |
+| `stock-selection-rules` | A股选股、二三板接力筛选与交易过程复盘 | `r0-data`、`r0-breakout`、`r1-mainline`、`r7-reset`、`r9-reclaim`、`r-stock-rating`、`trade-review`、`board-relay` |
 | `clash-ipfly` | Clash Verge 静态出口配置与诊断 | `clash-ipfly`，从本地工作簿读取 IPFly 凭据，持久化 `7898` 静态出口并验证多目标出口一致性 |
 | `prompt-deepen` | 把题目改写得更深而不是更大 | `deepen`，先按专家视角回答多做什么、原始素材、方法工具、外部验证四问，再输出重写后的题目 |
 
@@ -141,7 +141,7 @@ scripts/validate.sh
 所有插件**共用同一个版本号**。任何改动后,用 `scripts/bump.sh <版本>` 把所有插件的
 `version` 一起往上 bump 一次——这样 Claude Code / codex 会把每个已安装插件都当成升级、
 重新拉取最新内容(只改内容不 bump 版本,已安装的副本不会更新)。`validate.sh` 会强制
-所有版本一致。当前:`1.14.0`。
+所有版本一致。当前:`1.15.0`。
 
 ```bash
 scripts/bump.sh 1.2.0
