@@ -31,6 +31,7 @@ import io
 import json
 import os
 import re
+import statistics
 import sys
 import time
 from collections import Counter, defaultdict
@@ -58,8 +59,10 @@ DEFAULTS = {
     "min_theme": 3,             # 板块共振：同一题材当日涨停家数下限
     "min_block_chg": 2.0,       # 同花顺热点板块当日涨幅下限(%)：板块整体在涨才算共振，挡住"大而泛"概念凑数
     "max_float_cap": 200.0,     # 流通市值上限(亿)
-    "min_first_turnover": 3.0,  # 首板换手下限(%)：首板要充分换手
-    "min_first_vr": 1.0,        # 首板量比下限（当日量 / 前5日均量）：首板要放量
+    "min_first_to_mult": 1.5,   # 首板换手倍数下限（当日换手 / 自身前20日换手中位数）：换手要比自己平时充分。
+                                # 不用绝对换手：大盘子 1.5% 可能已是平时的 4 倍，小盘子 5% 可能还不如平时
+    "min_first_vr": 1.0,        # 首板量比下限（当日量 / 前5日均量）：首板要比上周放量
+    "to_base_days": 20,         # 换手倍数的基准天数
     "tail_cutoff": "14:30:00",  # 首次封板晚于此 = 尾盘偷袭
     "lanban_gap": 60,           # 开过板且首封到末封间隔 ≥ 此(交易分钟) = 烂板
     "lanban_opens": 3,          # 东财炸板次数 ≥ 此 = 反复炸板（大涨日开 1-2 次板很常见，不算反复）
@@ -75,18 +78,27 @@ NON_THEME_TAG = re.compile(
     r"购买资产|资产注入|借壳|控制权|实控|入主|国资|央企|国企|回购|增持|分红|股权|摘帽|举牌|定增|重整|"
     r"破产|次新|复牌|转让|拟入主")
 
+# 大而泛的同花顺概念：公司系、指数/资金/财报类、超大伞形概念。成员横跨多个题材，不能当合并题材的胶水
+BROAD_BLOCK = re.compile(
+    r"华为|小米|腾讯|阿里|字节|抖音|百度|京东|拼多多|美团|比亚迪|特斯拉|苹果|英伟达|DeepSeek|宁德|"
+    r"^人工智能$|^数字经济$|^机器人概念$|^物联网$|^芯片概念$|^新能源汽车$|^消费电子概念$|^专精特新$|^新型工业化$|"
+    r"国企改革|央企|国资|融资融券|转融券|深股通|沪股通|MSCI|富时|标普|证金|社保|QFII|"
+    r"中报|年报|季报|预增|预盈|扭亏")
+ANCHOR_BLOCKS = 3  # 簇里板块涨幅前几名当锚：标签要被某个锚板块覆盖过半才算该簇的核心标签
+
 STRONG_NOTICE = [
     # (类别, 命中, 豁免)
     ("减持", re.compile(r"减持"), re.compile(r"完毕|结果|届满|终止|未减持|不减持|不存在减持|承诺不减持|未实施")),
     ("监管", re.compile(r"立案|行政处罚|处罚决定|警示函|监管函|问询函|关注函|纪律处分|通报批评|监管措施"), None),
     ("业绩预亏", re.compile(r"预亏|首亏|续亏|增亏|预减|业绩.{0,6}(下降|下滑|亏损)|亏损.{0,4}预告"), None),
     ("退市/ST", re.compile(r"退市|终止上市|其他风险警示|\*ST"), re.compile(r"撤销")),
-    ("解禁", re.compile(r"限售.{0,12}上市流通|解除限售"), None),
 ]
 WEAK_NOTICE = [
     ("风险提示", re.compile(r"风险提示|严重异常波动")),
     ("减值", re.compile(r"减值")),
     ("诉讼/冻结/质押", re.compile(r"诉讼|仲裁|冻结|质押")),
+    # 解禁规模看不出来（股权激励解除限售往往只有零点几个点），只标注；剔除交给 unlocks() 的流通市值占比
+    ("解禁公告", re.compile(r"限售.{0,12}上市流通|解除限售")),
 ]
 
 
@@ -204,7 +216,7 @@ def trade_minute(hms: str) -> float:
 def limit_pct(code: str, name: str) -> float:
     if "ST" in name.upper():
         return 0.05
-    if code.startswith(("300", "301", "688", "689")):
+    if code.startswith(("300", "301", "302", "688", "689")):
         return 0.20
     if code.startswith(("4", "8", "92")):
         return 0.30
@@ -551,12 +563,14 @@ def build_themes(recs: list, blocks: list, cfg: dict) -> list:
     """题材 = 涨停原因证据 + 热点板块胶水。
 
     1. 热点板块（当日涨停≥min_theme 且板块涨幅≥min_block_chg）按成员重叠(≥50%)合并成簇——只用来把相关标签
-       并成一条主线、给主线命名；"华为概念/人工智能"这类大而泛的概念不能直接把票拉进主线。
-    2. 归一化标签里 ≥min_theme 家共用的叫大标签；大标签的票有一半以上落在某簇里，它就是该簇的核心标签，
-       否则自成一个题材（如"羊字辈"、"白酒"）。
-    3. 簇的家族标签 = 核心标签 + 与核心标签在同一只票上共现、且票主要在簇内的两家小标签（如 IP运营、图书出版）。
+       并成一条主线、给主线命名。大而泛的概念（BROAD_BLOCK：公司系、人工智能/数字经济这类伞形概念）不参与：
+       它们横跨多个题材，会把整个市场串成一个簇。
+    2. 归一化标签里 ≥min_theme 家共用的叫大标签。簇里板块涨幅前 ANCHOR_BLOCKS 名是锚板块；大标签有过半的票
+       落在某个锚板块里，它就是该簇的核心标签，否则自成一个题材（如"羊字辈"、"白酒"、"金融科技"）。
+       只认单个锚板块、不认整簇并集：并集越大越容易把无关标签吸进来。
+    3. 簇的家族标签 = 核心标签 + 与核心标签在同一只票上共现、且票主要在锚板块内的两家小标签（如 IP运营、图书出版）。
     4. 票的涨停原因里有家族标签、或某个标签包含核心标签（核心标签'短剧' → '短剧出海'也算）才算该题材成员。
-       没有核心标签、但板块涨幅很强(≥5%)的簇按板块成员计（标签写法不统一时兜底）。
+       没有核心标签、但板块涨幅很强(≥5%)的簇按锚板块成员计（标签写法不统一时兜底）。
     每只票归入成员最多的题材；一个题材也挂不上 = 独苗/非主线。"""
     min_n = cfg["min_theme"]
     codes = {r["code"] for r in recs}
@@ -576,8 +590,11 @@ def build_themes(recs: list, blocks: list, cfg: dict) -> list:
     hot = []
     for b in blocks or []:
         mem = set(b["members"]) & codes
-        if len(mem) >= min_n and (b["change"] or 0) >= cfg["min_block_chg"]:
-            hot.append({"name": b["name"], "chg": b["change"], "members": mem})
+        if len(mem) < min_n or (b["change"] or 0) < cfg["min_block_chg"]:
+            continue
+        if BROAD_BLOCK.search(b["name"] or ""):
+            continue
+        hot.append({"name": b["name"], "chg": b["change"], "members": mem})
     parent = list(range(len(hot)))
 
     def find(i):
@@ -597,18 +614,20 @@ def build_themes(recs: list, blocks: list, cfg: dict) -> list:
     clusters = []
     for g in groups.values():
         g.sort(key=lambda h: -h["chg"])
-        clusters.append({"name": "/".join(h["name"] for h in g[:3]), "blocks": [h["name"] for h in g],
-                         "scope": set().union(*(h["members"] for h in g)), "chg": g[0]["chg"]})
+        anchors = g[:ANCHOR_BLOCKS]
+        clusters.append({"name": "/".join(h["name"] for h in anchors), "blocks": [h["name"] for h in g],
+                         "anchors": [h["members"] for h in anchors],
+                         "scope": set().union(*(h["members"] for h in anchors)), "chg": g[0]["chg"]})
 
     big = sorted((t for t, s in stocks_of.items() if len(s) >= min_n), key=lambda t: (-len(stocks_of[t]), t))
     core_of = {}
     for t in big:
         s, best, ov = stocks_of[t], None, 0.0
         for i, c in enumerate(clusters):
-            o = len(s & c["scope"]) / len(s)
-            if o > ov or (best is not None and o == ov and len(c["scope"]) > len(clusters[best]["scope"])):
+            o = max(len(s & a) / len(s) for a in c["anchors"])
+            if o > ov or (best is not None and o == ov and c["chg"] > clusters[best]["chg"]):
                 best, ov = i, o
-        if best is not None and ov >= 0.5:
+        if best is not None and ov > 0.5:
             core_of[t] = best
 
     themes = []
@@ -638,6 +657,29 @@ def build_themes(recs: list, blocks: list, cfg: dict) -> list:
         th["family"] = sorted(fam - core, key=lambda t: (-len(stocks_of[t]), t))
         th["members"] = {r["code"] for r in recs
                          if any(t in fam or any(len(c) >= 2 and c in t for c in core) for t in r["ntags"])}
+
+    # 核心标签互为子串的题材是同一条线（'机器人' 与 '人形机器人'），合并，免得拆成两个题材互相抢票
+    def related(a, b):
+        return any(len(x) >= 2 and len(y) >= 2 and (x in y or y in x) for x in a["core"] for y in b["core"])
+
+    merged = True
+    while merged:
+        merged = False
+        for a, b in ((a, b) for i, a in enumerate(themes) for b in themes[i + 1:]):
+            if not related(a, b):
+                continue
+            keep, drop = (a, b) if (len(a["core"]), len(a["members"])) >= (len(b["core"]), len(b["members"])) else (b, a)
+            keep["core"] = keep["core"] + [t for t in drop["core"] if t not in keep["core"]]
+            keep["family"] = sorted((set(keep["family"]) | set(drop["family"])) - set(keep["core"]),
+                                    key=lambda t: (-len(stocks_of[t]), t))
+            keep["members"] = keep["members"] | drop["members"]
+            keep["blocks"] = keep["blocks"] + [x for x in drop["blocks"] if x not in keep["blocks"]]
+            themes.remove(drop)
+            merged = True
+            break
+    for th in themes:
+        if th["kind"] == "cluster" and len(th["core"]) == 1:
+            th["name"] = th["core"][0]  # 单核心标签的簇按标签命名：锚板块可能只是碰巧装下了这些票
 
     themes = [th for th in themes if len(th["members"]) >= min_n]
     themes.sort(key=lambda th: (-len(th["members"]), th["name"]))
@@ -673,23 +715,35 @@ def cheap_reasons(r: dict, cfg: dict) -> list:
         out.append(f"大盘股(流通{r['float_cap']:.0f}亿)")
     if r["theme"] is None:
         out.append(f"独苗/非主线(同题材涨停仅{r['theme_n']}家)")
-    if r["streak"] == 1 and r["turnover"] < cfg["min_first_turnover"]:
-        out.append(f"首板换手不足({r['turnover']:.1f}%)")
     return out
 
 
-def volume_feats(rows: list, date: str) -> dict | None:
-    """rows 为截至 date（含）的日K。首板看量比 vr=当日量/前5日均量；二板看 sr=当日量/首板日量。"""
+def volume_feats(rows: list, date: str, base_days: int = 20) -> dict | None:
+    """rows 为截至 date（含）的日K。
+    首板看 to_mult=当日换手/前 base_days 日换手中位数（换手缺时用成交量，流通股本不变时两者等价）、
+    vr=当日量/前5日均量；二板看 sr=当日量/首板日量。历史不足 base_days/2 天（次新）时 to_mult=None。"""
     rows = [x for x in rows if x["date"] <= date and x.get("volume")]
     if not rows or rows[-1]["date"] != date:
         return None
     v = [x["volume"] for x in rows]
+
+    def mult(key):
+        cur = rows[-1].get(key)
+        base = [x[key] for x in rows[-base_days - 1:-1] if x.get(key)]
+        if not cur or len(base) < base_days // 2:
+            return None
+        med = statistics.median(base)
+        return cur / med if med > 0 else None
+
+    to_mult = mult("turnover")
+    if to_mult is None:
+        to_mult = mult("volume")
     prev5 = v[-6:-1]
     vr = v[-1] / (sum(prev5) / len(prev5)) if prev5 and sum(prev5) > 0 else None
     sr = v[-1] / v[-2] if len(v) >= 2 and v[-2] > 0 else None
     prev5b = v[-7:-2]
     vr_prev = v[-2] / (sum(prev5b) / len(prev5b)) if len(v) >= 3 and prev5b and sum(prev5b) > 0 else None
-    return {"vr": vr, "sr": sr, "vr_prev": vr_prev, "bar_close": rows[-1]["close"]}
+    return {"vr": vr, "sr": sr, "vr_prev": vr_prev, "to_mult": to_mult, "bar_close": rows[-1]["close"]}
 
 
 def score_parts(r: dict) -> dict:
@@ -704,7 +758,10 @@ def score_parts(r: dict) -> dict:
         hold = 5
     else:
         hold = 0
-    if r["streak"] == 1:
+    if r["streak"] == 1 and r.get("to_mult") is not None:
+        m = r["to_mult"]
+        vol = 20 if m >= 4 else 16 if m >= 3 else 10 if m >= 2 else 5 if m >= 1.5 else 0
+    elif r["streak"] == 1:  # 次新股历史不够算换手倍数，退回 5 日量比
         vr = r.get("vr")
         vol = 0 if vr is None else 20 if vr >= 3 else 16 if vr >= 2 else 10 if vr >= 1.5 else 5 if vr >= 1.0 else 0
     else:
@@ -766,14 +823,21 @@ def screen(date: str, cfg: dict, dates: list | None = None, notices_on: bool = T
             survivors.append(r)
 
     # 量能：只给过了初筛的票拉日K
-    start = (dt.date.fromisoformat(date) - dt.timedelta(days=45)).isoformat()
-    feats = _parallel(lambda r: volume_feats(bars(r["code"], start, date), date), survivors)
+    # 基准要 to_base_days 个交易日：自然日按 ×1.6 再加 20 天，跨国庆/春节长假也够
+    start = (dt.date.fromisoformat(date) - dt.timedelta(days=int(cfg["to_base_days"] * 1.6) + 20)).isoformat()
+    feats = _parallel(lambda r: volume_feats(bars(r["code"], start, date), date, cfg["to_base_days"]), survivors)
     kept = []
     for r, f in zip(survivors, feats):
-        r.update(f or {"vr": None, "sr": None, "vr_prev": None})
+        r.update(f or {"vr": None, "sr": None, "vr_prev": None, "to_mult": None})
         r["vol_missing"] = f is None
-        if f and r["streak"] == 1 and f["vr"] is not None and f["vr"] < cfg["min_first_vr"]:
-            r["excluded"] = [f"首板没放量(量比{f['vr']:.2f})"]
+        why = []
+        if f and r["streak"] == 1:
+            if f["to_mult"] is not None and f["to_mult"] < cfg["min_first_to_mult"]:
+                why.append(f"首板换手不足(自身{cfg['to_base_days']}日中位的{f['to_mult']:.1f}倍)")
+            if f["vr"] is not None and f["vr"] < cfg["min_first_vr"]:
+                why.append(f"首板没放量(量比{f['vr']:.2f})")
+        if why:
+            r["excluded"] = why
             excluded.append(r)
         else:
             kept.append(r)
@@ -863,7 +927,8 @@ def _vol_text(r):
     if r.get("vol_missing"):
         return "量能缺"
     if r["streak"] == 1:
-        return f"量比{r['vr']:.1f}" if r.get("vr") is not None else "量比?"
+        vr = f"量比{r['vr']:.1f}" if r.get("vr") is not None else "量比?"
+        return (f"换手{r['to_mult']:.1f}倍/" if r.get("to_mult") is not None else "") + vr
     return f"较首板{r['sr']:.2f}倍" if r.get("sr") is not None else "量比?"
 
 
@@ -951,7 +1016,7 @@ def render(res: dict) -> str:
 
 def _jsonable(res: dict) -> dict:
     keys = ("code", "name", "streak", "theme", "theme_n", "first", "last", "type", "opened", "em_opens", "gap",
-            "turnover", "float_cap", "close", "vr", "sr", "score", "parts", "next_limit", "premium_line",
+            "turnover", "float_cap", "close", "to_mult", "vr", "sr", "score", "parts", "next_limit", "premium_line",
             "reason", "risk", "notes", "excluded", "high_days")
     pick = lambda r: {k: r.get(k) for k in keys if k in r}
     return {"date": res["date"], "next": res["next"], "sentiment": res["sentiment"], "clusters": res["clusters"],
@@ -962,13 +1027,14 @@ def _jsonable(res: dict) -> dict:
 def archive(res: dict) -> str:
     p = _path("picks", f"{res['date'].replace('-', '')}.csv")
     cols = ["rank", "code", "name", "stage", "theme", "theme_n", "score", "first", "last", "opened", "turnover",
-            "float_cap", "vr", "sr", "next_limit", "premium_line", "reason"]
+            "float_cap", "to_mult", "vr", "sr", "next_limit", "premium_line", "reason"]
     with open(p, "w", encoding="utf-8", newline="") as fh:
         w = csv.writer(fh)
         w.writerow(cols)
         for i, r in enumerate(res["candidates"], 1):
             w.writerow([i, r["code"], r["name"], _stage(r), r["theme"], r["theme_n"], r["score"], r["first"], r["last"],
                         r["opened"], f"{r['turnover']:.2f}", f"{r['float_cap']:.1f}",
+                        "" if r.get("to_mult") is None else f"{r['to_mult']:.2f}",
                         "" if r.get("vr") is None else f"{r['vr']:.2f}", "" if r.get("sr") is None else f"{r['sr']:.2f}",
                         r.get("next_limit", ""), r.get("premium_line", ""), r["reason"]])
     return p
@@ -1060,7 +1126,7 @@ def render_backtest(bt: dict) -> str:
 
 def _cfg_from(args) -> dict:
     cfg = dict(DEFAULTS)
-    for k in ("top", "min_theme", "min_block_chg", "max_float_cap", "min_first_turnover"):
+    for k in ("top", "min_theme", "min_block_chg", "max_float_cap", "min_first_to_mult"):
         v = getattr(args, k, None)
         if v is not None:
             cfg[k] = v
@@ -1077,7 +1143,8 @@ def main(argv=None) -> int:
         sp.add_argument("--min-theme", dest="min_theme", type=int)
         sp.add_argument("--min-block-chg", dest="min_block_chg", type=float)
         sp.add_argument("--max-float-cap", dest="max_float_cap", type=float, help="流通市值上限(亿)")
-        sp.add_argument("--min-first-turnover", dest="min_first_turnover", type=float)
+        sp.add_argument("--min-first-to-mult", dest="min_first_to_mult", type=float,
+                        help="首板换手倍数下限：当日换手 / 自身前20日换手中位数（默认 1.5）")
         sp.add_argument("--include-688", dest="include_688", action="store_true")
         if name == "screen":
             sp.add_argument("--date", help="YYYY-MM-DD，缺省=最近完整交易日")
@@ -1145,7 +1212,7 @@ def selftest() -> None:
     assert limit_price(9.39, 0.10) == 10.33 and limit_price(30.78, 0.20) == 36.94
     assert limit_price(4.45, 0.10) == 4.90 and limit_price(10.05, 0.10) == 11.06
     assert limit_pct("300788", "中信出版") == 0.20 and limit_pct("600259", "中稀有色") == 0.10
-    assert limit_pct("000001", "*ST某某") == 0.05
+    assert limit_pct("000001", "*ST某某") == 0.05 and limit_pct("302132", "中航成飞") == 0.20
     assert parse_high_days("首板") == (1, 1) and parse_high_days("9天5板") == (9, 5)
     assert NON_THEME_TAG.search("三季报增长") and NON_THEME_TAG.search("控制权变更")
     assert not NON_THEME_TAG.search("AI短剧") and not NON_THEME_TAG.search("“羊”字辈")
@@ -1158,11 +1225,12 @@ def selftest() -> None:
     items = [("2026-10-20", "关于持股5%以上股东减持股份预披露公告"),
              ("2026-10-21", "关于控股股东减持计划实施完毕的公告"),
              ("2026-10-25", "关于股票交易异常波动的公告"),
+             ("2026-10-28", "关于2024年限制性股票激励计划第一个解除限售期解除限售股份上市流通的提示性公告"),
              ("2026-11-03", "关于收到问询函的公告"),            # 晚于 asof，不能用
              ("2026-08-01", "2026年半年度业绩预亏公告")]       # 超出回看窗口
     strong, weak = classify_notices(items, "2026-11-02", 30)
     assert len(strong) == 1 and strong[0].startswith("减持"), strong
-    assert weak == [], weak
+    assert len(weak) == 1 and weak[0].startswith("解禁公告"), weak   # 解禁公告只标注，剔除看 unlocks() 占比
 
     # 合成一天：AI 簇 4 只 + 独苗 1 只
     ts = lambda hm: str(int(dt.datetime(2026, 11, 2, int(hm[:2]), int(hm[3:5]), tzinfo=BJ).timestamp()))
@@ -1186,14 +1254,15 @@ def selftest() -> None:
               {"name": "数字经济", "change": 0.5, "limit_up_num": 3, "members": ["000001", "000006", "000002"]}]
     cfg = dict(DEFAULTS)
     clusters = build_themes(recs, blocks, cfg)
-    assert clusters[0]["name"] == "AI视频" and len(clusters[0]["members"]) == 6, clusters
+    assert clusters[0]["name"] == "AI短剧" and clusters[0]["blocks"] == ["AI视频"], clusters  # 单核心标签按标签命名
+    assert len(clusters[0]["members"]) == 6, clusters
     by = {r["code"]: r for r in recs}
     assert by["000006"]["theme"] is None                         # 板块涨幅不够 + 标签不成簇 → 独苗
     assert by["000002"]["gap"] == 35 and by["000002"]["opened"]
     reasons = {r["code"]: cheap_reasons(r, cfg) for r in recs}
     assert reasons["000001"] == [], reasons["000001"]
     assert reasons["000002"] == [], reasons["000002"]            # 开过一次板、35 分钟回封：不算烂板
-    assert any(x.startswith("首板换手不足") for x in reasons["000003"])
+    assert reasons["000003"] == [], reasons["000003"]            # 绝对换手 2% 不再一刀切，交给换手倍数
     assert any(x.startswith("尾盘偷袭") for x in reasons["000004"])
     assert any(x.startswith("一字板") for x in reasons["000005"])
     assert any(x.startswith("独苗") for x in reasons["000006"])
@@ -1202,20 +1271,45 @@ def selftest() -> None:
     assert any(x.startswith("烂板") for x in cheap_reasons(by["000002"], cfg))
     by["000002"]["gap"] = 35
 
+    # 题材归并：泛概念板块、非锚板块都不能把无关标签拉进主线；'机器人'与'人形机器人'合并
+    mk = lambda code, reason: {"code": code, "tags": reason.split("+")}
+    ai, fin, yang = (["10000%d" % i for i in range(4)], ["20000%d" % i for i in range(3)],
+                     ["30000%d" % i for i in range(3)])
+    recs2 = ([mk(c, "AI短剧+传媒") for c in ai] + [mk(c, "金融科技") for c in fin] + [mk(c, "“羊”字辈") for c in yang]
+             + [mk("40000%d" % i, "机器人") for i in range(3)] + [mk("50000%d" % i, "人形机器人") for i in range(3)])
+    blocks2 = [{"name": "AI视频", "change": 8.0, "members": ai},
+               {"name": "短剧游戏", "change": 7.0, "members": ai[:3]},
+               {"name": "传媒", "change": 6.5, "members": ai[1:]},
+               {"name": "文化传媒概念", "change": 5.0, "members": ai + fin[:2]},   # 并进 AI 簇但不是锚
+               {"name": "人工智能", "change": 4.0, "members": ai + fin + yang},    # 大而泛，不当胶水
+               {"name": "华为概念", "change": 3.0, "members": ai + yang}]
+    th2 = {t["name"]: t for t in build_themes(recs2, blocks2, cfg)}
+    assert set(th2) == {"AI视频/短剧游戏/传媒", "金融科技", "羊字辈", "机器人"}, th2.keys()
+    assert th2["AI视频/短剧游戏/传媒"]["members"] == set(ai)
+    assert th2["金融科技"]["members"] == set(fin) and th2["羊字辈"]["members"] == set(yang)
+    assert th2["机器人"]["core"] == ["机器人", "人形机器人"] and len(th2["机器人"]["members"]) == 6
+
     # 量能与打分
-    rows = [{"date": f"2026-10-{d:02d}", "volume": 100.0, "close": 9.0} for d in range(20, 31)]
-    rows.append({"date": "2026-11-02", "volume": 320.0, "close": 10.0})
+    days = [(dt.date(2026, 10, 1) + dt.timedelta(days=i)).isoformat() for i in range(32)]
+    rows = [{"date": d, "volume": 100.0, "turnover": 0.4, "close": 9.0} for d in days[:-1]]
+    rows.append({"date": "2026-11-02", "volume": 320.0, "turnover": 1.6, "close": 10.0})  # 绝对 1.6%，是自己平时的 4 倍
     vf = volume_feats(rows, "2026-11-02")
-    assert abs(vf["vr"] - 3.2) < 1e-9 and abs(vf["sr"] - 3.2) < 1e-9
+    assert abs(vf["vr"] - 3.2) < 1e-9 and abs(vf["sr"] - 3.2) < 1e-9 and abs(vf["to_mult"] - 4.0) < 1e-9, vf
+    hot = [dict(x, turnover=8.0) for x in rows[:-1]] + [dict(rows[-1], turnover=6.0)]   # 绝对 6%，还不如平时
+    assert volume_feats(hot, "2026-11-02")["to_mult"] < DEFAULTS["min_first_to_mult"]
+    no_to = [{k: v for k, v in x.items() if k != "turnover"} for x in rows]
+    assert abs(volume_feats(no_to, "2026-11-02")["to_mult"] - 3.2) < 1e-9                 # 换手缺时用成交量
+    assert volume_feats(rows[-6:], "2026-11-02")["to_mult"] is None                       # 次新：历史不足
     assert volume_feats(rows, "2026-11-03") is None
     a, b = by["000001"], by["000002"]
-    a.update(vr=3.2, sr=None)
-    b.update(vr=1.6, sr=None)
+    a.update(vr=3.2, sr=None, to_mult=4.5)
+    b.update(vr=1.6, sr=None, to_mult=1.6)
     rank_in_theme([a, b])
     assert a["theme_rank"] == 1 and b["theme_rank"] == 2
     pa, pb = score_parts(a), score_parts(b)
     assert pa == {"题材": 20, "封板": 20, "不开板": 10, "量能": 20, "先手": 10, "市值": 10}, pa
-    assert sum(pb.values()) < sum(pa.values())
+    assert score_parts(b)["量能"] == 5 and sum(pb.values()) < sum(pa.values())
+    assert score_parts(dict(b, to_mult=None))["量能"] == 10                 # 次新退回 5 日量比档
     two = dict(a, streak=2, sr=0.7)
     assert score_parts(two)["量能"] == 20
     two["sr"] = 2.5
