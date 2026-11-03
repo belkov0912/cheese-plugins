@@ -1,6 +1,6 @@
 {
   "name": "prompt-deepen",
-  "version": "1.15.0",
+  "version": "1.16.0",
   "description": "Rewrite a task prompt into a deeper (not bigger) version: expert moves, primary sources, methods and tools, external verification.",
   "author": {
     "name": "Jianan Liu"
